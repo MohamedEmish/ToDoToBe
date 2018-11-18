@@ -18,8 +18,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -48,8 +47,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
@@ -74,90 +72,53 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/month_preview_tab_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/month_preview_day_tab"
-                    android:layout_width="wrap_content"
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/month_preview_tab_layout"
+                    android:layout_width="210dp"
                     android:layout_height="match_parent"
-                    android:paddingLeft="16dp"
-                    android:text="DAY"
-                    android:textColor="#FFFFFF" />
+                    app:tabTextColor="#FFFFFF">
 
-                <TextView
-                    android:id="@+id/month_preview_week_tab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="16dp"
-                    android:text="WEEK"
-                    android:textColor="#FFFFFF" />
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/month_preview_day_tab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Day" />
 
-                <TextView
-                    android:id="@+id/month_preview_month_tab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="16dp"
-                    android:text="MONTH"
-                    android:textColor="#FFFFFF" />
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/month_preview_week_tab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Week" />
+
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/month_preview_month_tab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Month" />
+                </android.support.design.widget.TabLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp">
+
+                </LinearLayout>
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/month_preview_view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v4.view.ViewPager>
 
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="6"
-            android:orientation="vertical">
-
-
-            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                android:id="@+id/month_periview_calender"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#FFFFFF"
-                app:mcv_arrowColor="#9E9E9E"
-                app:mcv_calendarMode="month"
-                app:mcv_dateTextAppearance="@style/dayText"
-                app:mcv_headerTextAppearance="@style/monthTextGone"
-                app:mcv_selectionColor="#E0E0E0"
-                app:mcv_showOtherDates="decorated_disabled"
-                app:mcv_weekDayTextAppearance="@style/weekText" />
 
         </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:background="#FFFFFF">
-
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true">
-
-            </ListView>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="12dp"
-                android:src="@drawable/ic_add_black_24dp"
-                app:fab_colorNormal="#FF4081" />
-
-        </RelativeLayout>
 
 
     </LinearLayout>
