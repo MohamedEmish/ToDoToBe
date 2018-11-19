@@ -2,7 +2,6 @@ package com.example.amosh.todotobe;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,14 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-
-import java.util.Date;
 
 public class MainScreenActivity extends AppCompatActivity {
     @Override
@@ -114,24 +109,33 @@ public class MainScreenActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.nav_close:
                         mDrawerLayout.closeDrawer(GravityCompat.START);
+                        break;
                     case R.id.nav_home:
+                        Intent mainScreenActivity = new Intent(MainScreenActivity.this, MainScreenActivity.class);
+                        startActivity(mainScreenActivity);
                         break;
                     case R.id.nav_overview:
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(MainScreenActivity.this, MyGroupsActivity.class);
                         startActivity(groupsActivity);
+                        break;
                     case R.id.nav_lists:
                         break;
                     case R.id.nav_profile:
                         break;
                     case R.id.nav_timeline:
+                        Intent summary = new Intent(MainScreenActivity.this, SummaryChartActivity.class);
+                        startActivity(summary);
                         break;
                     case R.id.nav_settings:
+                        Intent settingsActivity = new Intent(MainScreenActivity.this, SettingsActivity.class);
+                        startActivity(settingsActivity);
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(MainScreenActivity.this, SignInActivity.class);
                         startActivity(signInActivity);
+                        break;
                 }
                 return true;
             }

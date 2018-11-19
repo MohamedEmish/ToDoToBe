@@ -32,7 +32,6 @@
 
         <activity
             android:name=".splash_screen_activity"
-            android:label="splash main"
             android:theme="@style/AppTheme"
             android:parentActivityName=".SignInActivity">
 
@@ -44,7 +43,6 @@
 
         <activity
             android:name=".MainScreenActivity"
-            android:label="splash main"
             android:theme="@style/AppTheme"
             android:parentActivityName=".SignInActivity">
 
@@ -56,7 +54,6 @@
 
         <activity
             android:name=".MonthPreviewActivity"
-            android:label="splash main"
             android:theme="@style/AppTheme"
             android:parentActivityName=".SignInActivity">
 
@@ -68,7 +65,6 @@
 
         <activity
             android:name=".MyGroupsActivity"
-            android:label="splash main"
             android:theme="@style/AppTheme"
             android:parentActivityName=".SignInActivity">
 
@@ -77,6 +73,96 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainScreenActivity" />
         </activity>
+
+        <activity
+            android:name=".ShopActivity"
+            android:parentActivityName=".MyGroupsActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MyGroupsActivity" />
+        </activity>
+
+        <activity
+            android:name=".WorkActivity"
+            android:parentActivityName=".MyGroupsActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MyGroupsActivity" />
+        </activity>
+
+        <activity
+            android:name=".HealthActivity"
+            android:parentActivityName=".MyGroupsActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MyGroupsActivity" />
+        </activity>
+
+        <activity
+            android:name=".AutoActivity"
+            android:parentActivityName=".MyGroupsActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MyGroupsActivity" />
+        </activity>
+
+        <activity
+            android:name=".BillsActivity"
+            android:parentActivityName=".MyGroupsActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MyGroupsActivity" />
+        </activity>
+
+        <activity
+            android:name=".TravelActivity"
+            android:parentActivityName=".MyGroupsActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MyGroupsActivity" />
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainScreenActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainScreenActivity" />
+        </activity>
+
+        <activity
+            android:name=".SummaryChartActivity"
+            android:parentActivityName=".MainScreenActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainScreenActivity" />
+        </activity>
+
+
     </application>
 
 </manifest>

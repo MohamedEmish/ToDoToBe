@@ -5,6 +5,7 @@
         android:id="@+id/close">
         <item
             android:id="@+id/nav_close"
+
             android:title="@null"
             android:icon="@drawable/ic_close_black_24dp" />
     </group>

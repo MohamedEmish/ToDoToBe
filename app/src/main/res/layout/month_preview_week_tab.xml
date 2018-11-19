@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/month_preview_week_tab_calendar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:id="@+id/month_periview_week_calender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        app:mcv_arrowColor="#9E9E9E"
+        app:mcv_calendarMode="week"
+        app:mcv_dateTextAppearance="@style/dayText"
+        app:mcv_headerTextAppearance="@style/monthTextGone"
+        app:mcv_selectionColor="#E0E0E0"
+        app:mcv_showOtherDates="decorated_disabled"
+        app:mcv_weekDayTextAppearance="@style/weekText" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true">
+
+        </ListView>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="12dp"
+            android:src="@drawable/ic_add_black_24dp"
+            app:fab_colorNormal="#FF4081" />
+
+    </RelativeLayout>
+
+</LinearLayout>
+

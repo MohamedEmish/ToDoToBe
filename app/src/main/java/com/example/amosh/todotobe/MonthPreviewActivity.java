@@ -1,7 +1,6 @@
 package com.example.amosh.todotobe;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabItem;
@@ -17,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-
-import java.util.Date;
 
 public class MonthPreviewActivity extends AppCompatActivity {
 
@@ -103,13 +100,17 @@ public class MonthPreviewActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.nav_close:
                         mDrawerLayout.closeDrawer(GravityCompat.START);
+                        break;
                     case R.id.nav_home:
+                        Intent mainScreenActivity = new Intent(MonthPreviewActivity.this, MainScreenActivity.class);
+                        startActivity(mainScreenActivity);
                         break;
                     case R.id.nav_overview:
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(MonthPreviewActivity.this, MyGroupsActivity.class);
                         startActivity(groupsActivity);
+                        break;
                     case R.id.nav_lists:
                         break;
                     case R.id.nav_profile:
@@ -117,10 +118,13 @@ public class MonthPreviewActivity extends AppCompatActivity {
                     case R.id.nav_timeline:
                         break;
                     case R.id.nav_settings:
+                        Intent settingsActivity = new Intent(MonthPreviewActivity.this, SettingsActivity.class);
+                        startActivity(settingsActivity);
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(MonthPreviewActivity.this, SignInActivity.class);
                         startActivity(signInActivity);
+                        break;
                 }
                 return true;
             }
