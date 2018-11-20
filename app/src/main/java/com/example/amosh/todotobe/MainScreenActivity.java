@@ -27,66 +27,9 @@ public class MainScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                CalendarDay selected = calendarView.getCurrentDate();
-
-                int month = selected.getMonth();
-
-                String monthName = "";
-                if (month == 1) {
-                    monthName = "January";
-                }
-                if (month == 2) {
-                    monthName = "February";
-                }
-                if (month == 3) {
-                    monthName = "March";
-                }
-                if (month == 4) {
-                    monthName = "April";
-                }
-                if (month == 5) {
-                    monthName = "May";
-                }
-                if (month == 6) {
-                    monthName = "June";
-                }
-                if (month == 7) {
-                    monthName = "July";
-                }
-                if (month == 8) {
-                    monthName = "August";
-                }
-                if (month == 9) {
-                    monthName = "September";
-                }
-                if (month == 10) {
-                    monthName = "October";
-                }
-                if (month == 11) {
-                    monthName = "November";
-                }
-                if (month == 12) {
-                    monthName = "December";
-                }
-
-                int year = selected.getYear();
-                String yearString = String.valueOf(year).trim();
-
-                int day = selected.getDay();
-                String dayString = String.valueOf(day);
-
-                String finalMonthName = monthName;
-
-                Intent monthPreview = new Intent(MainScreenActivity.this, MonthPreviewActivity.class);
-
-                monthPreview.putExtra("year", yearString);
-                monthPreview.putExtra("month", finalMonthName);
-                monthPreview.putExtra("day", dayString);
-                monthPreview.putExtra("monthNumber", month);
-
-
-                startActivity(monthPreview);
+                calenderTitleClick();
             }
+
         });
 
         ImageView menu_icon = (ImageView) findViewById(R.id.main_screen_menu_icon);
@@ -115,6 +58,8 @@ public class MainScreenActivity extends AppCompatActivity {
                         startActivity(mainScreenActivity);
                         break;
                     case R.id.nav_overview:
+                        Intent overviewActivity = new Intent(MainScreenActivity.this, OverviewActivity.class);
+                        startActivity(overviewActivity);
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(MainScreenActivity.this, MyGroupsActivity.class);
@@ -143,5 +88,71 @@ public class MainScreenActivity extends AppCompatActivity {
 
 
     }
+
+    private void calenderTitleClick() {
+
+        MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
+
+        CalendarDay selected = calendarView.getCurrentDate();
+
+        int month = selected.getMonth();
+
+        String monthName = "";
+        if (month == 1) {
+            monthName = "January";
+        }
+        if (month == 2) {
+            monthName = "February";
+        }
+        if (month == 3) {
+            monthName = "March";
+        }
+        if (month == 4) {
+            monthName = "April";
+        }
+        if (month == 5) {
+            monthName = "May";
+        }
+        if (month == 6) {
+            monthName = "June";
+        }
+        if (month == 7) {
+            monthName = "July";
+        }
+        if (month == 8) {
+            monthName = "August";
+        }
+        if (month == 9) {
+            monthName = "September";
+        }
+        if (month == 10) {
+            monthName = "October";
+        }
+        if (month == 11) {
+            monthName = "November";
+        }
+        if (month == 12) {
+            monthName = "December";
+        }
+
+        int year = selected.getYear();
+        String yearString = String.valueOf(year).trim();
+
+        int day = selected.getDay();
+        String dayString = String.valueOf(day);
+
+        String finalMonthName = monthName;
+
+        Intent monthPreview = new Intent(MainScreenActivity.this, MonthPreviewActivity.class);
+
+        monthPreview.putExtra("year", yearString);
+        monthPreview.putExtra("month", finalMonthName);
+        monthPreview.putExtra("day", dayString);
+        monthPreview.putExtra("monthNumber", month);
+
+
+        startActivity(monthPreview);
+    }
+
 
 }

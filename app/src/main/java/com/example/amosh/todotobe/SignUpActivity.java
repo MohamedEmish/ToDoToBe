@@ -3,12 +3,8 @@ package com.example.amosh.todotobe;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -23,10 +19,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent signInActivity = new Intent(SignUpActivity.this, SignInActivity.class);
-
-                // Start the new activity
-                startActivity(signInActivity);
+                startSignIn();
             }
         });
 
@@ -35,14 +28,26 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent signInActivity = new Intent(SignUpActivity.this, SignInActivity.class);
+                backClick();
 
-                // Start the new activity
-                startActivity(signInActivity);
             }
         });
 
 
+    }
+
+    private void backClick() {
+        Intent signInActivity = new Intent(SignUpActivity.this, SignInActivity.class);
+
+        // Start the new activity
+        startActivity(signInActivity);
+    }
+
+    private void startSignIn() {
+        Intent signInActivity = new Intent(SignUpActivity.this, SignInActivity.class);
+
+        // Start the new activity
+        startActivity(signInActivity);
     }
 }
 

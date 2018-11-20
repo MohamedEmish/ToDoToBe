@@ -4,14 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.util.ArrayList;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.ValueDependentColor;
+import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.DataPoint;
 
 public class SummaryChartActivity extends AppCompatActivity {
     @Override
@@ -19,60 +16,118 @@ public class SummaryChartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.summary_chart);
 
-        BarChart barChart = (BarChart) findViewById(R.id.summary_bar_chart_graph);
+        GraphView graph = (GraphView) findViewById(R.id.summary_graph_view);
 
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(8f, 0));
-        entries.add(new BarEntry(2f, 1));
-        entries.add(new BarEntry(3f, 2));
-        entries.add(new BarEntry(12f, 3));
-        entries.add(new BarEntry(0f, 4));
-        entries.add(new BarEntry(15f, 5));
-        entries.add(new BarEntry(6f, 6));
-        entries.add(new BarEntry(9f, 7));
-        entries.add(new BarEntry(8f, 0));
-        entries.add(new BarEntry(2f, 1));
-
-        BarDataSet barDataSet = new BarDataSet(entries, null);
-
-        ArrayList<String> labels = new ArrayList<>();
-        labels.add("1");
-        labels.add("3");
-        labels.add("6");
-        labels.add("9");
-        labels.add("12");
-        labels.add("15");
-        labels.add("18");
-        labels.add("21");
-        labels.add("24");
-        labels.add("27");
-
-        BarData data = new BarData(labels, barDataSet);
-
-        barChart.setData(data);
-
-        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-
-        barChart.animateY(5000);
-
-        barChart.setDescription(null);
+        BarGraphSeries<DataPoint> overdue = new BarGraphSeries<>(getDataPointOverdue());
+        BarGraphSeries<DataPoint> snoozed = new BarGraphSeries<>(getDataPointSnoozed());
+        BarGraphSeries<DataPoint> completed = new BarGraphSeries<>(getDataPointCompleted());
 
 
-        // Y left axis
-        barChart.getAxisLeft().setEnabled(false);
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(30);
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(12);
 
-        // Y right axis
-        barChart.getAxisRight().setEnabled(false);
+        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.NONE);
 
-        // X axis
+        graph.getGridLabelRenderer().setNumHorizontalLabels(9);
+        graph.getGridLabelRenderer().setNumVerticalLabels(0);
+        graph.getGridLabelRenderer().setVerticalLabelsColor(0);
+        graph.getGridLabelRenderer().setHorizontalLabelsColor(0);
 
-        barChart.getXAxis().setEnabled(false);
-        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        graph.addSeries(overdue);
+        graph.addSeries(snoozed);
+        graph.addSeries(completed);
+
+        overdue.setSpacing(70);
+        snoozed.setSpacing(70);
+        completed.setSpacing(70);
 
 
-        // color guide
-        barChart.getLegend().setEnabled(false);
+        overdue.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+            @Override
+            public int get(DataPoint data) {
+                return getResources().getColor(R.color.light_purple);
+            }
+        });
 
+        snoozed.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+            @Override
+            public int get(DataPoint data) {
+                return getResources().getColor(R.color.orange);
+            }
+        });
+
+        completed.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+            @Override
+            public int get(DataPoint data) {
+                return getResources().getColor(R.color.green);
+            }
+        });
+
+
+    }
+
+    private DataPoint[] getDataPointOverdue() {
+        DataPoint[] dp = new DataPoint[]
+                {
+                        new DataPoint(1, 8),
+                        new DataPoint(4, 6),
+                        new DataPoint(7, 7),
+                        new DataPoint(10, 9),
+                        new DataPoint(13, 5),
+                        new DataPoint(16, 3),
+                        new DataPoint(19, 6),
+                        new DataPoint(22, 6),
+                        new DataPoint(25, 11),
+                        new DataPoint(28, 9)
+
+
+                };
+        return (dp);
+
+    }
+
+    private DataPoint[] getDataPointSnoozed() {
+        DataPoint[] dp = new DataPoint[]
+                {
+                        new DataPoint(1, 7),
+                        new DataPoint(4, 5),
+                        new DataPoint(7, 6),
+                        new DataPoint(10, 8),
+                        new DataPoint(13, 4),
+                        new DataPoint(16, 2),
+                        new DataPoint(19, 5),
+                        new DataPoint(22, 5),
+                        new DataPoint(25, 10),
+                        new DataPoint(28, 8)
+
+
+                };
+        return (dp);
+
+    }
+
+    private DataPoint[] getDataPointCompleted() {
+        DataPoint[] dp = new DataPoint[]
+                {
+                        new DataPoint(1, 4),
+                        new DataPoint(4, 4),
+                        new DataPoint(7, 5),
+                        new DataPoint(10, 7),
+                        new DataPoint(13, 4),
+                        new DataPoint(16, 1.5),
+                        new DataPoint(19, 2),
+                        new DataPoint(22, 4.5),
+                        new DataPoint(25, 6),
+                        new DataPoint(28, 5)
+
+
+                };
+        return (dp);
 
     }
 }

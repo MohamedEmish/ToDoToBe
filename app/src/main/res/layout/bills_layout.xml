@@ -87,7 +87,7 @@
 
     </ListView>
 
-    <com.getbase.floatingactionbutton.AddFloatingActionButton
+    <com.getbase.floatingactionbutton.FloatingActionButton
 
         android:id="@+id/addFloatingActionButton"
         android:layout_width="wrap_content"

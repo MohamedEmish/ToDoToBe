@@ -20,10 +20,14 @@ public class splash_screen_fragment_2 extends Fragment {
             @Override
             public void onClick(View view) {
 
-                splash_screen_activity.viewPager.setCurrentItem(2);
+                goNext();
             }
         });
 
         return rootView;
+    }
+
+    private void goNext() {
+        splash_screen_activity.viewPager.setCurrentItem(2);
     }
 }

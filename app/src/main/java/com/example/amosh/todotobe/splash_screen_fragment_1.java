@@ -1,14 +1,10 @@
 package com.example.amosh.todotobe;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 public class splash_screen_fragment_1 extends Fragment {
@@ -25,11 +21,14 @@ public class splash_screen_fragment_1 extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                splash_screen_activity.viewPager.setCurrentItem(1);
+                goNext();
             }
         });
 
         return rootView;
+    }
+
+    private void goNext() {
+        splash_screen_activity.viewPager.setCurrentItem(1);
     }
 }

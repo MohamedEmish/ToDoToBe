@@ -1,13 +1,10 @@
 package com.example.amosh.todotobe;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -22,10 +19,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent signUpActivity = new Intent(SignInActivity.this, SignUpActivity.class);
-
-                // Start the new activity
-                startActivity(signUpActivity);
+                startSignUpIntent();
             }
         });
 
@@ -33,13 +27,26 @@ public class SignInActivity extends AppCompatActivity {
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent splashScreen = new Intent(SignInActivity.this, splash_screen_activity.class);
 
-                // Start the new activity
-                startActivity(splashScreen);
+                startSplashScreen();
             }
         });
 
 
     }
+
+    private void startSplashScreen() {
+        Intent splashScreen = new Intent(SignInActivity.this, splash_screen_activity.class);
+
+        // Start the new activity
+        startActivity(splashScreen);
+    }
+
+    private void startSignUpIntent() {
+        Intent signUpActivity = new Intent(SignInActivity.this, SignUpActivity.class);
+        // Start the new activity
+        startActivity(signUpActivity);
+    }
+
+
 }

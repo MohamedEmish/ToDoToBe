@@ -21,13 +21,18 @@ public class splash_screen_fragment_3  extends Fragment {
         begin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent begin = new Intent(getActivity() , MainScreenActivity.class);
-                startActivity(begin);
+
+                startMainScreenActivity();
             }
         });
 
         return rootView;
 
 
+    }
+
+    private void startMainScreenActivity() {
+        Intent begin = new Intent(getActivity(), MainScreenActivity.class);
+        startActivity(begin);
     }
 }
