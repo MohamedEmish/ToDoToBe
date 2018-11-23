@@ -1,133 +1,105 @@
 package com.example.amosh.todotobe;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.ValueDependentColor;
-import com.jjoe64.graphview.series.BarGraphSeries;
-import com.jjoe64.graphview.series.DataPoint;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
+import java.util.ArrayList;
 
 public class SummaryChartActivity extends AppCompatActivity {
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.summary_chart);
 
-        GraphView graph = (GraphView) findViewById(R.id.summary_graph_view);
+        BarChart barChart = (BarChart) findViewById(R.id.summary_bar_chart_graph);
 
-        BarGraphSeries<DataPoint> overdue = new BarGraphSeries<>(getDataPointOverdue());
-        BarGraphSeries<DataPoint> snoozed = new BarGraphSeries<>(getDataPointSnoozed());
-        BarGraphSeries<DataPoint> completed = new BarGraphSeries<>(getDataPointCompleted());
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(1, new float[]{5, 2, 1}));
+        entries.add(new BarEntry(2, new float[]{4.5f, 2, 1}));
+        entries.add(new BarEntry(3, new float[]{5.5f, 2, 1}));
+        entries.add(new BarEntry(4, new float[]{6.5f, 2, 2}));
+        entries.add(new BarEntry(5, new float[]{4, 2, 1}));
+        entries.add(new BarEntry(6, new float[]{3, 2, 1}));
+        entries.add(new BarEntry(7, new float[]{3, 3, 1}));
+        entries.add(new BarEntry(8, new float[]{5, 1, 1}));
+        entries.add(new BarEntry(9, new float[]{6, 3, 1}));
+        entries.add(new BarEntry(10, new float[]{5, 3, 1}));
+
+        ArrayList<String> labels = new ArrayList<>();
+        labels.add("1");
+        labels.add("3");
+        labels.add("6");
+        labels.add("9");
+        labels.add("12");
+        labels.add("15");
+        labels.add("18");
+        labels.add("21");
+        labels.add("24");
+        labels.add("27");
+
+        BarDataSet barDataSet = new BarDataSet(entries, null);
+
+        int[] colorClassArray = new int[]{getResources().getColor(R.color.green),
+                getResources().getColor(R.color.orange),
+                getResources().getColor(R.color.light_purple)};
 
 
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(30);
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(12);
+        BarData data = new BarData(barDataSet);
 
-        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.NONE);
+        barChart.setData(data);
 
-        graph.getGridLabelRenderer().setNumHorizontalLabels(9);
-        graph.getGridLabelRenderer().setNumVerticalLabels(0);
-        graph.getGridLabelRenderer().setVerticalLabelsColor(0);
-        graph.getGridLabelRenderer().setHorizontalLabelsColor(0);
+        barDataSet.setColors(colorClassArray);
+        barDataSet.setDrawValues(false);
+
+        barChart.animateY(2500);
+        barChart.setScaleEnabled(false);
+        barChart.setTouchEnabled(false);
+
+        barChart.setDescription(null);
+
+        XAxis xAxis = barChart.getXAxis();
+
+        barChart.setFitBars(true);
+
+        data.setBarWidth(0.2f);
+
+        // Y left axis
+        barChart.getAxisLeft().setEnabled(false);
+
+        // Y right axis
+        barChart.getAxisRight().setEnabled(false);
+
+        // X axis
+
+        barChart.getXAxis().setEnabled(false);
+        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
 
-        graph.addSeries(overdue);
-        graph.addSeries(snoozed);
-        graph.addSeries(completed);
-
-        overdue.setSpacing(70);
-        snoozed.setSpacing(70);
-        completed.setSpacing(70);
-
-
-        overdue.setValueDependentColor(new ValueDependentColor<DataPoint>() {
-            @Override
-            public int get(DataPoint data) {
-                return getResources().getColor(R.color.light_purple);
-            }
-        });
-
-        snoozed.setValueDependentColor(new ValueDependentColor<DataPoint>() {
-            @Override
-            public int get(DataPoint data) {
-                return getResources().getColor(R.color.orange);
-            }
-        });
-
-        completed.setValueDependentColor(new ValueDependentColor<DataPoint>() {
-            @Override
-            public int get(DataPoint data) {
-                return getResources().getColor(R.color.green);
-            }
-        });
+        // color guide
+        barChart.getLegend().setEnabled(false);
 
 
     }
 
-    private DataPoint[] getDataPointOverdue() {
-        DataPoint[] dp = new DataPoint[]
-                {
-                        new DataPoint(1, 8),
-                        new DataPoint(4, 6),
-                        new DataPoint(7, 7),
-                        new DataPoint(10, 9),
-                        new DataPoint(13, 5),
-                        new DataPoint(16, 3),
-                        new DataPoint(19, 6),
-                        new DataPoint(22, 6),
-                        new DataPoint(25, 11),
-                        new DataPoint(28, 9)
-
-
-                };
-        return (dp);
-
-    }
-
-    private DataPoint[] getDataPointSnoozed() {
-        DataPoint[] dp = new DataPoint[]
-                {
-                        new DataPoint(1, 7),
-                        new DataPoint(4, 5),
-                        new DataPoint(7, 6),
-                        new DataPoint(10, 8),
-                        new DataPoint(13, 4),
-                        new DataPoint(16, 2),
-                        new DataPoint(19, 5),
-                        new DataPoint(22, 5),
-                        new DataPoint(25, 10),
-                        new DataPoint(28, 8)
-
-
-                };
-        return (dp);
-
-    }
-
-    private DataPoint[] getDataPointCompleted() {
-        DataPoint[] dp = new DataPoint[]
-                {
-                        new DataPoint(1, 4),
-                        new DataPoint(4, 4),
-                        new DataPoint(7, 5),
-                        new DataPoint(10, 7),
-                        new DataPoint(13, 4),
-                        new DataPoint(16, 1.5),
-                        new DataPoint(19, 2),
-                        new DataPoint(22, 4.5),
-                        new DataPoint(25, 6),
-                        new DataPoint(28, 5)
-
-
-                };
-        return (dp);
+    private ArrayList<BarEntry> completed() {
+        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+        entries.add(new BarEntry(1, 5));
+        entries.add(new BarEntry(2, 4));
+        entries.add(new BarEntry(3, 5));
+        entries.add(new BarEntry(4, 6));
+        entries.add(new BarEntry(5, 4));
+        entries.add(new BarEntry(6, 3));
+        entries.add(new BarEntry(7, 3));
+        entries.add(new BarEntry(8, 5));
+        entries.add(new BarEntry(9, 7));
+        entries.add(new BarEntry(10, 5));
+        return entries;
 
     }
 }
