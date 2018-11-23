@@ -80,6 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="2015"
+                    android:textColor="#9E9E9E"
                     android:textSize="18sp" />
 
             </LinearLayout>
