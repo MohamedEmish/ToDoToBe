@@ -1,77 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/close">
-        <item
-            android:id="@+id/nav_close"
-
-            android:title="@null"
-            android:icon="@drawable/ic_close_black_24dp" />
-    </group>
-
-    <group android:checkableBehavior="single"
-        android:id="@+id/home">
+    <group
+        android:id="@+id/x"
+        android:checkableBehavior="single">
 
         <item
             android:id="@+id/nav_home"
-            android:title="Home"
-            />
-    </group>
-
-    <group android:checkableBehavior="single"
-        android:id="@+id/overview">
+            android:checkable="true"
+            android:title="Home" />
 
         <item
             android:id="@+id/nav_overview"
+            android:checkable="true"
             android:title="Overview" />
-    </group>
-
-    <group android:checkableBehavior="single"
-        android:id="@+id/groups">
 
         <item
             android:id="@+id/nav_groups"
+            android:checkable="true"
             android:title="Groups" />
-    </group>
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/lists">
 
         <item
             android:id="@+id/nav_lists"
+            android:checkable="true"
             android:title="Lists" />
-    </group>
-
-    <group android:checkableBehavior="single"
-        android:id="@+id/profile">
 
         <item
             android:id="@+id/nav_profile"
+            android:checkable="true"
             android:title="Profile" />
-    </group>
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/timeline">
 
         <item
             android:id="@+id/nav_timeline"
+            android:checkable="true"
             android:title="Timeline" />
-    </group>
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/settings">
 
         <item
             android:id="@+id/nav_settings"
+            android:checkable="true"
             android:title="Settings" />
-    </group>
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/logout">
 
         <item
             android:id="@+id/nav_logout"
+            android:checkable="true"
             android:title="Log Out" />
     </group>
 

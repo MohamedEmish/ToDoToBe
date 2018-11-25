@@ -173,6 +173,17 @@
                 android:value=".MainScreenActivity" />
         </activity>
 
+        <activity
+            android:name=".AddRemainderActivity"
+            android:parentActivityName=".MainScreenActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainScreenActivity" />
+        </activity>
+
 
     </application>
 

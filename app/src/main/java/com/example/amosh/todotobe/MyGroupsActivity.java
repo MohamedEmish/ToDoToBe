@@ -3,7 +3,6 @@ package com.example.amosh.todotobe;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -37,9 +36,9 @@ public class MyGroupsActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R.id.nav_close:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        break;
+//                    case R.id.nav_close:
+//                        mDrawerLayout.closeDrawer(GravityCompat.START);
+//                        break;
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(MyGroupsActivity.this, MainScreenActivity.class);
                         startActivity(mainScreenActivity);

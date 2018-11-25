@@ -33,8 +33,8 @@ public class SettingsActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R.id.nav_close:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
+//                    case R.id.nav_close:
+//                        mDrawerLayout.closeDrawer(GravityCompat.START);
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(SettingsActivity.this, MainScreenActivity.class);
                         startActivity(mainScreenActivity);

@@ -50,9 +50,6 @@ public class MainScreenActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R.id.nav_close:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        break;
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(MainScreenActivity.this, MainScreenActivity.class);
                         startActivity(mainScreenActivity);
@@ -66,6 +63,8 @@ public class MainScreenActivity extends AppCompatActivity {
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
+                        Intent ADDActivity = new Intent(MainScreenActivity.this, AddRemainderActivity.class);
+                        startActivity(ADDActivity);
                         break;
                     case R.id.nav_profile:
                         break;
@@ -83,6 +82,23 @@ public class MainScreenActivity extends AppCompatActivity {
                         break;
                 }
                 return true;
+            }
+        });
+
+        View header = navigationView.getHeaderView(0);
+        ImageView close = (ImageView) header.findViewById(R.id.nav_head_close);
+
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 

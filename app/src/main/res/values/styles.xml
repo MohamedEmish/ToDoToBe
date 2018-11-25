@@ -46,11 +46,19 @@
 
     <style name="Navigation_menu_item">
         <item name="android:layout_gravity">start</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">start</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:listPreferredItemHeightSmall">60dp</item>
+
     </style>
 
+    <style name="Navigation_menu_item_text">
+        <item name="android:layout_gravity">start</item>
+        <item name="android:gravity">start</item>
+        <item name="android:paddingRight">32dp</item>
+        <item name="android:listPreferredItemHeightSmall">60dp</item>
+
+    </style>
     <style name="SCBSwitch" parent="Theme.AppCompat.Light">
         <!-- active thumb & track color (30% transparency) -->
         <item name="colorControlActivated">#FF4081</item>
