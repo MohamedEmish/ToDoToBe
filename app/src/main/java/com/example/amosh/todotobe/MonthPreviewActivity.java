@@ -27,8 +27,6 @@ public class MonthPreviewActivity extends AppCompatActivity {
         final MaterialCalendarView weekCalendarView = (MaterialCalendarView) findViewById(R.id.month_periview_week_calender);
         final MaterialCalendarView monthCalendarView = (MaterialCalendarView) findViewById(R.id.month_periview_month_calender);
 
-//        calendarView.setTopbarVisible(false);
-
         String yearString = getIntent().getStringExtra("year");
         String monthName = getIntent().getStringExtra("month");
         String dayString = getIntent().getStringExtra("day");

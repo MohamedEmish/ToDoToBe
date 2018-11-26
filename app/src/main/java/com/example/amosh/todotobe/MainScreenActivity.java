@@ -2,6 +2,7 @@ package com.example.amosh.todotobe;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +20,14 @@ public class MainScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen_activity);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.main_screen_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNewItem();
+            }
+        });
 
 
         final MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
@@ -63,14 +72,10 @@ public class MainScreenActivity extends AppCompatActivity {
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
-                        Intent ADDActivity = new Intent(MainScreenActivity.this, AddRemainderActivity.class);
-                        startActivity(ADDActivity);
                         break;
                     case R.id.nav_profile:
                         break;
                     case R.id.nav_timeline:
-                        Intent summary = new Intent(MainScreenActivity.this, SummaryChartActivity.class);
-                        startActivity(summary);
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(MainScreenActivity.this, SettingsActivity.class);
@@ -103,6 +108,11 @@ public class MainScreenActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void addNewItem() {
+        Intent ADDActivity = new Intent(MainScreenActivity.this, AddRemainderActivity.class);
+        startActivity(ADDActivity);
     }
 
     private void calenderTitleClick() {
