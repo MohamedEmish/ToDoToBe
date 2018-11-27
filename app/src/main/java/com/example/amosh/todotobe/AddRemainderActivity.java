@@ -38,8 +38,7 @@ public class AddRemainderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_remainder);
-
+        setContentView(R.layout.add_remainder);
         //  getting Date & Time to be shwon at Activity Start
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
@@ -124,14 +123,14 @@ public class AddRemainderActivity extends AppCompatActivity {
                     for (int i = 0; i < fromLayout.getChildCount(); i++) {
                         View child = fromLayout.getChildAt(i);
                         child.setEnabled(true);
-                        fromLayout.setBackgroundColor(getResources().getColor(R.color.white));
+                        fromLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
                     }
 
                     RelativeLayout toLayout = (RelativeLayout) findViewById(R.id.remainder_to_layout);
                     for (int i = 0; i < toLayout.getChildCount(); i++) {
                         View child = toLayout.getChildAt(i);
                         child.setEnabled(true);
-                        toLayout.setBackgroundColor(getResources().getColor(R.color.white));
+                        toLayout.setBackgroundColor(getResources().getColor(R.color.white_color));
                     }
                 }
             }
@@ -355,6 +354,15 @@ public class AddRemainderActivity extends AppCompatActivity {
         int dayNumber = Integer.parseInt(dayString.trim());
         int yearNumber = Integer.parseInt(yearString.trim());
 
+        mDateSetListenerTo = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+                String monthName = getMonthName(month);
+                String date = monthName + " " + day + "," + year;
+                dateTo.setText(date);
+            }
+        };
 
         DatePickerDialog dialog = new DatePickerDialog(AddRemainderActivity.this,
                 android.R.style.Theme_Holo_Light_Dialog_MinWidth,
@@ -394,15 +402,6 @@ public class AddRemainderActivity extends AppCompatActivity {
         int hourNumber = Integer.parseInt(hourString.trim());
         int minutesNumber = Integer.parseInt(minutesString.trim());
 
-        // start picker with pre chosen time
-        TimePickerDialog dialog = new TimePickerDialog(AddRemainderActivity.this,
-                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                mTimeSetListenerFrom,
-                hourNumber, minutesNumber, false);
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-
         // setting the new to time to textview
         mTimeSetListenerFrom = new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -425,6 +424,14 @@ public class AddRemainderActivity extends AppCompatActivity {
             }
         };
 
+        // start picker with pre chosen time
+        TimePickerDialog dialog = new TimePickerDialog(AddRemainderActivity.this,
+                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                mTimeSetListenerFrom,
+                hourNumber, minutesNumber, false);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
     private void clockTo() {
@@ -443,15 +450,6 @@ public class AddRemainderActivity extends AppCompatActivity {
 
         int hourNumber = Integer.parseInt(hourString.trim());
         int minutesNumber = Integer.parseInt(minutesString.trim());
-
-
-        TimePickerDialog dialog = new TimePickerDialog(AddRemainderActivity.this,
-                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                mTimeSetListenerTo,
-                hourNumber, minutesNumber, false);
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
 
         mTimeSetListenerTo = new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -473,6 +471,14 @@ public class AddRemainderActivity extends AppCompatActivity {
                 clockTo.setText(strHrsToShow);
             }
         };
+
+        TimePickerDialog dialog = new TimePickerDialog(AddRemainderActivity.this,
+                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                mTimeSetListenerTo,
+                hourNumber, minutesNumber, false);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
 }

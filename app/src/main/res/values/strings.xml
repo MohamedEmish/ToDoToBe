@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">ToDoToBe</string>
+
+    <string name="facebook_app_id">2143270396001866</string>
+    <string name="fb_login_protocol_scheme">fb2142888135975334</string>
 </resources>

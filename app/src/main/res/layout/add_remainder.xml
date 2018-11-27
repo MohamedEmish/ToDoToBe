@@ -31,15 +31,17 @@
             android:src="@drawable/ic_landscape" />
     </RelativeLayout>
 
-    <TextView
+    <EditText
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@null"
         android:gravity="center_vertical"
+        android:hint="Add Title"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
-        android:text="Add Title"
         android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -209,8 +211,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="16dp"
-                android:gravity="center_vertical"
                 android:background="@null"
+                android:gravity="center_vertical"
                 android:hint="starbucks"
                 android:textColor="#000000"
                 android:textColorHint="#9E9E9E" />
@@ -241,10 +243,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
-                android:background="@null"
                 android:layout_alignParentEnd="true"
-                android:paddingRight="8dp"
+                android:background="@null"
                 android:gravity="center_vertical"
+                android:paddingRight="8dp"
                 android:spinnerMode="dropdown"
                 android:textColor="#000000" />
         </RelativeLayout>
@@ -275,8 +277,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="16dp"
-                android:src="@drawable/ic_add_ppl"
                 android:gravity="center_vertical"
+                android:src="@drawable/ic_add_ppl"
                 android:text="via Email"
                 android:textColor="#000000" />
         </RelativeLayout>
@@ -308,8 +310,8 @@
                 android:layout_alignParentEnd="true"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:text="Monthly"
                 android:paddingRight="8dp"
+                android:text="Monthly"
                 android:textColor="#000000" />
         </RelativeLayout>
 
