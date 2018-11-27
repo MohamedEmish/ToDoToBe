@@ -76,6 +76,8 @@ public class MainScreenActivity extends AppCompatActivity {
                     case R.id.nav_profile:
                         break;
                     case R.id.nav_timeline:
+                        Intent timelineActivity = new Intent(MainScreenActivity.this, TimelineActivity.class);
+                        startActivity(timelineActivity);
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(MainScreenActivity.this, SettingsActivity.class);

@@ -317,15 +317,6 @@ public class AddRemainderActivity extends AppCompatActivity {
         int dayNumber = Integer.parseInt(dayString.trim());
         int yearNumber = Integer.parseInt(yearString.trim());
 
-        // start picker with pre-chosen date
-        DatePickerDialog dialog = new DatePickerDialog(AddRemainderActivity.this,
-                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                mDateSetListenerFrom,
-                yearNumber, monthNumber - 1, dayNumber);
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-
         // picking the new date and set it to the text view
         mDateSetListenerFrom = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -337,6 +328,14 @@ public class AddRemainderActivity extends AppCompatActivity {
             }
         };
 
+        // start picker with pre-chosen date
+        DatePickerDialog dialog = new DatePickerDialog(AddRemainderActivity.this,
+                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                mDateSetListenerFrom,
+                yearNumber, monthNumber - 1, dayNumber);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
     private void dateTo() {
