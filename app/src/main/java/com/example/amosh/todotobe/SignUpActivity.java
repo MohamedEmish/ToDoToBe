@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,8 +19,15 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +35,17 @@ import java.util.List;
 public class SignUpActivity extends AppCompatActivity {
 
     CallbackManager callbackManager;
+    ProfileTracker profileTracker;
+    Profile profile;
+
     LoginButton fblogin;
     ImageView FBlogin;
+
+    EditText userName;
+    EditText userEmail;
+    EditText userBirthDay;
+    EditText userPassword;
+
     private int STORAGE_READ_PERMISSION = 1;
     private int STORAGE_WRITE_PERMISSION = 2;
     private int STORAGE_INTERNET_ACCESS_PERMISSION = 3;
@@ -36,30 +53,52 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // FaceBook SDK NEEDs .. next 2 lines must be here
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+        // Then continue your code
         setContentView(R.layout.sign_up_layout);
 
         FBlogin = (ImageView) findViewById(R.id.sign_up_FB);
         fblogin = (LoginButton) findViewById(R.id.fb_login_button);
+        userName = (EditText) findViewById(R.id.sign_up_name_text);
+        userEmail = (EditText) findViewById(R.id.sign_up_email_text);
+        userBirthDay = (EditText) findViewById(R.id.sign_up_birthday_text);
+        userPassword = (EditText) findViewById(R.id.sign_up_password_text);
 
         List<String> permissionNeeds = Arrays.asList("user_photos", "email",
-                "user_birthday", "public_profile", "AccessToken");
+                "user_birthday", "public_profile", "AccessToken", "picture");
 
         fblogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
 
-                Toast.makeText(SignUpActivity.this,
-                        "Your FB login succeeded \n" + loginResult.getAccessToken().getUserId() + "\n" + loginResult.getAccessToken().getToken(),
-                        Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
 
+                                try {
+                                    String name = object.getString("name");
+                                    String profilePic = object.getString("picture");
+                                    String email = object.getString("email");
+                                    userEmail.setText(email);
+                                    userName.setText(name);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender, birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
 
             @Override
             public void onCancel() {
-
-                Toast.makeText(SignUpActivity.this, "Your FB login canceled", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -260,4 +299,3 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 }
-
