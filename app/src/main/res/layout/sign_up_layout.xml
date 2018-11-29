@@ -108,6 +108,7 @@
                 android:src="@drawable/ic_lock_outline_black_24dp" />
 
             <EditText
+                android:id="@+id/sign_up_password_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@null"
@@ -115,7 +116,6 @@
                 android:hint="Password"
                 android:paddingLeft="8dp"
                 android:textColor="#FFFFFF"
-                android:id="@+id/sign_up_password_text"
                 android:textColorHint="#F5F5F5" />
         </LinearLayout>
 
@@ -139,15 +139,15 @@
                 android:src="@drawable/ic_cake_black_24dp" />
 
             <EditText
+                android:id="@+id/sign_up_birthday_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:gravity="bottom"
                 android:hint="Birthday"
-                android:paddingLeft="8dp"
-                android:id="@+id/sign_up_birthday_text"
-                android:textColor="#FFFFFF"
                 android:inputType="date"
+                android:paddingLeft="8dp"
+                android:textColor="#FFFFFF"
                 android:textColorHint="#F5F5F5" />
         </LinearLayout>
 
@@ -175,26 +175,40 @@
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/fb_login_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/sign_up_FB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:onClick="FBLogin"
                 android:src="@drawable/ic_fb_icon" />
 
         </FrameLayout>
 
-        <ImageView
-            android:id="@+id/sign_up_Google"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="12dp"
-            android:paddingRight="12dp"
-            android:src="@drawable/ic_google_icon" />
+            android:paddingLeft="6dp"
+            android:paddingRight="12dp">
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/google_plus_login"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+
+            <ImageView
+                android:id="@+id/sign_up_Google"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_google_icon" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

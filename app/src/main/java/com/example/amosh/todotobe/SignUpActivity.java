@@ -22,9 +22,15 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
-import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,17 +40,26 @@ import java.util.List;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    //FaceBook variables
     CallbackManager callbackManager;
-    ProfileTracker profileTracker;
     Profile profile;
-
     LoginButton fblogin;
     ImageView FBlogin;
 
+    //G+ variables
+    GoogleSignInClient mGoogleSignInClient;
+    SignInButton glogin;
+    ImageView GLogin;
+    GoogleSignInOptions gso;
+    GoogleSignInAccount account;
+
+
+    //UI component
     EditText userName;
     EditText userEmail;
     EditText userBirthDay;
     EditText userPassword;
+
 
     private int STORAGE_READ_PERMISSION = 1;
     private int STORAGE_WRITE_PERMISSION = 2;
@@ -57,15 +72,22 @@ public class SignUpActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         // Then continue your code
+
+
         setContentView(R.layout.sign_up_layout);
 
         FBlogin = (ImageView) findViewById(R.id.sign_up_FB);
         fblogin = (LoginButton) findViewById(R.id.fb_login_button);
+
+        glogin = (SignInButton) findViewById(R.id.google_plus_login);
+        GLogin = (ImageView) findViewById(R.id.sign_up_Google);
+
         userName = (EditText) findViewById(R.id.sign_up_name_text);
         userEmail = (EditText) findViewById(R.id.sign_up_email_text);
         userBirthDay = (EditText) findViewById(R.id.sign_up_birthday_text);
         userPassword = (EditText) findViewById(R.id.sign_up_password_text);
 
+        //Facebook code
         List<String> permissionNeeds = Arrays.asList("user_photos", "email",
                 "user_birthday", "public_profile", "AccessToken", "picture");
 
@@ -108,7 +130,28 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
+        //Google+ code
+        //Build Google Sign in options
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        //get Sign in client
+        mGoogleSignInClient = GoogleSignIn.getClient(SignUpActivity.this, gso);
 
+        //get currently signed in user returns null if there is no logged in user
+        account = GoogleSignIn.getLastSignedInAccount(SignUpActivity.this);
+        //update ui
+        updateUI(account);
+
+        GLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
+            }
+        });
+
+
+        // Intents changers
         TextView signIn = (TextView) findViewById(R.id.sign_up_go_sign_in);
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,12 +165,13 @@ public class SignUpActivity extends AppCompatActivity {
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 backClick();
 
             }
         });
 
+
+        // Adding new user
         TextView join = (TextView) findViewById(R.id.sign_up_join);
         join.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,19 +188,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        ImageView Googlelogin = (ImageView) findViewById(R.id.sign_up_Google);
-        Googlelogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hasInternetPermission();
-                if (hasInternetPermission() == true) {
-                    Toast.makeText(SignUpActivity.this, "Internet connection approved", Toast.LENGTH_SHORT).show();
-
-                } else {
-                    Toast.makeText(SignUpActivity.this, "No internet connection approved", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     private boolean hasReadPermission() {
@@ -291,6 +322,9 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int responseCode, Intent data) {
         super.onActivityResult(requestCode, responseCode, data);
         callbackManager.onActivityResult(requestCode, responseCode, data);
+
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        handleSignInResult(task);
     }
 
     public void FBLogin(View v) {
@@ -298,4 +332,48 @@ public class SignUpActivity extends AppCompatActivity {
             fblogin.performClick();
         }
     }
+
+    //Method to G+ signIn
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, 6);
+    }
+
+    //Handle G+ sign in results
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully, show authenticated UI.
+            updateUI(account);
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+
+            updateUI(null);
+        }
+    }
+
+    private void updateUI(GoogleSignInAccount account) {
+        //Account is not null then user is logged in
+        if (account != null) {
+
+            userName.setText(account.getDisplayName());
+            userEmail.setText(account.getEmail());
+
+        } else {
+            //user is not logged in
+            // Set the dimensions of the sign-in button.
+            glogin.setSize(SignInButton.SIZE_WIDE);
+            glogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    signIn();
+                }
+            });
+        }
+
+    }
+
+
 }
