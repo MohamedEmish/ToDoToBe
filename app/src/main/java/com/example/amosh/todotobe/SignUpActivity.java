@@ -9,12 +9,15 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.amosh.todotobe.Data.MyUsersDbHelper;
+import com.example.amosh.todotobe.Data.Users;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -59,7 +62,9 @@ public class SignUpActivity extends AppCompatActivity {
     EditText userEmail;
     EditText userBirthDay;
     EditText userPassword;
+    String userImage;
 
+    MyUsersDbHelper usersDbHelper;
 
     private int STORAGE_READ_PERMISSION = 1;
     private int STORAGE_WRITE_PERMISSION = 2;
@@ -73,7 +78,6 @@ public class SignUpActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         // Then continue your code
 
-
         setContentView(R.layout.sign_up_layout);
 
         FBlogin = (ImageView) findViewById(R.id.sign_up_FB);
@@ -86,6 +90,8 @@ public class SignUpActivity extends AppCompatActivity {
         userEmail = (EditText) findViewById(R.id.sign_up_email_text);
         userBirthDay = (EditText) findViewById(R.id.sign_up_birthday_text);
         userPassword = (EditText) findViewById(R.id.sign_up_password_text);
+
+        usersDbHelper = new MyUsersDbHelper(this);
 
         //Facebook code
         List<String> permissionNeeds = Arrays.asList("user_photos", "email",
@@ -103,10 +109,11 @@ public class SignUpActivity extends AppCompatActivity {
 
                                 try {
                                     String name = object.getString("name");
-                                    String profilePic = object.getString("picture");
+                                    String image = object.getString("picture");
                                     String email = object.getString("email");
                                     userEmail.setText(email);
                                     userName.setText(name);
+                                    userImage = image.trim();
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -179,8 +186,13 @@ public class SignUpActivity extends AppCompatActivity {
                 hasReadPermission();
                 hasWritePermission();
                 if (hasReadPermission() == true && hasWritePermission() == true) {
-                    Toast.makeText(SignUpActivity.this, "Got it", Toast.LENGTH_SHORT).show();
                     addNewUser();
+                    if (!addNewUser() == false) {
+                        Toast.makeText(SignUpActivity.this, "welcome", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(SignUpActivity.this, "complete missed data ", Toast.LENGTH_SHORT).show();
+
+                    }
                 } else {
                     Toast.makeText(SignUpActivity.this, "NOT YET", Toast.LENGTH_SHORT).show();
                 }
@@ -299,9 +311,43 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void addNewUser() {
+    private boolean addNewUser() {
 
-        //TODO : DataBase for New User
+        boolean isAllOk = true;
+        if (!checkIfValueSet(userName, "Name")) {
+            isAllOk = false;
+        }
+        if (!checkIfValueSet(userPassword, "password")) {
+            isAllOk = false;
+        }
+        if (!checkIfValueSet(userBirthDay, "birthday")) {
+            isAllOk = false;
+        }
+        if (!checkIfValueSet(userEmail, "email")) {
+            isAllOk = false;
+        }
+        if (!isAllOk) {
+            return false;
+        }
+
+        Users users = new Users(
+                userName.getText().toString().trim(),
+                userPassword.getText().toString().trim(),
+                userEmail.getText().toString().trim(),
+                userBirthDay.getText().toString().trim(),
+                userImage);
+        usersDbHelper.insertUser(users);
+        return true;
+    }
+
+    private boolean checkIfValueSet(EditText text, String description) {
+        if (TextUtils.isEmpty(text.getText())) {
+            text.setError("Missing user " + description);
+            return false;
+        } else {
+            text.setError(null);
+            return true;
+        }
     }
 
     private void backClick() {
@@ -360,6 +406,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             userName.setText(account.getDisplayName());
             userEmail.setText(account.getEmail());
+            userImage = account.getPhotoUrl().toString().trim();
 
         } else {
             //user is not logged in
