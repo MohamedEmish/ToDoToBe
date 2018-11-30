@@ -1,6 +1,17 @@
 <resources>
-    <string name="app_name">ToDoToBe</string>
 
+    <!-- SignUp layout Strings -->
+    <string name="sign_up_sign_up">Sign Up</string>
+    <string name="sign_up_name">Name</string>
+    <string name="sign_up_email">Email</string>
+    <string name="sign_up_password">Password</string>
+    <string name="sign_up_birthday">Birthday</string>
+    <string name="sign_up_join">Join</string>
+    <string name="sign_up_have">Already have an account?</string>
+    <string name="sign_up_in">Sign in</string>
+    <string name="app_name">ToDoToBe</string>
     <string name="facebook_app_id">2143270396001866</string>
     <string name="fb_login_protocol_scheme">fb2142888135975334</string>
+
+
 </resources>

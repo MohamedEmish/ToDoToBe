@@ -2,15 +2,24 @@ package com.example.amosh.todotobe;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Patterns;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +42,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
@@ -55,6 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
     ImageView GLogin;
     GoogleSignInOptions gso;
     GoogleSignInAccount account;
+    ImageView eye;
 
 
     //UI component
@@ -63,143 +74,25 @@ public class SignUpActivity extends AppCompatActivity {
     EditText userBirthDay;
     EditText userPassword;
     String userImage;
+    int eyeVisibility = 1;
+    DatePickerDialog.OnDateSetListener mPicker;
 
     MyUsersDbHelper usersDbHelper;
+    private int RC_SIGN_IN = 6;
 
     private int STORAGE_READ_PERMISSION = 1;
     private int STORAGE_WRITE_PERMISSION = 2;
     private int STORAGE_INTERNET_ACCESS_PERMISSION = 3;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // FaceBook SDK NEEDs .. next 2 lines must be here
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
-        // Then continue your code
-
-        setContentView(R.layout.sign_up_layout);
-
-        FBlogin = (ImageView) findViewById(R.id.sign_up_FB);
-        fblogin = (LoginButton) findViewById(R.id.fb_login_button);
-
-        glogin = (SignInButton) findViewById(R.id.google_plus_login);
-        GLogin = (ImageView) findViewById(R.id.sign_up_Google);
-
-        userName = (EditText) findViewById(R.id.sign_up_name_text);
-        userEmail = (EditText) findViewById(R.id.sign_up_email_text);
-        userBirthDay = (EditText) findViewById(R.id.sign_up_birthday_text);
-        userPassword = (EditText) findViewById(R.id.sign_up_password_text);
-
-        usersDbHelper = new MyUsersDbHelper(this);
-
-        //Facebook code
-        List<String> permissionNeeds = Arrays.asList("user_photos", "email",
-                "user_birthday", "public_profile", "AccessToken", "picture");
-
-        fblogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-
-                                try {
-                                    String name = object.getString("name");
-                                    String image = object.getString("picture");
-                                    String email = object.getString("email");
-                                    userEmail.setText(email);
-                                    userName.setText(name);
-                                    userImage = image.trim();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender, birthday");
-                request.setParameters(parameters);
-                request.executeAsync();
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-
-            }
-        });
-
-        //Google+ code
-        //Build Google Sign in options
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        //get Sign in client
-        mGoogleSignInClient = GoogleSignIn.getClient(SignUpActivity.this, gso);
-
-        //get currently signed in user returns null if there is no logged in user
-        account = GoogleSignIn.getLastSignedInAccount(SignUpActivity.this);
-        //update ui
-        updateUI(account);
-
-        GLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
-        });
-
-
-        // Intents changers
-        TextView signIn = (TextView) findViewById(R.id.sign_up_go_sign_in);
-        signIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startSignIn();
-
-            }
-        });
-
-        ImageView backArrow = (ImageView) findViewById(R.id.sign_up_back_arrow);
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                backClick();
-
-            }
-        });
-
-
-        // Adding new user
-        TextView join = (TextView) findViewById(R.id.sign_up_join);
-        join.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hasReadPermission();
-                hasWritePermission();
-                if (hasReadPermission() == true && hasWritePermission() == true) {
-                    addNewUser();
-                    if (!addNewUser() == false) {
-                        Toast.makeText(SignUpActivity.this, "welcome", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(SignUpActivity.this, "complete missed data ", Toast.LENGTH_SHORT).show();
-
-                    }
-                } else {
-                    Toast.makeText(SignUpActivity.this, "NOT YET", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
+    public static boolean isValidEmail(EditText text, String description) {
+        if (!TextUtils.isEmpty(text.getText()) &&
+                Patterns.EMAIL_ADDRESS.matcher(text.getText()).matches()) {
+            text.setError(null);
+            return true;
+        } else {
+            text.setError("Please Enter " + description);
+            return false;
+        }
     }
 
     private boolean hasReadPermission() {
@@ -274,18 +167,180 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // FaceBook SDK NEEDs .. next 2 lines must be here
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+        // Then continue your code
+
+        setContentView(R.layout.sign_up_layout);
+
+        FBlogin = (ImageView) findViewById(R.id.sign_up_FB);
+        fblogin = (LoginButton) findViewById(R.id.fb_login_button);
+
+        glogin = (SignInButton) findViewById(R.id.google_plus_login);
+        GLogin = (ImageView) findViewById(R.id.sign_up_Google);
+
+        userName = (EditText) findViewById(R.id.sign_up_name_text);
+        userEmail = (EditText) findViewById(R.id.sign_up_email_text);
+        userBirthDay = (EditText) findViewById(R.id.sign_up_birthday_text);
+        userPassword = (EditText) findViewById(R.id.sign_up_password_text);
+
+        eye = (ImageView) findViewById(R.id.sign_up_eye);
+
+        eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (eyeVisibility == 1) {
+                    eyeVisibility = 0;
+                    userPassword.setTransformationMethod(null);
+                    eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_visibility_button_colored));
+                } else {
+                    eyeVisibility = 1;
+                    userPassword.setTransformationMethod(new PasswordTransformationMethod());
+                    eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_visibility_button_gray));
+                }
+            }
+        });
+
+
+        userBirthDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDateOfBirth();
+
+            }
+        });
+
+        usersDbHelper = new MyUsersDbHelper(this);
+
+        //Facebook code
+        List<String> permissionNeeds = Arrays.asList("user_photos", "email",
+                "user_birthday", "public_profile", "AccessToken", "picture");
+
+        fblogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+
+                                try {
+                                    String name = object.getString("name");
+                                    String email = object.getString("email");
+                                    userEmail.setText(email);
+                                    userName.setText(name);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
+                                    userImage = image.trim();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender, birthday,picture.type(large)");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+        //Google+ code
+        //Build Google Sign in options
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        //get Sign in client
+        mGoogleSignInClient = GoogleSignIn.getClient(SignUpActivity.this, gso);
+
+        //get currently signed in user returns null if there is no logged in user
+        account = GoogleSignIn.getLastSignedInAccount(SignUpActivity.this);
+
+        GLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
+            }
+        });
+
+        // Intents changers
+        TextView signIn = (TextView) findViewById(R.id.sign_up_go_sign_in);
+        signIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startSignIn();
+
+            }
+        });
+
+        ImageView backArrow = (ImageView) findViewById(R.id.sign_up_back_arrow);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backClick();
+
+            }
+        });
+
+
+        // Adding new user
+        TextView join = (TextView) findViewById(R.id.sign_up_join);
+        join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hasReadPermission();
+                hasWritePermission();
+                if (hasReadPermission() == true && hasWritePermission() == true) {
+                    if (!addNewUser()) {
+                        Toast.makeText(SignUpActivity.this, "Please .. check errors", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(SignUpActivity.this, "welcome", Toast.LENGTH_SHORT).show();
+                        Intent signInActivity = new Intent(SignUpActivity.this, SignInActivity.class);
+                        signInActivity.putExtra("name", userName.getText().toString());
+                        signInActivity.putExtra("password", userPassword.getText().toString());
+
+                        // Start the new activity
+                        startActivity(signInActivity);
+                    }
+                }
+            }
+        });
+
+    }
+
     private boolean hasInternetPermission() {
         if (ContextCompat.checkSelfPermission(SignUpActivity.this,
                 Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
-            requestInternetStoragePermission();
+            requestInternetPermission();
 
         }
         return false;
     }
 
-    private void requestInternetStoragePermission() {
+    private void requestInternetPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 this, Manifest.permission.INTERNET)) {
 
@@ -310,6 +365,15 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
+    private boolean checkIfValueSet(EditText text, String description) {
+        if (TextUtils.isEmpty(text.getText())) {
+            text.setError("Missing user " + description);
+            return false;
+        } else {
+            text.setError(null);
+            return true;
+        }
+    }
 
     private boolean addNewUser() {
 
@@ -326,10 +390,16 @@ public class SignUpActivity extends AppCompatActivity {
         if (!checkIfValueSet(userEmail, "email")) {
             isAllOk = false;
         }
+        if (!isValidEmail(userEmail, "valid email")) {
+            isAllOk = false;
+        }
         if (!isAllOk) {
             return false;
         }
-
+        if (oldUser(userName.getText().toString().trim())) {
+            userName.setError("This name exists");
+            return false;
+        }
         Users users = new Users(
                 userName.getText().toString().trim(),
                 userPassword.getText().toString().trim(),
@@ -338,16 +408,6 @@ public class SignUpActivity extends AppCompatActivity {
                 userImage);
         usersDbHelper.insertUser(users);
         return true;
-    }
-
-    private boolean checkIfValueSet(EditText text, String description) {
-        if (TextUtils.isEmpty(text.getText())) {
-            text.setError("Missing user " + description);
-            return false;
-        } else {
-            text.setError(null);
-            return true;
-        }
     }
 
     private void backClick() {
@@ -382,7 +442,10 @@ public class SignUpActivity extends AppCompatActivity {
     //Method to G+ signIn
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, 6);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+        //update ui
+        updateUI(account);
+
     }
 
     //Handle G+ sign in results
@@ -408,11 +471,19 @@ public class SignUpActivity extends AppCompatActivity {
             userEmail.setText(account.getEmail());
             userImage = account.getPhotoUrl().toString().trim();
 
+            GLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    signOut();
+                }
+            });
+
         } else {
             //user is not logged in
-            // Set the dimensions of the sign-in button.
-            glogin.setSize(SignInButton.SIZE_WIDE);
-            glogin.setOnClickListener(new View.OnClickListener() {
+            userName.setText("");
+            userEmail.setText("");
+            userImage = "";
+            GLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     signIn();
@@ -422,5 +493,97 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            updateUI(null);
+                        }
+                    }
+                });
+    }
+
+    private boolean oldUser(String name) {
+        SQLiteDatabase db = usersDbHelper.getReadableDatabase();
+        Cursor names = usersDbHelper.checkNames();
+        names.moveToFirst();
+        do {
+            if (name.equals(names.getString(0))) {
+                return true;
+            }
+
+        } while (names.moveToNext());
+        return false;
+    }
+
+    private void getDateOfBirth() {
+
+        // picking the new date and set it to the text view
+        mPicker = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+                String monthName = getMonthName(month);
+                String date = monthName + " " + day + "," + year;
+                userBirthDay.setText(date);
+            }
+        };
+        // start picker with pre-chosen date
+        DatePickerDialog dialog = new DatePickerDialog(SignUpActivity.this,
+                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                mPicker,
+                2000, 0, 1);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+
+    }
+
+    private String getMonthName(int month) {
+
+        String monthName = "";
+
+        if (month == 1) {
+            monthName = "January";
+        }
+        if (month == 2) {
+            monthName = "February";
+        }
+        if (month == 3) {
+            monthName = "March";
+        }
+        if (month == 4) {
+            monthName = "April";
+        }
+        if (month == 5) {
+            monthName = "May";
+        }
+        if (month == 6) {
+            monthName = "June";
+        }
+        if (month == 7) {
+            monthName = "July";
+        }
+        if (month == 8) {
+            monthName = "August";
+        }
+        if (month == 9) {
+            monthName = "September";
+        }
+        if (month == 10) {
+            monthName = "October";
+        }
+        if (month == 11) {
+            monthName = "November";
+        }
+        if (month == 12) {
+            monthName = "December";
+        }
+
+        return monthName;
+    }
 
 }

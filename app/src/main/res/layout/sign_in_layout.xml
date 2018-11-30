@@ -40,12 +40,14 @@
                 android:src="@drawable/ic_perm_identity_black_24dp" />
 
             <EditText
+                android:id="@+id/sign_in_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:gravity="bottom"
                 android:hint="Username"
                 android:paddingLeft="8dp"
+                android:paddingRight="16dp"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#F5F5F5" />
         </LinearLayout>
@@ -56,30 +58,50 @@
             android:layout_marginTop="8dp"
             android:background="#FFFFFF" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/sign_in_lock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom"
                 android:paddingLeft="16dp"
                 android:src="@drawable/ic_lock_outline_black_24dp" />
 
+            <ImageView
+                android:id="@+id/sign_in_eye"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:paddingLeft="16dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="16dp"
+                android:paddingRight="16dp"
+                android:src="@drawable/ic_visibility_button_gray" />
+
             <EditText
-                android:layout_width="match_parent"
+                android:id="@+id/sign_in_password"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/sign_in_eye"
+                android:layout_toEndOf="@+id/sign_in_lock"
                 android:background="@null"
                 android:gravity="bottom"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:paddingLeft="8dp"
+                android:paddingRight="16dp"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#F5F5F5" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
