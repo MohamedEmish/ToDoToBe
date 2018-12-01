@@ -98,4 +98,13 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+
+    public void updatePassword(String email, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(UsersContract.UsersEntry.COLUMN_PASSWORD, password);
+        db.update(UsersContract.UsersEntry.TABLE_NAME,
+                values,
+                UsersContract.UsersEntry.COLUMN_EMAIL + " =?", new String[]{email});
+    }
 }

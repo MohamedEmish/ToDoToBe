@@ -14,4 +14,16 @@
     <string name="fb_login_protocol_scheme">fb2142888135975334</string>
 
 
+    <!-- SignIn layout Strings -->
+    <string name="sign_in_name">Username</string>
+    <string name="sign_in_forget">Forgot Password</string>
+    <string name="sign_in_have_not">Do not have an account?</string>
+
+    <!-- Splash layouts Strings -->
+    <string name="splash_1_msg">keep your work organized and quickly check your reminders with simple calender</string>
+    <string name="splash_2_msg">Manage your tasks quickly and efficiently </string>
+    <string name="splash_3_msg">DO your tasks to BE .. </string>
+    <string name="splash_next">Next</string>
+    <string name="splash_begin">Begin</string>
+
 </resources>

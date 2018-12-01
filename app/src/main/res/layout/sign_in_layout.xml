@@ -45,7 +45,7 @@
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:gravity="bottom"
-                android:hint="Username"
+                android:hint="@string/sign_in_name"
                 android:paddingLeft="8dp"
                 android:paddingRight="16dp"
                 android:textColor="#FFFFFF"
@@ -95,7 +95,7 @@
                 android:layout_toEndOf="@+id/sign_in_lock"
                 android:background="@null"
                 android:gravity="bottom"
-                android:hint="Password"
+                android:hint="@string/sign_up_password"
                 android:inputType="textPassword"
                 android:paddingLeft="8dp"
                 android:paddingRight="16dp"
@@ -112,13 +112,14 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/forgot_pass"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
         android:gravity="end"
         android:paddingTop="6dp"
         android:paddingRight="16dp"
-        android:text="Forgot Password"
+        android:text="@string/sign_in_forget"
         android:textAlignment="textEnd"
         android:textColor="#9E9E9E" />
 
@@ -129,7 +130,7 @@
         android:layout_weight="2"
         android:background="#FF4081"
         android:gravity="center_vertical"
-        android:text="Sign in"
+        android:text="@string/sign_up_in"
         android:textAlignment="center"
         android:textColor="#F5F5F5" />
 
@@ -144,7 +145,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="Don't have an account?"
+            android:text="@string/sign_in_have_not"
             android:textColor="#9E9E9E" />
 
         <TextView
@@ -153,7 +154,8 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:paddingLeft="8dp"
-            android:text="Sign Up"
+            android:paddingRight="8dp"
+            android:text="@string/sign_up_sign_up"
             android:textColor="#F5F5F5" />
     </LinearLayout>
 

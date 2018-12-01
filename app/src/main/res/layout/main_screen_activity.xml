@@ -9,81 +9,90 @@
     tools:context=".MainScreenActivity">
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/ic_header_bg_2_simpilified"
+        android:background="#FFFFFF"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
-            android:orientation="vertical">
+            android:layout_height="400dp"
+            android:background="@drawable/ic_header_bg_2_simpilified"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:paddingTop="16dp">
+        </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/main_screen_menu_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingLeft="16dp"
-                    android:src="@drawable/ic_menu_black_24dp" />
+        <RelativeLayout
+            android:id="@+id/head_relative"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:paddingEnd="16dp"
-                    android:paddingRight="16dp"
-                    android:src="@drawable/ic_search_black_24dp" />
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/main_screen_menu_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingLeft="16dp"
+                android:src="@drawable/ic_menu_black_24dp" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingEnd="16dp"
+                android:paddingRight="16dp"
+                android:src="@drawable/ic_search_black_24dp" />
+        </RelativeLayout>
 
-            <LinearLayout
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/head_relative">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="9"
-                android:gravity="center_vertical|center_horizontal"
-                android:orientation="vertical">
+                android:layout_weight="3"
+                android:gravity="center_horizontal"
+                android:text="Good Morning!"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="33sp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="3"
-                    android:gravity="center_horizontal"
-                    android:text="Good Morning!"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="33sp" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center_vertical|top"
-                    android:layout_weight="4"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_8c5c19d99c" />
-
-
-            </LinearLayout>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical|top"
+                android:layout_weight="4"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_8c5c19d99c" />
 
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layoutcal"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:orientation="vertical">
-
+            android:layout_height="160dp"
+            android:paddingTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 android:id="@+id/main_screen_calender"
@@ -102,35 +111,38 @@
 
         </LinearLayout>
 
+
         <RelativeLayout
+            android:id="@+id/relativeLayout"
+            app:layout_constraintTop_toBottomOf="@+id/layoutcal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            app:layout_constraintVertical_weight="1"
             android:background="#FFFFFF"
             android:orientation="vertical">
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true">
+                android:layout_height="match_parent">
 
             </ListView>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/main_screen_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="12dp"
-                android:src="@drawable/ic_add_black_24dp"
-                app:backgroundTint="@color/colorAccent" />
-
         </RelativeLayout>
-    </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/main_screen_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_add_black_24dp"
+            app:backgroundTint="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/main_sceen_navigation_view"

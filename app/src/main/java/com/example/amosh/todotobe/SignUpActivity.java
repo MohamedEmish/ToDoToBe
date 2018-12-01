@@ -48,9 +48,6 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class SignUpActivity extends AppCompatActivity {
 
     //FaceBook variables
@@ -65,7 +62,6 @@ public class SignUpActivity extends AppCompatActivity {
     ImageView GLogin;
     GoogleSignInOptions gso;
     GoogleSignInAccount account;
-    ImageView eye;
 
 
     //UI component
@@ -74,10 +70,13 @@ public class SignUpActivity extends AppCompatActivity {
     EditText userBirthDay;
     EditText userPassword;
     String userImage;
+    ImageView eye;
     int eyeVisibility = 1;
+
     DatePickerDialog.OnDateSetListener mPicker;
 
     MyUsersDbHelper usersDbHelper;
+
     private int RC_SIGN_IN = 6;
 
     private int STORAGE_READ_PERMISSION = 1;
@@ -216,11 +215,10 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         usersDbHelper = new MyUsersDbHelper(this);
+        Users admin = new Users("admin", "admin", "admin", "admin", "admin");
+        usersDbHelper.insertUser(admin);
 
         //Facebook code
-        List<String> permissionNeeds = Arrays.asList("user_photos", "email",
-                "user_birthday", "public_profile", "AccessToken", "picture");
-
         fblogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -256,12 +254,12 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-
+                Toast.makeText(SignUpActivity.this, "FaceBook Login cancelled", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-
+                Toast.makeText(SignUpActivity.this, "ops !! .. some error happened", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -310,11 +308,12 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 hasReadPermission();
                 hasWritePermission();
-                if (hasReadPermission() == true && hasWritePermission() == true) {
+                if (hasReadPermission() && hasWritePermission()) {
                     if (!addNewUser()) {
                         Toast.makeText(SignUpActivity.this, "Please .. check errors", Toast.LENGTH_SHORT).show();
 
                     } else {
+
                         Toast.makeText(SignUpActivity.this, "welcome", Toast.LENGTH_SHORT).show();
                         Intent signInActivity = new Intent(SignUpActivity.this, SignInActivity.class);
                         signInActivity.putExtra("name", userName.getText().toString());
@@ -419,8 +418,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void startSignIn() {
         Intent signInActivity = new Intent(SignUpActivity.this, SignInActivity.class);
-
-        // Start the new activity
         startActivity(signInActivity);
     }
 
@@ -508,13 +505,16 @@ public class SignUpActivity extends AppCompatActivity {
     private boolean oldUser(String name) {
         SQLiteDatabase db = usersDbHelper.getReadableDatabase();
         Cursor names = usersDbHelper.checkNames();
-        names.moveToFirst();
-        do {
-            if (name.equals(names.getString(0))) {
-                return true;
-            }
+        if (names != null) {
+            names.moveToFirst();
+            do {
+                if (name.equals(names.getString(0))) {
+                    return true;
+                }
 
-        } while (names.moveToNext());
+            } while (names.moveToNext());
+            return false;
+        }
         return false;
     }
 
