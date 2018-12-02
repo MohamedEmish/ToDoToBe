@@ -7,6 +7,7 @@ public class Users {
     private final String mUserBirthday;
     private final String mUserImage;
 
+
     public Users(String userName, String userPassword, String userEmail, String userBirthday,
                  String userImage) {
         mUserName = userName;
@@ -35,5 +36,4 @@ public class Users {
     public String getUserImage() {
         return mUserImage;
     }
-
 }

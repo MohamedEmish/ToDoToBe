@@ -84,6 +84,31 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor readUser(String name) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                UsersContract.UsersEntry._ID,
+                UsersContract.UsersEntry.COLUMN_NAME,
+                UsersContract.UsersEntry.COLUMN_PASSWORD,
+                UsersContract.UsersEntry.COLUMN_EMAIL,
+                UsersContract.UsersEntry.COLUMN_BIRTHDAY,
+                UsersContract.UsersEntry.COLUMN_IMAGE
+        };
+        String selection = UsersContract.UsersEntry.COLUMN_NAME + "=?";
+        String[] selectionArgs = new String[]{name};
+
+        Cursor cursor = db.query(
+                UsersContract.UsersEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        return cursor;
+    }
+
     public Cursor checkNames() {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {UsersContract.UsersEntry.COLUMN_NAME,
@@ -107,4 +132,5 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 values,
                 UsersContract.UsersEntry.COLUMN_EMAIL + " =?", new String[]{email});
     }
+
 }

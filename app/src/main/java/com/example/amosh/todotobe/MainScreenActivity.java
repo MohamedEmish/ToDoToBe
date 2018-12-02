@@ -1,6 +1,9 @@
 package com.example.amosh.todotobe;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -10,22 +13,69 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.amosh.todotobe.Data.MyUsersDbHelper;
+import com.example.amosh.todotobe.Data.UsersContract;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.squareup.picasso.Picasso;
+
+import java.util.Calendar;
+
 
 public class MainScreenActivity extends AppCompatActivity {
+
+    TextView greet;
+    ImageView profilePic;
+    ImageView searchIcon;
+    EditText searchEditText;
+    String searchText;
+    FloatingActionButton fab;
+
+    String userName;
+    MyUsersDbHelper usersDbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen_activity);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.main_screen_fab);
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        userName = getIntent().getStringExtra("name");
+        setProfilePic(userName);
+
+        setGreetMsg(hour);
+        usersDbHelper = new MyUsersDbHelper(this);
+
+        fab = (FloatingActionButton) findViewById(R.id.main_screen_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addNewItem();
+            }
+        });
+        searchEditText = (EditText) findViewById(R.id.main_screen_search_text);
+
+        searchIcon = (ImageView) findViewById(R.id.main_screen_search_button);
+        searchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchEditText.getVisibility() == View.GONE) {
+                    searchEditText.setVisibility(View.VISIBLE);
+                } else {
+                    searchText = searchEditText.getText().toString().trim();
+                    if (searchText.length() == 0) {
+                        searchEditText.setVisibility(View.GONE);
+                    } else {
+                        searchForEvent(searchText);
+                    }
+                }
             }
         });
 
@@ -51,7 +101,7 @@ public class MainScreenActivity extends AppCompatActivity {
             }
         });
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.main_sceen_navigation_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.main_screen_navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -110,6 +160,41 @@ public class MainScreenActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void searchForEvent(String searchText) {
+        // TODO : // search method
+        Toast.makeText(MainScreenActivity.this, "SEARCHING FOR " + searchText, Toast.LENGTH_SHORT).show();
+    }
+
+    private void setProfilePic(String userName) {
+        profilePic = (ImageView) findViewById(R.id.main_screen_user_pic);
+        usersDbHelper = new MyUsersDbHelper(MainScreenActivity.this);
+        SQLiteDatabase db = usersDbHelper.getReadableDatabase();
+        Cursor cursor = usersDbHelper.readUser(userName);
+
+        if (cursor.moveToFirst()) {
+            Uri imageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(UsersContract.UsersEntry.COLUMN_IMAGE)));
+            Picasso.with(MainScreenActivity.this).load(imageUri).into(profilePic);
+        } else {
+            Toast.makeText(MainScreenActivity.this, "::DD", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    private void setGreetMsg(int hour) {
+        greet = (TextView) findViewById(R.id.main_screen_greet_msg);
+
+        if (hour >= 12 && hour < 17) {
+            greet.setText(R.string.main_screen_good_A);
+        } else if (hour >= 17 && hour < 21) {
+            greet.setText(R.string.main_screen_good_E);
+        } else if (hour >= 21 && hour < 24) {
+            greet.setText(R.string.main_screen_good_N);
+        } else {
+            greet.setText(R.string.main_screen_good_M);
+        }
     }
 
     private void addNewItem() {
@@ -177,7 +262,6 @@ public class MainScreenActivity extends AppCompatActivity {
         monthPreview.putExtra("month", finalMonthName);
         monthPreview.putExtra("day", dayString);
         monthPreview.putExtra("monthNumber", month);
-
 
         startActivity(monthPreview);
     }

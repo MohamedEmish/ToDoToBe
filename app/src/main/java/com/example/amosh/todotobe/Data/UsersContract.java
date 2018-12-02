@@ -18,13 +18,15 @@ public class UsersContract {
         public static final String COLUMN_BIRTHDAY = "birthday";
         public static final String COLUMN_IMAGE = "image";
 
-        public static final String CREATE_TABLE_USERS = "CREATE TABLE " +
-                UsersContract.UsersEntry.TABLE_NAME + "(" +
-                UsersContract.UsersEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                UsersContract.UsersEntry.COLUMN_NAME + " TEXT NOT NULL," +
-                UsersEntry.COLUMN_PASSWORD + " TEXT NOT NULL," +
-                UsersEntry.COLUMN_EMAIL + " TEXT NOT NULL," +
-                UsersEntry.COLUMN_BIRTHDAY + " TEXT NOT NULL," +
-                UsersEntry.COLUMN_IMAGE + ");";
+
+        public static final String CREATE_TABLE_USERS = "CREATE TABLE "
+                + UsersContract.UsersEntry.TABLE_NAME + "("
+                + UsersContract.UsersEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + UsersContract.UsersEntry.COLUMN_NAME + " TEXT NOT NULL,"
+                + UsersEntry.COLUMN_PASSWORD + " TEXT NOT NULL,"
+                + UsersEntry.COLUMN_EMAIL + " TEXT NOT NULL,"
+                + UsersEntry.COLUMN_BIRTHDAY + " TEXT NOT NULL,"
+                + UsersEntry.COLUMN_IMAGE + " TEXT NOT NULL);";
+
     }
 }

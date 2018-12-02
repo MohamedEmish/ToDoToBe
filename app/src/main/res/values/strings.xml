@@ -26,4 +26,12 @@
     <string name="splash_next">Next</string>
     <string name="splash_begin">Begin</string>
 
+    <!-- Main screen layouts Strings -->
+    <string name="main_screen_good_M">Good Morning!</string>
+    <string name="main_screen_good_A">Good Afternoon!</string>
+    <string name="main_screen_good_E">Good Evening!</string>
+    <string name="main_screen_good_N">Good Night!</string>
+    <string name="main_screen_search_hint">Type event title to search</string>
+
+
 </resources>

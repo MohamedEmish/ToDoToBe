@@ -37,6 +37,8 @@ public class SignInActivity extends AppCompatActivity {
     SharedPreferences loginPreference;
     String MY_PREF = "my_pref";
 
+    public String passedUserName;
+
     private int STORAGE_READ_PERMISSION = 1;
     private int STORAGE_WRITE_PERMISSION = 2;
     private int STORAGE_INTERNET_ACCESS_PERMISSION = 3;
@@ -49,7 +51,7 @@ public class SignInActivity extends AppCompatActivity {
     private void startSplashScreen() {
         Intent splashScreen = new Intent(SignInActivity.this, splash_screen_activity.class);
 
-        // Start the new activity
+        splashScreen.putExtra("name", userName.getText().toString().trim());
         startActivity(splashScreen);
     }
 
@@ -103,11 +105,12 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 hasReadPermission();
                 hasWritePermission();
+                passedUserName = userName.getText().toString().trim();
                 if (hasReadPermission() && hasWritePermission()) {
                     if (!doesDatabaseExist(SignInActivity.this, "users.db")) {
                         Toast.makeText(SignInActivity.this, "NO USERS INFO. DETECTED\nPLEASE.. SIGN UP", Toast.LENGTH_SHORT).show();
                     } else {
-                        if (!checkUserExistance(userName.getText().toString().trim(), userPassword.getText().toString().trim())) {
+                        if (!checkUserExistence(userName.getText().toString().trim(), userPassword.getText().toString().trim())) {
                             Toast.makeText(SignInActivity.this, "Wrong username or password", Toast.LENGTH_SHORT).show();
                         } else {
                             // initialize SharePreference
@@ -123,7 +126,7 @@ public class SignInActivity extends AppCompatActivity {
                                 startSplashScreen();
 
                             } else if (loginPreference.getString("tag", null).equals("ok")) {
-                                startMainScreenIntent();
+                                startMainScreenIntent(passedUserName);
                             }
                         }
                     }
@@ -144,17 +147,18 @@ public class SignInActivity extends AppCompatActivity {
 
     private void startSignUpIntent() {
         Intent signUpActivity = new Intent(SignInActivity.this, SignUpActivity.class);
-        // Start the new activity
         startActivity(signUpActivity);
     }
 
-    private void startMainScreenIntent() {
+    private void startMainScreenIntent(String name) {
         Intent MainScreenActivity = new Intent(SignInActivity.this, MainScreenActivity.class);
-        // Start the new activity
+
+        MainScreenActivity.putExtra("name", name);
+
         startActivity(MainScreenActivity);
     }
 
-    private boolean checkUserExistance(String name, String password) {
+    private boolean checkUserExistence(String name, String password) {
         SQLiteDatabase db = usersDbHelper.getReadableDatabase();
         Cursor names = usersDbHelper.checkNames();
         if (names != null) {
@@ -245,10 +249,5 @@ public class SignInActivity extends AppCompatActivity {
 
     private void resetPassword() {
         // TODO : forget password method
-    }
-
-    public String uName() {
-        String name = userName.getText().toString().trim();
-        return name;
     }
 }
