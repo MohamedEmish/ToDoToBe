@@ -172,7 +172,6 @@ public class MainScreenActivity extends AppCompatActivity {
         usersDbHelper = new MyUsersDbHelper(MainScreenActivity.this);
         SQLiteDatabase db = usersDbHelper.getReadableDatabase();
         Cursor cursor = usersDbHelper.readUser(userName);
-
         if (cursor.moveToFirst()) {
             Uri imageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(UsersContract.UsersEntry.COLUMN_IMAGE)));
             Picasso.with(MainScreenActivity.this).load(imageUri).into(profilePic);

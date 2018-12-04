@@ -48,10 +48,10 @@ public class SignInActivity extends AppCompatActivity {
         return dbFile.exists();
     }
 
-    private void startSplashScreen() {
+    private void startSplashScreen(String name) {
         Intent splashScreen = new Intent(SignInActivity.this, splash_screen_activity.class);
 
-        splashScreen.putExtra("name", userName.getText().toString().trim());
+        splashScreen.putExtra("name", name);
         startActivity(splashScreen);
     }
 
@@ -110,7 +110,7 @@ public class SignInActivity extends AppCompatActivity {
                     if (!doesDatabaseExist(SignInActivity.this, "users.db")) {
                         Toast.makeText(SignInActivity.this, "NO USERS INFO. DETECTED\nPLEASE.. SIGN UP", Toast.LENGTH_SHORT).show();
                     } else {
-                        if (!checkUserExistence(userName.getText().toString().trim(), userPassword.getText().toString().trim())) {
+                        if (!isUserExist(userName.getText().toString().trim(), userPassword.getText().toString().trim())) {
                             Toast.makeText(SignInActivity.this, "Wrong username or password", Toast.LENGTH_SHORT).show();
                         } else {
                             // initialize SharePreference
@@ -123,7 +123,7 @@ public class SignInActivity extends AppCompatActivity {
                                 SharedPreferences.Editor edit = loginPreference.edit();
                                 edit.putString("tag", "ok");
                                 edit.commit();
-                                startSplashScreen();
+                                startSplashScreen(passedUserName);
 
                             } else if (loginPreference.getString("tag", null).equals("ok")) {
                                 startMainScreenIntent(passedUserName);
@@ -158,10 +158,10 @@ public class SignInActivity extends AppCompatActivity {
         startActivity(MainScreenActivity);
     }
 
-    private boolean checkUserExistence(String name, String password) {
+    private boolean isUserExist(String name, String password) {
         SQLiteDatabase db = usersDbHelper.getReadableDatabase();
         Cursor names = usersDbHelper.checkNames();
-        if (names != null) {
+        if (names.getCount() > 0) {
             names.moveToFirst();
             do {
                 if (name.equals(names.getString(0))) {

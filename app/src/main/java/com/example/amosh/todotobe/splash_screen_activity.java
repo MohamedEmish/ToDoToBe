@@ -8,9 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 public class splash_screen_activity  extends AppCompatActivity {
 
     public static ViewPager viewPager;
+    String userName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        userName = getIntent().getStringExtra("name");
 
         // Set the content of the activity to use the activity_main.xml layout file
         setContentView(R.layout.splash_main);
@@ -26,6 +29,10 @@ public class splash_screen_activity  extends AppCompatActivity {
         // Set the adapter onto the view pager
         viewPager.setAdapter(adapter);
 
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
 }

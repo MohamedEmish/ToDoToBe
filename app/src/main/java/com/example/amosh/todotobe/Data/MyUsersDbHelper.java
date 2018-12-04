@@ -18,6 +18,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(UsersContract.UsersEntry.CREATE_TABLE_USERS);
+        db.execSQL(EventsContract.EventsEntry.CREATE_TABLE_EVENTS);
 
     }
 
@@ -34,7 +35,8 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         values.put(UsersContract.UsersEntry.COLUMN_EMAIL, user.getUserEmail());
         values.put(UsersContract.UsersEntry.COLUMN_BIRTHDAY, user.getUserBirthday());
         values.put(UsersContract.UsersEntry.COLUMN_IMAGE, user.getUserImage());
-        long id = db.insert(UsersContract.UsersEntry.TABLE_NAME, null, values);
+        values.put(UsersContract.UsersEntry.COLUMN_EVENT_ID, user.getUserEventID());
+        long id = db.insert(UsersContract.UsersEntry.TABLE_USERS, null, values);
     }
 
     public Cursor readUser() {
@@ -45,10 +47,11 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 UsersContract.UsersEntry.COLUMN_PASSWORD,
                 UsersContract.UsersEntry.COLUMN_EMAIL,
                 UsersContract.UsersEntry.COLUMN_BIRTHDAY,
-                UsersContract.UsersEntry.COLUMN_IMAGE
+                UsersContract.UsersEntry.COLUMN_IMAGE,
+                UsersContract.UsersEntry.COLUMN_EVENT_ID
         };
         Cursor cursor = db.query(
-                UsersContract.UsersEntry.TABLE_NAME,
+                UsersContract.UsersEntry.TABLE_USERS,
                 projection,
                 null,
                 null,
@@ -67,13 +70,14 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 UsersContract.UsersEntry.COLUMN_PASSWORD,
                 UsersContract.UsersEntry.COLUMN_EMAIL,
                 UsersContract.UsersEntry.COLUMN_BIRTHDAY,
-                UsersContract.UsersEntry.COLUMN_IMAGE
+                UsersContract.UsersEntry.COLUMN_IMAGE,
+                UsersContract.UsersEntry.COLUMN_EVENT_ID
         };
         String selection = UsersContract.UsersEntry._ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(itemId)};
 
         Cursor cursor = db.query(
-                UsersContract.UsersEntry.TABLE_NAME,
+                UsersContract.UsersEntry.TABLE_USERS,
                 projection,
                 selection,
                 selectionArgs,
@@ -92,13 +96,14 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 UsersContract.UsersEntry.COLUMN_PASSWORD,
                 UsersContract.UsersEntry.COLUMN_EMAIL,
                 UsersContract.UsersEntry.COLUMN_BIRTHDAY,
-                UsersContract.UsersEntry.COLUMN_IMAGE
+                UsersContract.UsersEntry.COLUMN_IMAGE,
+                UsersContract.UsersEntry.COLUMN_EVENT_ID
         };
         String selection = UsersContract.UsersEntry.COLUMN_NAME + "=?";
         String[] selectionArgs = new String[]{name};
 
         Cursor cursor = db.query(
-                UsersContract.UsersEntry.TABLE_NAME,
+                UsersContract.UsersEntry.TABLE_USERS,
                 projection,
                 selection,
                 selectionArgs,
@@ -113,7 +118,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {UsersContract.UsersEntry.COLUMN_NAME,
                 UsersContract.UsersEntry.COLUMN_PASSWORD};
-        Cursor cursor = db.query(UsersContract.UsersEntry.TABLE_NAME,
+        Cursor cursor = db.query(UsersContract.UsersEntry.TABLE_USERS,
                 projection,
                 null,
                 null,
@@ -128,7 +133,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(UsersContract.UsersEntry.COLUMN_PASSWORD, password);
-        db.update(UsersContract.UsersEntry.TABLE_NAME,
+        db.update(UsersContract.UsersEntry.TABLE_USERS,
                 values,
                 UsersContract.UsersEntry.COLUMN_EMAIL + " =?", new String[]{email});
     }

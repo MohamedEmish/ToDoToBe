@@ -215,7 +215,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         usersDbHelper = new MyUsersDbHelper(this);
-        Users admin = new Users("admin", "admin", "admin", "admin", "admin");
+        Users admin = new Users("admin", "admin", "admin", "admin", "admin", 0);
         usersDbHelper.insertUser(admin);
 
         //Facebook code
@@ -395,7 +395,7 @@ public class SignUpActivity extends AppCompatActivity {
         if (!isAllOk) {
             return false;
         }
-        if (oldUser(userName.getText().toString().trim())) {
+        if (isOldUser(userName.getText().toString().trim())) {
             userName.setError("This name exists");
             return false;
         }
@@ -404,7 +404,7 @@ public class SignUpActivity extends AppCompatActivity {
                 userPassword.getText().toString().trim(),
                 userEmail.getText().toString().trim(),
                 userBirthDay.getText().toString().trim(),
-                userImage);
+                userImage, 0);
         usersDbHelper.insertUser(users);
         return true;
     }
@@ -502,9 +502,13 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    private boolean oldUser(String name) {
+    private boolean isOldUser(String name) {
         SQLiteDatabase db = usersDbHelper.getReadableDatabase();
         Cursor names = usersDbHelper.checkNames();
+
+        if (names.getCount() == 0) {
+            return false;
+        }
         if (names != null) {
             names.moveToFirst();
             do {
@@ -515,7 +519,7 @@ public class SignUpActivity extends AppCompatActivity {
             } while (names.moveToNext());
             return false;
         }
-        return false;
+        return true;
     }
 
     private void getDateOfBirth() {

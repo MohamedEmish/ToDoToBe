@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal"
-            android:paddingTop="8dp"
+            android:paddingTop="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -40,17 +40,19 @@
             <ImageView
                 android:id="@+id/main_screen_menu_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingStart="16dp"
                 android:paddingLeft="16dp"
+                android:paddingTop="10dp"
                 android:src="@drawable/ic_menu_black_24dp" />
 
             <ImageView
                 android:id="@+id/main_screen_search_button"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:paddingEnd="16dp"
+                android:paddingTop="10dp"
                 android:paddingRight="16dp"
                 android:src="@drawable/ic_search_black_24dp" />
 
@@ -59,7 +61,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:layout_toStartOf="@id/main_screen_search_button"

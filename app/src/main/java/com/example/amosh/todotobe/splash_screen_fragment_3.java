@@ -32,7 +32,10 @@ public class splash_screen_fragment_3  extends Fragment {
     }
 
     private void startMainScreenActivity() {
+        splash_screen_activity splash_screen_activity = (com.example.amosh.todotobe.splash_screen_activity) getActivity();
+        String userName = splash_screen_activity.getUserName();
         Intent begin = new Intent(getActivity(), MainScreenActivity.class);
+        begin.putExtra("name", userName);
         startActivity(begin);
     }
 }
