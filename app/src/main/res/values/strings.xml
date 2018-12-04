@@ -22,7 +22,7 @@
     <!-- Splash layouts Strings -->
     <string name="splash_1_msg">keep your work organized and quickly check your reminders with simple calender</string>
     <string name="splash_2_msg">Manage your tasks quickly and efficiently </string>
-    <string name="splash_3_msg">DO your tasks to BE .. </string>
+    <string name="splash_3_msg">Do your tasks to Be .. </string>
     <string name="splash_next">Next</string>
     <string name="splash_begin">Begin</string>
 
@@ -32,6 +32,20 @@
     <string name="main_screen_good_E">Good Evening!</string>
     <string name="main_screen_good_N">Good Night!</string>
     <string name="main_screen_search_hint">Type event title to search</string>
+
+    <!-- Add Remainder layouts Strings -->
+    <string name="add_remainder_add_title">Add Title</string>
+    <string name="add_remainder_add_description">Short description</string>
+    <string name="add_remainder_add_location">Add Location</string>
+    <string name="add_remainder_all_day">All day</string>
+    <string name="add_remainder_from">From</string>
+    <string name="add_remainder_to">To</string>
+    <string name="add_remainder_notification">Notification</string>
+    <string name="add_remainder_location">Location</string>
+    <string name="add_remainder_people">People</string>
+    <string name="add_remainder_repeat">Repeat</string>
+    <string name="add_remainder_select_date">Select Date</string>
+    <string name="add_remainder_select_time">Select Time</string>
 
 
 </resources>

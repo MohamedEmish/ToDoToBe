@@ -19,17 +19,19 @@ public class Events {
     private final String mPeople;
     private final String mRepeat;
     private final String mImage;
+    private final int mState;
 
 
     public Events(String title, String description, int dateFromDay, int dateFromMonth, int dateFromYear, int dateToDay, int dateToMonth, int dateToYear,
                   int timeFromHour, int timeFromMinute, int timeToHour, int timeToMinute, String location, String notification, String people,
-                  String repeat, String image) {
+                  String repeat, String image, int state) {
         mTitle = title;
         this.mDescription = description;
         this.mDateFromDay = dateFromDay;
         this.mDateFromMonth = dateFromMonth;
         this.mDateFromYear = dateFromYear;
         this.mDateToDay = dateToDay;
+        this.mState = state;
         this.mDateToMonth = dateToMonth;
         this.mDateToYear = dateToYear;
         this.mTimeFromHour = timeFromHour;
@@ -111,4 +113,8 @@ public class Events {
         return mTimeToMinutes;
     }
 
+    public int getState() {
+        return mState;
+
+    }
 }

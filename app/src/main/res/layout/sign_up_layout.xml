@@ -132,7 +132,7 @@
 
             <EditText
                 android:id="@+id/sign_up_password_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
                 android:layout_toStartOf="@+id/sign_up_eye"
@@ -142,7 +142,6 @@
                 android:hint="@string/sign_up_password"
                 android:inputType="textPassword"
                 android:paddingLeft="8dp"
-                android:paddingRight="16dp"
                 android:maxLines="1"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#F5F5F5" />

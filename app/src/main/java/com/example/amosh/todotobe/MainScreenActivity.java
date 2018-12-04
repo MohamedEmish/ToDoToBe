@@ -1,9 +1,11 @@
 package com.example.amosh.todotobe;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -39,6 +41,10 @@ public class MainScreenActivity extends AppCompatActivity {
     String userName;
     MyUsersDbHelper usersDbHelper;
 
+    public static final int PICK_IMAGE_REQUEST = 0;
+    Uri imageUri;
+    String mImageUriString;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +55,13 @@ public class MainScreenActivity extends AppCompatActivity {
 
         userName = getIntent().getStringExtra("name");
         setProfilePic(userName);
+
+        profilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGallery();
+            }
+        });
 
         setGreetMsg(hour);
         usersDbHelper = new MyUsersDbHelper(this);
@@ -162,6 +175,35 @@ public class MainScreenActivity extends AppCompatActivity {
 
     }
 
+    private void openGallery() {
+        Intent intent;
+        if (Build.VERSION.SDK_INT < 19) {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            if (resultData != null) {
+                imageUri = resultData.getData();
+                profilePic.setImageURI(imageUri);
+                profilePic.invalidate();
+                mImageUriString = imageUri.toString();
+                usersDbHelper.updateImage(userName, mImageUriString);
+            }
+
+        }
+    }
+
+
     private void searchForEvent(String searchText) {
         // TODO : // search method
         Toast.makeText(MainScreenActivity.this, "SEARCHING FOR " + searchText, Toast.LENGTH_SHORT).show();
@@ -173,10 +215,15 @@ public class MainScreenActivity extends AppCompatActivity {
         SQLiteDatabase db = usersDbHelper.getReadableDatabase();
         Cursor cursor = usersDbHelper.readUser(userName);
         if (cursor.moveToFirst()) {
-            Uri imageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(UsersContract.UsersEntry.COLUMN_IMAGE)));
-            Picasso.with(MainScreenActivity.this).load(imageUri).into(profilePic);
+            String imageUriString = cursor.getString(cursor.getColumnIndex(UsersContract.UsersEntry.COLUMN_IMAGE));
+            if (imageUriString.equals("")) {
+                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.ic_8c5c19d99c));
+            } else {
+                Uri imageUri = Uri.parse(imageUriString);
+                Picasso.with(MainScreenActivity.this).load(imageUri).into(profilePic);
+            }
         } else {
-            Toast.makeText(MainScreenActivity.this, "::DD", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainScreenActivity.this, "NO DATA AT THE CURSOR", Toast.LENGTH_SHORT).show();
         }
 
 

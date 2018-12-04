@@ -29,6 +29,11 @@ public class EventsContract {
         public static final String COLUMN_PEOPLE = "people";
         public static final String COLUMN_REPEAT = "repeat";
         public static final String COLUMN_IMAGE = "image";
+        public static final String COLUMN_STATE = "state";
+
+        public static final int STATE_COMPLETED = 1;
+        public static final int STATE_SNOOZED = 2;
+        public static final int STATE_OVERDUE = 3;
 
 
         public static final String CREATE_TABLE_EVENTS = "CREATE TABLE "
@@ -48,8 +53,9 @@ public class EventsContract {
                 + EventsEntry.COLUMN_TIME_TO_MINUTE + " INTEGER,"
                 + EventsEntry.COLUMN_LOCATION + " TEXT NOT NULL,"
                 + EventsEntry.COLUMN_NOTIFICATION + " TEXT NOT NULL,"
-                + EventsEntry.COLUMN_PEOPLE + " TEXT NOT NULL,"
+                + EventsEntry.COLUMN_PEOPLE + " TEXT,"
                 + EventsEntry.COLUMN_REPEAT + " TEXT NOT NULL,"
+                + EventsEntry.COLUMN_STATE + " INTEGER ,"
                 + EventsEntry.COLUMN_IMAGE + " TEXT);";
 
     }

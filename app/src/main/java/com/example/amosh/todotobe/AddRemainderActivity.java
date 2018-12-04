@@ -1,10 +1,15 @@
 package com.example.amosh.todotobe;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
@@ -13,10 +18,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.example.amosh.todotobe.Data.Events;
+import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,22 +35,72 @@ import java.util.Date;
 
 public class AddRemainderActivity extends AppCompatActivity {
 
-    private DatePickerDialog.OnDateSetListener mDateSetListenerFrom;
-    private TimePickerDialog.OnTimeSetListener mTimeSetListenerFrom;
+    public static final int PICK_IMAGE_REQUEST = 0;
 
-    private DatePickerDialog.OnDateSetListener mDateSetListenerTo;
-    private TimePickerDialog.OnTimeSetListener mTimeSetListenerTo;
+    DatePickerDialog.OnDateSetListener mDateSetListenerFrom;
+    TimePickerDialog.OnTimeSetListener mTimeSetListenerFrom;
 
-    private Spinner notificationSpinner;
-    private Spinner repeatSpinner;
+    DatePickerDialog.OnDateSetListener mDateSetListenerTo;
+    TimePickerDialog.OnTimeSetListener mTimeSetListenerTo;
 
+    Spinner notificationSpinner;
+    Spinner repeatSpinner;
+    SwitchCompat remainderSwitch;
+    FloatingActionButton addFAB;
+
+    TextView dateFrom;
+    TextView dateTo;
+    TextView timeFrom;
+    TextView timeTo;
+
+    EditText title;
+    EditText description;
+    EditText location;
+
+    MyUsersDbHelper usersDbHelper;
+
+    ImageView people;
+    ImageView imageForEvent;
+
+    String eTitle;
+    String eDescription;
+    String eLocation;
+
+    int eDateFromDay = 0;
+    int eDateFromMonth = 0;
+    int eDateFromYear = 0;
+    int eDateToDay = 0;
+    int eDateToMonth = 0;
+    int eDateToYear = 0;
+
+    int eTimeFromHour = 0;
+    int eTimeFromMinute = 0;
+    int eTimeToHour = 0;
+    int eTimeToMinute = 0;
+
+    String ePeople = "";
+    String eImageUri = "";
+
+    String eNotification;
+    String eRepeat;
+
+
+    int eState = 0;
+    Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_remainder);
-        //  getting Date & Time to be shwon at Activity Start
-        Calendar calendar = Calendar.getInstance();
+
+        usersDbHelper = new MyUsersDbHelper(this);
+        title = (EditText) findViewById(R.id.add_remainder_title);
+        description = (EditText) findViewById(R.id.add_remainder_description);
+        location = (EditText) findViewById(R.id.add_remainder_location_text);
+
+
+        //  getting Date & Time to be shown at Activity Start
+        final Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
 
         // setting Date & Time Format
@@ -50,21 +110,21 @@ public class AddRemainderActivity extends AppCompatActivity {
         DateFormat dateFormat1 = new SimpleDateFormat("MMMM dd,yyyy");
         String formattedDate1 = dateFormat1.format(date);
 
-        // defining Textviews that hold Date
-        TextView dateFrom = (TextView) findViewById(R.id.remainder_date_from_select);
-        TextView dateTo = (TextView) findViewById(R.id.remainder_date_to_select);
+        // defining TextViews that hold Date
+        dateFrom = (TextView) findViewById(R.id.add_remainder_date_from);
+        dateTo = (TextView) findViewById(R.id.add_remainder_date_to);
 
-        // setting current Date in its textviews
+        // setting current Date in its TextViews
         dateFrom.setText(formattedDate1);
         dateTo.setText(formattedDate1);
 
-        // defining Textviews that hold Time
-        TextView clockFrom = (TextView) findViewById(R.id.remainder_clock_from_select);
-        TextView clockTo = (TextView) findViewById(R.id.remainder_clock_to_select);
+        // defining TextViews that hold Time
+        timeFrom = (TextView) findViewById(R.id.add_remainder_time_from);
+        timeTo = (TextView) findViewById(R.id.add_remainder_time_to);
 
-        // setting current Time in its textviews
-        clockFrom.setText(formattedDate);
-        clockTo.setText(formattedDate);
+        // setting current Time in its TextViews
+        timeFrom.setText(formattedDate);
+        timeTo.setText(formattedDate);
 
         // listening to user clicks to set new Date & Time
         dateFrom.setOnClickListener(new View.OnClickListener() {
@@ -79,30 +139,30 @@ public class AddRemainderActivity extends AppCompatActivity {
                 dateTo();
             }
         });
-        clockFrom.setOnClickListener(new View.OnClickListener() {
+        timeFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clockFrom();
+                timeFrom();
             }
         });
-        clockTo.setOnClickListener(new View.OnClickListener() {
+        timeTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clockTo();
+                timeTo();
             }
         });
 
-        notificationSpinner = (Spinner) findViewById(R.id.remainder_notification_spinner);
+        notificationSpinner = (Spinner) findViewById(R.id.add_remainder_notification_spinner);
         setupNotificationSpinner();
 
-        repeatSpinner = (Spinner) findViewById(R.id.remainder_repeat_spinner);
+        repeatSpinner = (Spinner) findViewById(R.id.add_remainder_repeat_spinner);
         setupRepeatSpinner();
 
-        SwitchCompat remainderSwitch = (SwitchCompat) findViewById(R.id.remainder_switch);
+        remainderSwitch = (SwitchCompat) findViewById(R.id.add_remainder_switch);
         remainderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (buttonView.isChecked() == true) {
+                if (buttonView.isChecked()) {
                     RelativeLayout fromLayout = (RelativeLayout) findViewById(R.id.remainder_from_layout);
                     for (int i = 0; i < fromLayout.getChildCount(); i++) {
                         View child = fromLayout.getChildAt(i);
@@ -118,7 +178,7 @@ public class AddRemainderActivity extends AppCompatActivity {
                     }
                 }
 
-                if (buttonView.isChecked() == false) {
+                if (!buttonView.isChecked()) {
                     RelativeLayout fromLayout = (RelativeLayout) findViewById(R.id.remainder_from_layout);
                     for (int i = 0; i < fromLayout.getChildCount(); i++) {
                         View child = fromLayout.getChildAt(i);
@@ -135,6 +195,61 @@ public class AddRemainderActivity extends AppCompatActivity {
                 }
             }
         });
+
+        imageForEvent = (ImageView) findViewById(R.id.add_remainder_image);
+        imageForEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGallery();
+            }
+        });
+
+        addFAB = (FloatingActionButton) findViewById(R.id.add_remainder_add_fab);
+        addFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNewEvent();
+            }
+        });
+
+    }
+
+    private boolean checkIfValueSet(EditText text, String description) {
+        if (TextUtils.isEmpty(text.getText())) {
+            text.setError("Missing event " + description);
+            return false;
+        } else {
+            text.setError(null);
+            return true;
+        }
+    }
+
+
+    private void addNewEvent() {
+
+        boolean isAllOk = true;
+        if (!checkIfValueSet(title, "title")) {
+            isAllOk = false;
+        }
+        if (!checkIfValueSet(description, "description")) {
+            isAllOk = false;
+        }
+        if (!checkIfValueSet(location, "location")) {
+            isAllOk = false;
+        }
+        if (!isAllOk) {
+        }
+
+        eTitle = title.getText().toString().trim();
+        eDescription = description.getText().toString().trim();
+        eLocation = location.getText().toString().trim();
+
+        Events event = new Events(eTitle, eDescription, eDateFromDay, eDateFromMonth,
+                eDateFromYear, eDateToDay, eDateToMonth, eDateToYear,
+                eTimeFromHour, eTimeFromMinute, eTimeToHour, eTimeToMinute,
+                eLocation, eNotification, ePeople, eRepeat, eImageUri, eState);
+        usersDbHelper.insertEvent(event);
+
     }
 
     private void setupNotificationSpinner() {
@@ -157,10 +272,13 @@ public class AddRemainderActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals("via Email")) {
                         // TODO : set selection
+                        eNotification = "via Email";
                     } else if (selection.equals("via Ring")) {
                         // TODO : set selection
+                        eNotification = "via Ring";
                     } else {
                         // TODO : set selection
+                        eNotification = "via MSG";
                     }
                 }
             }
@@ -190,12 +308,15 @@ public class AddRemainderActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
-                    if (selection.equals("via Email")) {
+                    if (selection.equals("Daily")) {
                         // TODO : set selection
-                    } else if (selection.equals("via Ring")) {
+                        eRepeat = "Daily";
+                    } else if (selection.equals("Weekly")) {
                         // TODO : set selection
+                        eRepeat = "Weekly";
                     } else {
                         // TODO : set selection
+                        eRepeat = "Monthly";
                     }
                 }
             }
@@ -300,7 +421,7 @@ public class AddRemainderActivity extends AppCompatActivity {
 
     private void dateFrom() {
 
-        final TextView dateFrom = (TextView) findViewById(R.id.remainder_date_from_select);
+        final TextView dateFrom = (TextView) findViewById(R.id.add_remainder_date_from);
 
         // getting date that written in textview
         String dataFromCurrentString = dateFrom.getText().toString();
@@ -339,7 +460,7 @@ public class AddRemainderActivity extends AppCompatActivity {
 
     private void dateTo() {
 
-        final TextView dateTo = (TextView) findViewById(R.id.remainder_date_to_select);
+        final TextView dateTo = (TextView) findViewById(R.id.add_remainder_date_to);
 
         String dataToCurrentString = dateTo.getText().toString();
         String[] spiltedMonthFromRest = dataToCurrentString.split("\\s+");
@@ -384,13 +505,13 @@ public class AddRemainderActivity extends AppCompatActivity {
     }
 
 
-    private void clockFrom() {
+    private void timeFrom() {
 
-        final TextView clockFrom = (TextView) findViewById(R.id.remainder_clock_from_select);
+        final TextView timeFrom = (TextView) findViewById(R.id.add_remainder_time_from);
 
         // reading current time written in text view
-        String clockFromCurrentString = clockFrom.getText().toString();
-        String[] splitedHourFromRest = clockFromCurrentString.split(":");
+        String timeFromCurrentString = timeFrom.getText().toString();
+        String[] splitedHourFromRest = timeFromCurrentString.split(":");
         String hourString = splitedHourFromRest[0];
         String minutesAndXm = splitedHourFromRest[1];
 
@@ -420,7 +541,7 @@ public class AddRemainderActivity extends AppCompatActivity {
                 String strHrsToShow = datetime.get(Calendar.HOUR) + ":" + datetime.get(Calendar.MINUTE) + " " +
                         am_pm;
 
-                clockFrom.setText(strHrsToShow);
+                timeFrom.setText(strHrsToShow);
             }
         };
 
@@ -434,12 +555,12 @@ public class AddRemainderActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void clockTo() {
+    private void timeTo() {
 
-        final TextView clockTo = (TextView) findViewById(R.id.remainder_clock_to_select);
+        final TextView timeTo = (TextView) findViewById(R.id.add_remainder_time_to);
 
-        String clockToCurrentString = clockTo.getText().toString();
-        String[] splitedHourFromRest = clockToCurrentString.split(":");
+        String timeToCurrentString = timeTo.getText().toString();
+        String[] splitedHourFromRest = timeToCurrentString.split(":");
         String hourString = splitedHourFromRest[0];
         String minutesAndXm = splitedHourFromRest[1];
 
@@ -468,7 +589,7 @@ public class AddRemainderActivity extends AppCompatActivity {
                 String strHrsToShow = datetime.get(Calendar.HOUR) + ":" + datetime.get(Calendar.MINUTE) + " " +
                         am_pm;
 
-                clockTo.setText(strHrsToShow);
+                timeTo.setText(strHrsToShow);
             }
         };
 
@@ -479,6 +600,33 @@ public class AddRemainderActivity extends AppCompatActivity {
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
+    }
+
+    private void openGallery() {
+        Intent intent;
+        if (Build.VERSION.SDK_INT < 19) {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            if (resultData != null) {
+                imageUri = resultData.getData();
+                imageForEvent.setImageURI(imageUri);
+                imageForEvent.invalidate();
+                eImageUri = imageUri.toString();
+            }
+
+        }
     }
 
 }

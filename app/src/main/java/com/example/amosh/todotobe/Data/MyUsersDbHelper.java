@@ -138,4 +138,41 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 UsersContract.UsersEntry.COLUMN_EMAIL + " =?", new String[]{email});
     }
 
+    public void updateImage(String name, String image) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(UsersContract.UsersEntry.COLUMN_IMAGE, image);
+        db.update(UsersContract.UsersEntry.TABLE_USERS,
+                values,
+                UsersContract.UsersEntry.COLUMN_NAME + " =?", new String[]{name});
+    }
+
+
+    public void insertEvent(Events event) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(EventsContract.EventsEntry.COLUMN_TITLE, event.getTitle());
+        values.put(EventsContract.EventsEntry.COLUMN_DESCRIPTION, event.getDescription());
+
+        values.put(EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY, event.getDateFromDay());
+        values.put(EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH, event.getDateFromMonth());
+        values.put(EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR, event.getDateFromYear());
+        values.put(EventsContract.EventsEntry.COLUMN_DATE_TO_DAY, event.getDateToDay());
+        values.put(EventsContract.EventsEntry.COLUMN_DATE_TO_MONTH, event.getDateToMonth());
+        values.put(EventsContract.EventsEntry.COLUMN_DATE_TO_YEAR, event.getDateToYear());
+
+        values.put(EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR, event.getTimeFromHour());
+        values.put(EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE, event.getTimeFromMinutes());
+        values.put(EventsContract.EventsEntry.COLUMN_TIME_TO_HOUR, event.getTimeToHour());
+        values.put(EventsContract.EventsEntry.COLUMN_TIME_TO_MINUTE, event.getTimeToMinutes());
+
+        values.put(EventsContract.EventsEntry.COLUMN_LOCATION, event.getLocation());
+        values.put(EventsContract.EventsEntry.COLUMN_NOTIFICATION, event.getNotification());
+        values.put(EventsContract.EventsEntry.COLUMN_REPEAT, event.getRepeat());
+        values.put(EventsContract.EventsEntry.COLUMN_PEOPLE, event.getPeople());
+        values.put(EventsContract.EventsEntry.COLUMN_IMAGE, event.getImage());
+
+
+        long id = db.insert(UsersContract.UsersEntry.TABLE_USERS, null, values);
+    }
 }

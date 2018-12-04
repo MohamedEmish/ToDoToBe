@@ -69,7 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
     EditText userEmail;
     EditText userBirthDay;
     EditText userPassword;
-    String userImage;
+    String userImage = "";
     ImageView eye;
     int eyeVisibility = 1;
 
@@ -215,8 +215,6 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         usersDbHelper = new MyUsersDbHelper(this);
-        Users admin = new Users("admin", "admin", "admin", "admin", "admin", 0);
-        usersDbHelper.insertUser(admin);
 
         //Facebook code
         fblogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

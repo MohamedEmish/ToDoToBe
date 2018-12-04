@@ -24,7 +24,8 @@
             android:src="@drawable/ic_close_white" />
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:id="@+id/add_remainder_image"
+            android:layout_width="25dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
@@ -32,12 +33,13 @@
     </RelativeLayout>
 
     <EditText
-        android:id="@+id/textView2"
+        android:id="@+id/add_remainder_title"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:hint="@string/add_remainder_add_title"
         android:background="@null"
         android:gravity="center_vertical"
-        android:hint="Add Title"
+        android:maxLines="1"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
         android:textColor="#FFFFFF"
@@ -54,7 +56,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
+        app:layout_constraintTop_toBottomOf="@+id/add_remainder_title">
 
     </LinearLayout>
 
@@ -70,14 +72,16 @@
         app:layout_constraintVertical_weight="1">
 
         <EditText
+            android:id="@+id/add_remainder_description"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1.2"
             android:background="@null"
             android:gravity="center_vertical"
-            android:hint="Short description"
+            android:hint="@string/add_remainder_add_description"
             android:paddingLeft="24dp"
+            android:maxLines="2"
             android:paddingRight="24dp" />
 
         <View
@@ -86,13 +90,13 @@
             android:background="#EAEAEA" />
 
         <android.support.v7.widget.SwitchCompat
-            android:id="@+id/remainder_switch"
+            android:id="@+id/add_remainder_switch"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:paddingLeft="24dp"
             android:paddingRight="16dp"
-            android:text="All day"
+            android:text="@string/add_remainder_all_day"
             android:textColor="#9E9E9E"
             android:theme="@style/SCBSwitch" />
 
@@ -110,29 +114,29 @@
                 android:layout_alignParentTop="true"
                 android:gravity="center_vertical"
                 android:paddingLeft="24dp"
-                android:text="From"
+                android:text="@string/add_remainder_from"
                 android:textColor="#9E9E9E" />
 
             <TextView
-                android:id="@+id/remainder_date_from_select"
+                android:id="@+id/add_remainder_date_from"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
-                android:layout_toStartOf="@+id/remainder_clock_from_select"
+                android:layout_toStartOf="@+id/add_remainder_time_from"
                 android:gravity="center_vertical"
-                android:text="Select date"
+                android:text="@string/add_remainder_select_date"
                 android:textColor="#000000" />
 
 
             <TextView
-                android:id="@+id/remainder_clock_from_select"
+                android:id="@+id/add_remainder_time_from"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
-                android:text="Select time"
+                android:text="@string/add_remainder_select_time"
                 android:textColor="#000000" />
         </RelativeLayout>
 
@@ -150,29 +154,29 @@
                 android:layout_alignParentTop="true"
                 android:gravity="center_vertical"
                 android:paddingLeft="24dp"
-                android:text="To"
+                android:text="@string/add_remainder_to"
                 android:textColor="#9E9E9E" />
 
             <TextView
-                android:id="@+id/remainder_date_to_select"
+                android:id="@+id/add_remainder_date_to"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
-                android:layout_toStartOf="@+id/remainder_clock_to_select"
+                android:layout_toStartOf="@+id/add_remainder_time_to"
                 android:gravity="center_vertical"
-                android:text="Select date"
+                android:text="@string/add_remainder_select_date"
                 android:textColor="#000000" />
 
 
             <TextView
-                android:id="@+id/remainder_clock_to_select"
+                android:id="@+id/add_remainder_time_to"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
-                android:text="Select time"
+                android:text="@string/add_remainder_select_time"
                 android:textColor="#000000" />
         </RelativeLayout>
 
@@ -193,7 +197,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:paddingLeft="24dp"
-                android:text="Location"
+                android:text="@string/add_remainder_location"
                 android:textColor="#9E9E9E" />
 
             <ImageView
@@ -201,11 +205,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="12dp"
-                android:layout_toStartOf="@+id/remainder_location_text"
+                android:layout_toStartOf="@+id/add_remainder_location_text"
                 android:src="@drawable/ic_location" />
 
             <EditText
-                android:id="@+id/remainder_location_text"
+                android:id="@+id/add_remainder_location_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -213,8 +217,9 @@
                 android:layout_marginEnd="16dp"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:hint="starbucks"
+                android:hint="@string/add_remainder_add_location"
                 android:textColor="#000000"
+                android:maxLines="1"
                 android:textColorHint="#9E9E9E" />
         </RelativeLayout>
 
@@ -235,11 +240,11 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:paddingLeft="24dp"
-                android:text="Notification"
+                android:text="@string/add_remainder_notification"
                 android:textColor="#9E9E9E" />
 
             <Spinner
-                android:id="@+id/remainder_notification_spinner"
+                android:id="@+id/add_remainder_notification_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -247,7 +252,7 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:paddingRight="8dp"
-                android:spinnerMode="dropdown"
+                android:spinnerMode="dialog"
                 android:textColor="#000000" />
         </RelativeLayout>
 
@@ -267,11 +272,11 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:paddingLeft="24dp"
-                android:text="People"
+                android:text="@string/add_remainder_people"
                 android:textColor="#9E9E9E" />
 
             <ImageView
-                android:id="@+id/remainder_people_add"
+                android:id="@+id/add_remainder_people_add"
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -279,7 +284,6 @@
                 android:layout_marginRight="16dp"
                 android:gravity="center_vertical"
                 android:src="@drawable/ic_add_ppl"
-                android:text="via Email"
                 android:textColor="#000000" />
         </RelativeLayout>
 
@@ -299,19 +303,19 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:paddingLeft="24dp"
-                android:text="Repeat"
+                android:text="@string/add_remainder_repeat"
                 android:textColor="#9E9E9E" />
 
             <Spinner
-                android:id="@+id/remainder_repeat_spinner"
+                android:id="@+id/add_remainder_repeat_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:background="@null"
+                android:spinnerMode="dialog"
                 android:gravity="center_vertical"
                 android:paddingRight="8dp"
-                android:text="Monthly"
                 android:textColor="#000000" />
         </RelativeLayout>
 
@@ -326,7 +330,7 @@
 
     <android.support.design.widget.FloatingActionButton
 
-        android:id="@+id/addFloatingActionButton"
+        android:id="@+id/add_remainder_add_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
