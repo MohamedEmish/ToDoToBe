@@ -304,8 +304,6 @@ public class SignUpActivity extends AppCompatActivity {
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hasReadPermission();
-                hasWritePermission();
                 if (hasReadPermission() && hasWritePermission()) {
                     if (!addNewUser()) {
                         Toast.makeText(SignUpActivity.this, "Please .. check errors", Toast.LENGTH_SHORT).show();
@@ -402,7 +400,7 @@ public class SignUpActivity extends AppCompatActivity {
                 userPassword.getText().toString().trim(),
                 userEmail.getText().toString().trim(),
                 userBirthDay.getText().toString().trim(),
-                userImage, 0);
+                userImage);
         usersDbHelper.insertUser(users);
         return true;
     }

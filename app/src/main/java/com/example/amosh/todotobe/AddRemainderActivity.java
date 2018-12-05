@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.amosh.todotobe.Data.Events;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
@@ -61,31 +62,33 @@ public class AddRemainderActivity extends AppCompatActivity {
 
     ImageView people;
     ImageView imageForEvent;
+    ImageView close;
 
     String eTitle;
     String eDescription;
     String eLocation;
 
-    int eDateFromDay = 0;
-    int eDateFromMonth = 0;
-    int eDateFromYear = 0;
-    int eDateToDay = 0;
-    int eDateToMonth = 0;
-    int eDateToYear = 0;
+    int eDateFromDay;
+    int eDateFromMonth;
+    int eDateFromYear;
+    int eDateToDay;
+    int eDateToMonth;
+    int eDateToYear;
 
-    int eTimeFromHour = 0;
-    int eTimeFromMinute = 0;
-    int eTimeToHour = 0;
-    int eTimeToMinute = 0;
+    int eTimeFromHour;
+    int eTimeFromMinute;
+    int eTimeToHour;
+    int eTimeToMinute;
 
     String ePeople = "";
     String eImageUri = "";
 
     String eNotification;
     String eRepeat;
+    String userName;
 
 
-    int eState = 0;
+    int eState;
     Uri imageUri;
 
     @Override
@@ -93,21 +96,23 @@ public class AddRemainderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_remainder);
 
+        userName = getIntent().getStringExtra("name");
+
         usersDbHelper = new MyUsersDbHelper(this);
+
         title = (EditText) findViewById(R.id.add_remainder_title);
         description = (EditText) findViewById(R.id.add_remainder_description);
         location = (EditText) findViewById(R.id.add_remainder_location_text);
 
-
-        //  getting Date & Time to be shown at Activity Start
+        // getting Date & Time to be shown at Activity Start
         final Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
 
         // setting Date & Time Format
-        DateFormat dateFormat = new SimpleDateFormat("hh:mm aaa");
+        DateFormat dateFormat = new SimpleDateFormat("h:mm aaa");
         String formattedDate = dateFormat.format(date);
 
-        DateFormat dateFormat1 = new SimpleDateFormat("MMMM dd,yyyy");
+        DateFormat dateFormat1 = new SimpleDateFormat("MMMM d,yyyy");
         String formattedDate1 = dateFormat1.format(date);
 
         // defining TextViews that hold Date
@@ -212,6 +217,14 @@ public class AddRemainderActivity extends AppCompatActivity {
             }
         });
 
+        close = (ImageView) findViewById(R.id.add_remainder_close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goBack();
+            }
+        });
+
     }
 
     private boolean checkIfValueSet(EditText text, String description) {
@@ -238,18 +251,154 @@ public class AddRemainderActivity extends AppCompatActivity {
             isAllOk = false;
         }
         if (!isAllOk) {
+            Toast.makeText(AddRemainderActivity.this, "Please Enter necessary data", Toast.LENGTH_SHORT).show();
         }
+        if (isAllOk) {
+            if (getDataAndInsert()) {
+                Toast.makeText(AddRemainderActivity.this, "Insertion Success", Toast.LENGTH_SHORT).show();
+                goBack();
+            } else if (!getDataAndInsert()) {
+                Toast.makeText(AddRemainderActivity.this, "Insertion failed", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
+
+    private boolean getDataAndInsert() {
 
         eTitle = title.getText().toString().trim();
         eDescription = description.getText().toString().trim();
         eLocation = location.getText().toString().trim();
 
-        Events event = new Events(eTitle, eDescription, eDateFromDay, eDateFromMonth,
+        eDateFromDay = getDateDay(dateFrom.getText().toString().trim());
+        eDateFromMonth = getDateMonth(dateFrom.getText().toString().trim());
+        eDateFromYear = getDateYear(dateFrom.getText().toString().trim());
+        eTimeFromHour = getTimeHour(timeFrom.getText().toString().trim());
+        eTimeFromMinute = getTimeMinute(timeFrom.getText().toString().trim());
+
+        if (!remainderSwitch.isChecked()) {
+            eDateToDay = getDateDay(dateTo.getText().toString().trim());
+            eDateToMonth = getDateMonth(dateTo.getText().toString().trim());
+            eDateToYear = getDateYear(dateTo.getText().toString().trim());
+            eTimeToHour = getTimeHour(timeTo.getText().toString().trim());
+            eTimeToMinute = getTimeMinute(timeTo.getText().toString().trim());
+        } else if (remainderSwitch.isChecked()) {
+            eDateToDay = eDateFromDay;
+            eDateToMonth = eDateFromMonth;
+            eDateToYear = eDateFromYear;
+            eTimeToHour = 23;
+            eTimeToMinute = 59;
+        }
+        eNotification = notificationSpinner.getSelectedItem().toString().trim();
+        eRepeat = repeatSpinner.getSelectedItem().toString().trim();
+        eState = 0;
+
+        if (eImageUri.equals("")) {
+            eImageUri = "android.resource://com.example.amosh.inventoryapp/drawable/ic_calendar_no_eImage";
+        }
+
+        Events event = new Events(userName, eTitle, eDescription, eDateFromDay, eDateFromMonth,
                 eDateFromYear, eDateToDay, eDateToMonth, eDateToYear,
                 eTimeFromHour, eTimeFromMinute, eTimeToHour, eTimeToMinute,
                 eLocation, eNotification, ePeople, eRepeat, eImageUri, eState);
         usersDbHelper.insertEvent(event);
 
+        return true;
+    }
+
+    private void goBack() {
+        Intent back = new Intent(AddRemainderActivity.this, MainScreenActivity.class);
+        back.putExtra("name", userName);
+        startActivity(back);
+    }
+
+    private int getDateDay(String date) {
+
+        String dataFromCurrentString = date;
+        String[] spiltedMonthFromRest = dataFromCurrentString.split("\\s+");
+        String monthName = spiltedMonthFromRest[0];
+        String dayAndYearString = spiltedMonthFromRest[1];
+
+        String[] spilted2ndPhase = dayAndYearString.split(",");
+        String dayString = spilted2ndPhase[0];
+        String yearString = spilted2ndPhase[1];
+
+        int monthNumber = getMonthNumber(monthName.trim());
+        int yearNumber = Integer.parseInt(yearString.trim());
+        int dayNumber = Integer.parseInt(dayString.trim());
+
+        return dayNumber;
+    }
+
+    private int getDateMonth(String date) {
+
+        String dataFromCurrentString = date;
+        String[] spiltedMonthFromRest = dataFromCurrentString.split("\\s+");
+        String monthName = spiltedMonthFromRest[0];
+        String dayAndYearString = spiltedMonthFromRest[1];
+
+        String[] spilted2ndPhase = dayAndYearString.split(",");
+        String dayString = spilted2ndPhase[0];
+        String yearString = spilted2ndPhase[1];
+
+        int monthNumber = getMonthNumber(monthName.trim());
+
+        return monthNumber;
+    }
+
+    private int getDateYear(String date) {
+
+        String dataFromCurrentString = date;
+        String[] spiltedMonthFromRest = dataFromCurrentString.split("\\s+");
+        String monthName = spiltedMonthFromRest[0];
+        String dayAndYearString = spiltedMonthFromRest[1];
+
+        String[] spilted2ndPhase = dayAndYearString.split(",");
+        String dayString = spilted2ndPhase[0];
+        String yearString = spilted2ndPhase[1];
+
+        int yearNumber = Integer.parseInt(yearString.trim());
+
+        return yearNumber;
+    }
+
+    private int getTimeHour(String time) {
+
+        String timeFromCurrentString = time;
+        String[] splitedHourFromRest = timeFromCurrentString.split(":");
+        String hourString = splitedHourFromRest[0];
+        String minutesAndXm = splitedHourFromRest[1];
+
+        String[] splited2ndPhase = minutesAndXm.split("\\s+");
+        String minutesString = splited2ndPhase[0];
+        String am_pm = splited2ndPhase[1];
+
+        int hour = Integer.parseInt(hourString.trim());
+        int hourNumber = 0;
+        if (am_pm.equals("am")) {
+            hourNumber = hour;
+        }
+        if (am_pm.equals("pm")) {
+            hourNumber = hour + 12;
+        }
+
+        return hourNumber;
+    }
+
+    private int getTimeMinute(String time) {
+
+        String timeFromCurrentString = time;
+        String[] splitedHourFromRest = timeFromCurrentString.split(":");
+        String hourString = splitedHourFromRest[0];
+        String minutesAndXm = splitedHourFromRest[1];
+
+        String[] splited2ndPhase = minutesAndXm.split("\\s+");
+        String minutesString = splited2ndPhase[0];
+        String am_pm = splited2ndPhase[1];
+
+        int minuteNumber = Integer.parseInt(minutesString.trim());
+
+        return minuteNumber;
     }
 
     private void setupNotificationSpinner() {

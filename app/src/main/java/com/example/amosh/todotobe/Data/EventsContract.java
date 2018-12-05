@@ -12,6 +12,7 @@ public class EventsContract {
         public static final String TABLE_EVENTS = "EVENTS";
 
         public static final String _ID = BaseColumns._ID;
+        public static final String COLUMN_USER_NAME = "uName";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_DATE_FROM_DAY = "dateFromDay";
@@ -39,6 +40,7 @@ public class EventsContract {
         public static final String CREATE_TABLE_EVENTS = "CREATE TABLE "
                 + EventsEntry.TABLE_EVENTS + "("
                 + EventsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + EventsEntry.COLUMN_USER_NAME + " TEXT NOT NULL,"
                 + EventsEntry.COLUMN_TITLE + " TEXT NOT NULL,"
                 + EventsEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL,"
                 + EventsEntry.COLUMN_DATE_FROM_DAY + " INTEGER NOT NULL,"
@@ -56,7 +58,9 @@ public class EventsContract {
                 + EventsEntry.COLUMN_PEOPLE + " TEXT,"
                 + EventsEntry.COLUMN_REPEAT + " TEXT NOT NULL,"
                 + EventsEntry.COLUMN_STATE + " INTEGER ,"
-                + EventsEntry.COLUMN_IMAGE + " TEXT);";
+                + EventsEntry.COLUMN_IMAGE + " TEXT);"
+                + "FOREIGN KEY (" + EventsEntry.COLUMN_USER_NAME + ") REFERENCES "
+                + UsersContract.UsersEntry.TABLE_USERS + "(" + UsersContract.UsersEntry.COLUMN_NAME + "));";
 
     }
 }

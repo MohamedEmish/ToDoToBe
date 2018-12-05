@@ -47,5 +47,18 @@
     <string name="add_remainder_select_date">Select Date</string>
     <string name="add_remainder_select_time">Select Time</string>
 
+    <!-- item list layouts Strings -->
+    <string name="item_list_title">Birthday</string>
+    <string name="item_list_with">with</string>
+    <string name="item_list_people">Tom</string>
+    <string name="item_list_time_from">10</string>
+    <string name="item_list_time_to">8</string>
+    <string name="item_list_location">Starbucks</string>
+    <string name="item_list_am">am</string>
+    <string name="item_list_pm">pm</string>
+    <string name="item_list_dash">-</string>
+    <string name="list_no_events">No events today</string>
+    <string name="list_plz_add_events">Add tasks to do</string>
+
 
 </resources>

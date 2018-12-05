@@ -17,7 +17,6 @@ public class UsersContract {
         public static final String COLUMN_EMAIL = "email";
         public static final String COLUMN_BIRTHDAY = "birthday";
         public static final String COLUMN_IMAGE = "image";
-        public static final String COLUMN_EVENT_ID = "event";
 
 
         public static final String CREATE_TABLE_USERS = "CREATE TABLE "
@@ -28,8 +27,7 @@ public class UsersContract {
                 + UsersEntry.COLUMN_EMAIL + " TEXT NOT NULL,"
                 + UsersEntry.COLUMN_BIRTHDAY + " TEXT NOT NULL,"
                 + UsersEntry.COLUMN_IMAGE + " TEXT NOT NULL,"
-                + UsersEntry.COLUMN_EVENT_ID + " INTEGER,"
-                + "FOREIGN KEY (" + UsersEntry.COLUMN_EVENT_ID + ") REFERENCES "
-                + EventsContract.EventsEntry.TABLE_EVENTS + "(" + EventsContract.EventsEntry._ID + "));";
+                + "FOREIGN KEY (" + UsersEntry.COLUMN_NAME + ") REFERENCES "
+                + EventsContract.EventsEntry.TABLE_EVENTS + "(" + EventsContract.EventsEntry.COLUMN_USER_NAME + "));";
     }
 }

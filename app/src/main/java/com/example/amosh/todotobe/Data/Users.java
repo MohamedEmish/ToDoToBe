@@ -6,17 +6,15 @@ public class Users {
     private final String mUserEmail;
     private final String mUserBirthday;
     private final String mUserImage;
-    private final int mUserEventID;
 
 
     public Users(String userName, String userPassword, String userEmail, String userBirthday,
-                 String userImage, int userEventId) {
+                 String userImage) {
         mUserName = userName;
         this.mUserPassword = userPassword;
         this.mUserEmail = userEmail;
         this.mUserBirthday = userBirthday;
         this.mUserImage = userImage;
-        this.mUserEventID = userEventId;
     }
 
     public String getUserName() {
@@ -39,7 +37,4 @@ public class Users {
         return mUserImage;
     }
 
-    public int getUserEventID() {
-        return mUserEventID;
-    }
 }

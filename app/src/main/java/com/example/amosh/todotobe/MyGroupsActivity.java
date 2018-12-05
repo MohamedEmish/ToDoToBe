@@ -12,6 +12,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.amosh.todotobe.Categories.AutoActivity;
+import com.example.amosh.todotobe.Categories.BillsActivity;
+import com.example.amosh.todotobe.Categories.HealthActivity;
+import com.example.amosh.todotobe.Categories.ShopActivity;
+import com.example.amosh.todotobe.Categories.TravelActivity;
+import com.example.amosh.todotobe.Categories.WorkActivity;
+
+
 public class MyGroupsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

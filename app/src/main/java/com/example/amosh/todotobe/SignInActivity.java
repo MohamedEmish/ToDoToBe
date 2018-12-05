@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
+import com.example.amosh.todotobe.Fragments.splash_screen_activity;
 
 import java.io.File;
 
@@ -103,8 +104,6 @@ public class SignInActivity extends AppCompatActivity {
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hasReadPermission();
-                hasWritePermission();
                 passedUserName = userName.getText().toString().trim();
                 if (hasReadPermission() && hasWritePermission()) {
                     if (!doesDatabaseExist(SignInActivity.this, "users.db")) {

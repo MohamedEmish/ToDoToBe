@@ -2,6 +2,7 @@ package com.example.amosh.todotobe.Data;
 
 public class Events {
 
+    private final String mUserName;
     private final String mTitle;
     private final String mDescription;
     private final int mDateFromDay;
@@ -22,10 +23,11 @@ public class Events {
     private final int mState;
 
 
-    public Events(String title, String description, int dateFromDay, int dateFromMonth, int dateFromYear, int dateToDay, int dateToMonth, int dateToYear,
+    public Events(String uName, String title, String description, int dateFromDay, int dateFromMonth, int dateFromYear, int dateToDay, int dateToMonth, int dateToYear,
                   int timeFromHour, int timeFromMinute, int timeToHour, int timeToMinute, String location, String notification, String people,
                   String repeat, String image, int state) {
-        mTitle = title;
+        mUserName = uName;
+        this.mTitle = title;
         this.mDescription = description;
         this.mDateFromDay = dateFromDay;
         this.mDateFromMonth = dateFromMonth;
@@ -116,5 +118,9 @@ public class Events {
     public int getState() {
         return mState;
 
+    }
+
+    public String getUserName() {
+        return mUserName;
     }
 }

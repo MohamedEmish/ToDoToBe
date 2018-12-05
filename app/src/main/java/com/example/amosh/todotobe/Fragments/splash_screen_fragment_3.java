@@ -1,4 +1,4 @@
-package com.example.amosh.todotobe;
+package com.example.amosh.todotobe.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class splash_screen_fragment_3  extends Fragment {
+import com.example.amosh.todotobe.MainScreenActivity;
+import com.example.amosh.todotobe.R;
+
+public class splash_screen_fragment_3 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,7 +35,7 @@ public class splash_screen_fragment_3  extends Fragment {
     }
 
     private void startMainScreenActivity() {
-        splash_screen_activity splash_screen_activity = (com.example.amosh.todotobe.splash_screen_activity) getActivity();
+        splash_screen_activity splash_screen_activity = (com.example.amosh.todotobe.Fragments.splash_screen_activity) getActivity();
         String userName = splash_screen_activity.getUserName();
         Intent begin = new Intent(getActivity(), MainScreenActivity.class);
         begin.putExtra("name", userName);

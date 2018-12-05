@@ -39,7 +39,7 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".splash_screen_activity"
+            android:name=".Fragments.splash_screen_activity"
             android:theme="@style/AppTheme"
             android:parentActivityName=".SignInActivity">
 
@@ -61,7 +61,7 @@
         </activity>
 
         <activity
-            android:name=".MonthPreviewActivity"
+            android:name=".Fragments.MonthPreviewActivity"
             android:theme="@style/AppTheme"
             android:parentActivityName=".SignInActivity">
 
@@ -83,7 +83,7 @@
         </activity>
 
         <activity
-            android:name=".ShopActivity"
+            android:name=".Categories.ShopActivity"
             android:parentActivityName=".MyGroupsActivity"
             android:theme="@style/AppTheme">
 
@@ -94,7 +94,7 @@
         </activity>
 
         <activity
-            android:name=".WorkActivity"
+            android:name=".Categories.WorkActivity"
             android:parentActivityName=".MyGroupsActivity"
             android:theme="@style/AppTheme">
 
@@ -105,7 +105,7 @@
         </activity>
 
         <activity
-            android:name=".HealthActivity"
+            android:name=".Categories.HealthActivity"
             android:parentActivityName=".MyGroupsActivity"
             android:theme="@style/AppTheme">
 
@@ -116,7 +116,7 @@
         </activity>
 
         <activity
-            android:name=".AutoActivity"
+            android:name=".Categories.AutoActivity"
             android:parentActivityName=".MyGroupsActivity"
             android:theme="@style/AppTheme">
 
@@ -127,7 +127,7 @@
         </activity>
 
         <activity
-            android:name=".BillsActivity"
+            android:name=".Categories.BillsActivity"
             android:parentActivityName=".MyGroupsActivity"
             android:theme="@style/AppTheme">
 
@@ -138,7 +138,7 @@
         </activity>
 
         <activity
-            android:name=".TravelActivity"
+            android:name=".Categories.TravelActivity"
             android:parentActivityName=".MyGroupsActivity"
             android:theme="@style/AppTheme">
 

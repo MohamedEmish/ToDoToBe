@@ -1,10 +1,12 @@
-package com.example.amosh.todotobe;
+package com.example.amosh.todotobe.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.amosh.todotobe.R;
 
 public class month_preview_week_tab_fragment extends Fragment {
     @Override

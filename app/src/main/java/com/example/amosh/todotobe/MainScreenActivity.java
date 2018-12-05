@@ -17,9 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.amosh.todotobe.Adapters.EventCursorAdapter;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.example.amosh.todotobe.Data.UsersContract;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -37,6 +39,9 @@ public class MainScreenActivity extends AppCompatActivity {
     EditText searchEditText;
     String searchText;
     FloatingActionButton fab;
+    MaterialCalendarView calendarView;
+
+    EventCursorAdapter eCursorAdapter;
 
     String userName;
     MyUsersDbHelper usersDbHelper;
@@ -66,11 +71,28 @@ public class MainScreenActivity extends AppCompatActivity {
         setGreetMsg(hour);
         usersDbHelper = new MyUsersDbHelper(this);
 
+        // Find the ListView which will be populated with the unit data
+        ListView eventListView = (ListView) findViewById(R.id.main_screen_list_View);
+
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById(R.id.empty_view);
+        eventListView.setEmptyView(emptyView);
+
+        MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
+
+        int daySelected = calendarView.getCurrentDate().getDay();
+        String day = String.valueOf(daySelected);
+
+        Cursor cursor = usersDbHelper.readEvent(userName, day);
+        eCursorAdapter = new EventCursorAdapter(this, cursor);
+        eventListView.setAdapter(eCursorAdapter);
+
+
         fab = (FloatingActionButton) findViewById(R.id.main_screen_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewItem();
+                addNewEvent(userName);
             }
         });
         searchEditText = (EditText) findViewById(R.id.main_screen_search_text);
@@ -93,7 +115,7 @@ public class MainScreenActivity extends AppCompatActivity {
         });
 
 
-        final MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
+        calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
 
         calendarView.setOnTitleClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +136,7 @@ public class MainScreenActivity extends AppCompatActivity {
             }
         });
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.main_screen_navigation_view);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.main_screen_navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -124,14 +146,17 @@ public class MainScreenActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(MainScreenActivity.this, MainScreenActivity.class);
+                        mainScreenActivity.putExtra("name", userName);
                         startActivity(mainScreenActivity);
                         break;
                     case R.id.nav_overview:
                         Intent overviewActivity = new Intent(MainScreenActivity.this, OverviewActivity.class);
+                        overviewActivity.putExtra("name", userName);
                         startActivity(overviewActivity);
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(MainScreenActivity.this, MyGroupsActivity.class);
+                        groupsActivity.putExtra("name", userName);
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
@@ -140,10 +165,12 @@ public class MainScreenActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_timeline:
                         Intent timelineActivity = new Intent(MainScreenActivity.this, TimelineActivity.class);
+                        timelineActivity.putExtra("name", userName);
                         startActivity(timelineActivity);
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(MainScreenActivity.this, SettingsActivity.class);
+                        settingsActivity.putExtra("name", userName);
                         startActivity(settingsActivity);
                         break;
                     case R.id.nav_logout:
@@ -243,14 +270,15 @@ public class MainScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void addNewItem() {
+    private void addNewEvent(String name) {
         Intent ADDActivity = new Intent(MainScreenActivity.this, AddRemainderActivity.class);
+        ADDActivity.putExtra("name", name);
         startActivity(ADDActivity);
     }
 
     private void calenderTitleClick() {
 
-        MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
+        calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
 
         CalendarDay selected = calendarView.getCurrentDate();
 
@@ -302,12 +330,14 @@ public class MainScreenActivity extends AppCompatActivity {
 
         String finalMonthName = monthName;
 
-        Intent monthPreview = new Intent(MainScreenActivity.this, MonthPreviewActivity.class);
+        Intent monthPreview = new Intent(MainScreenActivity.this, com.example.amosh.todotobe.Fragments.MonthPreviewActivity.class);
 
         monthPreview.putExtra("year", yearString);
         monthPreview.putExtra("month", finalMonthName);
         monthPreview.putExtra("day", dayString);
         monthPreview.putExtra("monthNumber", month);
+        monthPreview.putExtra("name", userName);
+
 
         startActivity(monthPreview);
     }

@@ -1,4 +1,4 @@
-package com.example.amosh.todotobe;
+package com.example.amosh.todotobe.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.amosh.todotobe.Adapters.MonthPreviewPagerAdapter;
+import com.example.amosh.todotobe.MainScreenActivity;
+import com.example.amosh.todotobe.MyGroupsActivity;
+import com.example.amosh.todotobe.R;
+import com.example.amosh.todotobe.SettingsActivity;
+import com.example.amosh.todotobe.SignInActivity;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 public class MonthPreviewActivity extends AppCompatActivity {

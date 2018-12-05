@@ -139,14 +139,51 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintVertical_weight="1"
-            android:background="#FFFFFF"
-            android:orientation="vertical">
+            android:background="#FFFFFF">
 
             <ListView
+                android:id="@+id/main_screen_list_View"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
             </ListView>
+
+            <RelativeLayout
+                android:id="@+id/empty_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:id="@+id/empty_inventory_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/no_event_to_show" />
+
+                <TextView
+                    android:id="@+id/empty_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/empty_inventory_image"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingTop="16dp"
+                    android:text="@string/list_no_events"
+                    android:textAppearance="?android:textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/empty_subtitle_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/empty_title_text"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="sans-serif"
+                    android:paddingTop="8dp"
+                    android:text="@string/list_plz_add_events"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="#A2AAB0" />
+            </RelativeLayout>
 
         </RelativeLayout>
 
