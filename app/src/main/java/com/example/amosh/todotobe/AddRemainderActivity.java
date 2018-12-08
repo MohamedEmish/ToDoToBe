@@ -27,6 +27,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.amosh.todotobe.Data.Events;
+import com.example.amosh.todotobe.Data.EventsContract;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 
 import java.text.DateFormat;
@@ -88,7 +89,7 @@ public class AddRemainderActivity extends AppCompatActivity {
     String userName;
 
 
-    int eState;
+    int eState = EventsContract.EventsEntry.NO_STATE;
     Uri imageUri;
 
     @Override
@@ -96,10 +97,13 @@ public class AddRemainderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_remainder);
 
+        // getting signed in user name
         userName = getIntent().getStringExtra("name");
 
+        // open DB
         usersDbHelper = new MyUsersDbHelper(this);
 
+        // defining UI omponents
         title = (EditText) findViewById(R.id.add_remainder_title);
         description = (EditText) findViewById(R.id.add_remainder_description);
         location = (EditText) findViewById(R.id.add_remainder_location_text);
@@ -157,12 +161,14 @@ public class AddRemainderActivity extends AppCompatActivity {
             }
         });
 
+        // Defining and reading spinners of Notification & Repeat
         notificationSpinner = (Spinner) findViewById(R.id.add_remainder_notification_spinner);
         setupNotificationSpinner();
 
         repeatSpinner = (Spinner) findViewById(R.id.add_remainder_repeat_spinner);
         setupRepeatSpinner();
 
+        // Defining and reading Reminder switch
         remainderSwitch = (SwitchCompat) findViewById(R.id.add_remainder_switch);
         remainderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -201,6 +207,7 @@ public class AddRemainderActivity extends AppCompatActivity {
             }
         });
 
+        // Adding event Image
         imageForEvent = (ImageView) findViewById(R.id.add_remainder_image);
         imageForEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,6 +216,7 @@ public class AddRemainderActivity extends AppCompatActivity {
             }
         });
 
+        // Adding new Event
         addFAB = (FloatingActionButton) findViewById(R.id.add_remainder_add_fab);
         addFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,6 +225,7 @@ public class AddRemainderActivity extends AppCompatActivity {
             }
         });
 
+        // Close to go back
         close = (ImageView) findViewById(R.id.add_remainder_close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,6 +236,7 @@ public class AddRemainderActivity extends AppCompatActivity {
 
     }
 
+    // Function to check values validate
     private boolean checkIfValueSet(EditText text, String description) {
         if (TextUtils.isEmpty(text.getText())) {
             text.setError("Missing event " + description);
@@ -238,6 +248,7 @@ public class AddRemainderActivity extends AppCompatActivity {
     }
 
 
+    // Function to check values existence
     private void addNewEvent() {
 
         boolean isAllOk = true;
@@ -264,6 +275,7 @@ public class AddRemainderActivity extends AppCompatActivity {
         }
     }
 
+    // Function to Insert new Event into DB
     private boolean getDataAndInsert() {
 
         eTitle = title.getText().toString().trim();
@@ -291,11 +303,6 @@ public class AddRemainderActivity extends AppCompatActivity {
         }
         eNotification = notificationSpinner.getSelectedItem().toString().trim();
         eRepeat = repeatSpinner.getSelectedItem().toString().trim();
-        eState = 0;
-
-        if (eImageUri.equals("")) {
-            eImageUri = "android.resource://com.example.amosh.inventoryapp/drawable/ic_calendar_no_eImage";
-        }
 
         Events event = new Events(userName, eTitle, eDescription, eDateFromDay, eDateFromMonth,
                 eDateFromYear, eDateToDay, eDateToMonth, eDateToYear,
@@ -306,72 +313,73 @@ public class AddRemainderActivity extends AppCompatActivity {
         return true;
     }
 
+    // Function to go back
     private void goBack() {
         Intent back = new Intent(AddRemainderActivity.this, MainScreenActivity.class);
         back.putExtra("name", userName);
         startActivity(back);
     }
 
+    // Function to get Day integer
     private int getDateDay(String date) {
 
-        String dataFromCurrentString = date;
-        String[] spiltedMonthFromRest = dataFromCurrentString.split("\\s+");
-        String monthName = spiltedMonthFromRest[0];
-        String dayAndYearString = spiltedMonthFromRest[1];
+        // Dividing date string into day,month and year
+        String[] cutMonthFromRest = date.split("\\s+");
+        String monthName = cutMonthFromRest[0];
+        String dayAndYearString = cutMonthFromRest[1];
 
-        String[] spilted2ndPhase = dayAndYearString.split(",");
-        String dayString = spilted2ndPhase[0];
-        String yearString = spilted2ndPhase[1];
+        String[] cut2ndPhase = dayAndYearString.split(",");
+        String dayString = cut2ndPhase[0];
+        String yearString = cut2ndPhase[1];
 
-        int monthNumber = getMonthNumber(monthName.trim());
-        int yearNumber = Integer.parseInt(yearString.trim());
         int dayNumber = Integer.parseInt(dayString.trim());
 
         return dayNumber;
     }
 
+    // Function to get Month integer
     private int getDateMonth(String date) {
 
-        String dataFromCurrentString = date;
-        String[] spiltedMonthFromRest = dataFromCurrentString.split("\\s+");
-        String monthName = spiltedMonthFromRest[0];
-        String dayAndYearString = spiltedMonthFromRest[1];
+        // Dividing date string into day,month and year
+        String[] cutMonthFromRest = date.split("\\s+");
+        String monthName = cutMonthFromRest[0];
+        String dayAndYearString = cutMonthFromRest[1];
 
-        String[] spilted2ndPhase = dayAndYearString.split(",");
-        String dayString = spilted2ndPhase[0];
-        String yearString = spilted2ndPhase[1];
+        String[] cut2ndPhase = dayAndYearString.split(",");
+        String dayString = cut2ndPhase[0];
+        String yearString = cut2ndPhase[1];
 
-        int monthNumber = getMonthNumber(monthName.trim());
-
-        return monthNumber;
+        return getMonthNumber(monthName.trim());
     }
 
+    // Function to get Year integer
     private int getDateYear(String date) {
 
-        String dataFromCurrentString = date;
-        String[] spiltedMonthFromRest = dataFromCurrentString.split("\\s+");
-        String monthName = spiltedMonthFromRest[0];
-        String dayAndYearString = spiltedMonthFromRest[1];
+        // Dividing date string into day,month and year
+        String[] cutMonthFromRest = date.split("\\s+");
+        String monthName = cutMonthFromRest[0];
+        String dayAndYearString = cutMonthFromRest[1];
 
-        String[] spilted2ndPhase = dayAndYearString.split(",");
-        String dayString = spilted2ndPhase[0];
-        String yearString = spilted2ndPhase[1];
+        String[] cut2ndPhase = dayAndYearString.split(",");
+        String dayString = cut2ndPhase[0];
+        String yearString = cut2ndPhase[1];
 
         int yearNumber = Integer.parseInt(yearString.trim());
 
         return yearNumber;
     }
 
+    // Function to get Hour integer
     private int getTimeHour(String time) {
 
-        String timeFromCurrentString = time;
-        String[] splitedHourFromRest = timeFromCurrentString.split(":");
-        String hourString = splitedHourFromRest[0];
-        String minutesAndXm = splitedHourFromRest[1];
+        // Dividing date string into hours,minutes and am_pm
+        String[] cutHourFromRest = time.split(":");
+        String hourString = cutHourFromRest[0];
+        String minutesAndXm = cutHourFromRest[1];
 
-        String[] splited2ndPhase = minutesAndXm.split("\\s+");
-        String minutesString = splited2ndPhase[0];
-        String am_pm = splited2ndPhase[1];
+        String[] cut2ndPhase = minutesAndXm.split("\\s+");
+        String minutesString = cut2ndPhase[0];
+        String am_pm = cut2ndPhase[1];
 
         int hour = Integer.parseInt(hourString.trim());
         int hourNumber = 0;
@@ -385,22 +393,22 @@ public class AddRemainderActivity extends AppCompatActivity {
         return hourNumber;
     }
 
+    // Function to get minutes integer
     private int getTimeMinute(String time) {
 
-        String timeFromCurrentString = time;
-        String[] splitedHourFromRest = timeFromCurrentString.split(":");
-        String hourString = splitedHourFromRest[0];
-        String minutesAndXm = splitedHourFromRest[1];
+        // Dividing date string into hours,minutes and am_pm
+        String[] cutHourFromRest = time.split(":");
+        String hourString = cutHourFromRest[0];
+        String minutesAndXm = cutHourFromRest[1];
 
-        String[] splited2ndPhase = minutesAndXm.split("\\s+");
-        String minutesString = splited2ndPhase[0];
-        String am_pm = splited2ndPhase[1];
+        String[] cut2ndPhase = minutesAndXm.split("\\s+");
+        String minutesString = cut2ndPhase[0];
+        String am_pm = cut2ndPhase[1];
 
-        int minuteNumber = Integer.parseInt(minutesString.trim());
-
-        return minuteNumber;
+        return Integer.parseInt(minutesString.trim());
     }
 
+    // Spinners Functions
     private void setupNotificationSpinner() {
         // Create adapter for spinner. The list options are from the String array it will use
         // the spinner will use the default layout
@@ -478,6 +486,7 @@ public class AddRemainderActivity extends AppCompatActivity {
     }
 
 
+    // Function to convert month number into month name
     private String getMonthName(int month) {
 
         String monthName = "";
@@ -522,6 +531,7 @@ public class AddRemainderActivity extends AppCompatActivity {
         return monthName;
     }
 
+    // Function to convert month name into month number
     private int getMonthNumber(String monthName) {
 
         int monthNumber = 0;
@@ -572,15 +582,15 @@ public class AddRemainderActivity extends AppCompatActivity {
 
         final TextView dateFrom = (TextView) findViewById(R.id.add_remainder_date_from);
 
-        // getting date that written in textview
+        // getting date that written in textView
         String dataFromCurrentString = dateFrom.getText().toString();
-        String[] spiltedMonthFromRest = dataFromCurrentString.split("\\s+");
-        String monthName = spiltedMonthFromRest[0];
-        String dayAndYearString = spiltedMonthFromRest[1];
+        String[] cutMonthFromRest = dataFromCurrentString.split("\\s+");
+        String monthName = cutMonthFromRest[0];
+        String dayAndYearString = cutMonthFromRest[1];
 
-        String[] spilted2ndPhase = dayAndYearString.split(",");
-        String dayString = spilted2ndPhase[0];
-        String yearString = spilted2ndPhase[1];
+        String[] cut2ndPhase = dayAndYearString.split(",");
+        String dayString = cut2ndPhase[0];
+        String yearString = cut2ndPhase[1];
 
         int monthNumber = getMonthNumber(monthName.trim());
         int dayNumber = Integer.parseInt(dayString.trim());
@@ -612,13 +622,13 @@ public class AddRemainderActivity extends AppCompatActivity {
         final TextView dateTo = (TextView) findViewById(R.id.add_remainder_date_to);
 
         String dataToCurrentString = dateTo.getText().toString();
-        String[] spiltedMonthFromRest = dataToCurrentString.split("\\s+");
-        String monthName = spiltedMonthFromRest[0];
-        String dayAndYearString = spiltedMonthFromRest[1];
+        String[] cutMonthFromRest = dataToCurrentString.split("\\s+");
+        String monthName = cutMonthFromRest[0];
+        String dayAndYearString = cutMonthFromRest[1];
 
-        String[] spilted2ndPhase = dayAndYearString.split(",");
-        String dayString = spilted2ndPhase[0];
-        String yearString = spilted2ndPhase[1];
+        String[] cut2ndPhase = dayAndYearString.split(",");
+        String dayString = cut2ndPhase[0];
+        String yearString = cut2ndPhase[1];
 
         int monthNumber = getMonthNumber(monthName.trim());
         int dayNumber = Integer.parseInt(dayString.trim());
@@ -660,13 +670,13 @@ public class AddRemainderActivity extends AppCompatActivity {
 
         // reading current time written in text view
         String timeFromCurrentString = timeFrom.getText().toString();
-        String[] splitedHourFromRest = timeFromCurrentString.split(":");
-        String hourString = splitedHourFromRest[0];
-        String minutesAndXm = splitedHourFromRest[1];
+        String[] cutHourFromRest = timeFromCurrentString.split(":");
+        String hourString = cutHourFromRest[0];
+        String minutesAndXm = cutHourFromRest[1];
 
-        String[] splited2ndPhase = minutesAndXm.split("\\s+");
-        String minutesString = splited2ndPhase[0];
-        String am_pm = splited2ndPhase[1];
+        String[] cut2ndPhase = minutesAndXm.split("\\s+");
+        String minutesString = cut2ndPhase[0];
+        String am_pm = cut2ndPhase[1];
 
 
         int hourNumber = Integer.parseInt(hourString.trim());
@@ -709,13 +719,13 @@ public class AddRemainderActivity extends AppCompatActivity {
         final TextView timeTo = (TextView) findViewById(R.id.add_remainder_time_to);
 
         String timeToCurrentString = timeTo.getText().toString();
-        String[] splitedHourFromRest = timeToCurrentString.split(":");
-        String hourString = splitedHourFromRest[0];
-        String minutesAndXm = splitedHourFromRest[1];
+        String[] cutHourFromRest = timeToCurrentString.split(":");
+        String hourString = cutHourFromRest[0];
+        String minutesAndXm = cutHourFromRest[1];
 
-        String[] splited2ndPhase = minutesAndXm.split("\\s+");
-        String minutesString = splited2ndPhase[0];
-        String am_pm = splited2ndPhase[1];
+        String[] cut2ndPhase = minutesAndXm.split("\\s+");
+        String minutesString = cut2ndPhase[0];
+        String am_pm = cut2ndPhase[1];
 
 
         int hourNumber = Integer.parseInt(hourString.trim());
@@ -751,6 +761,7 @@ public class AddRemainderActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // Function to retrieve image
     private void openGallery() {
         Intent intent;
         if (Build.VERSION.SDK_INT < 19) {

@@ -12,10 +12,13 @@ import android.view.View;
 import android.widget.ImageView;
 
 public class SettingsActivity extends AppCompatActivity {
+    String username;
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
+
+        username = getIntent().getStringExtra("name");
 
         ImageView menu_icon = (ImageView) findViewById(R.id.settings_menu_icon);
         final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.settings_drawer_layout);
@@ -37,12 +40,14 @@ public class SettingsActivity extends AppCompatActivity {
 //                        mDrawerLayout.closeDrawer(GravityCompat.START);
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(SettingsActivity.this, MainScreenActivity.class);
+                        mainScreenActivity.putExtra("name", username);
                         startActivity(mainScreenActivity);
                         break;
                     case R.id.nav_overview:
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(SettingsActivity.this, MyGroupsActivity.class);
+                        groupsActivity.putExtra("name", username);
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
@@ -53,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(SettingsActivity.this, SettingsActivity.class);
+                        settingsActivity.putExtra("name", username);
                         startActivity(settingsActivity);
                         break;
                     case R.id.nav_logout:

@@ -32,6 +32,7 @@ public class EventsContract {
         public static final String COLUMN_IMAGE = "image";
         public static final String COLUMN_STATE = "state";
 
+        public static final int NO_STATE = 0;
         public static final int STATE_COMPLETED = 1;
         public static final int STATE_SNOOZED = 2;
         public static final int STATE_OVERDUE = 3;

@@ -21,11 +21,13 @@ import com.github.mikephil.charting.data.BarEntry;
 import java.util.ArrayList;
 
 public class SummaryChartActivity extends AppCompatActivity {
+    String username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.summary_chart);
 
+        username = getIntent().getStringExtra("name");
         FloatingActionButton overview = (FloatingActionButton) findViewById(R.id.summary_fab);
         overview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,14 +57,17 @@ public class SummaryChartActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(SummaryChartActivity.this, MainScreenActivity.class);
+                        mainScreenActivity.putExtra("name", username);
                         startActivity(mainScreenActivity);
                         break;
                     case R.id.nav_overview:
                         Intent overviewActivity = new Intent(SummaryChartActivity.this, OverviewActivity.class);
+                        overviewActivity.putExtra("name", username);
                         startActivity(overviewActivity);
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(SummaryChartActivity.this, MyGroupsActivity.class);
+                        groupsActivity.putExtra("name", username);
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
@@ -73,6 +78,7 @@ public class SummaryChartActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(SummaryChartActivity.this, SettingsActivity.class);
+                        settingsActivity.putExtra("name", username);
                         startActivity(settingsActivity);
                         break;
                     case R.id.nav_logout:

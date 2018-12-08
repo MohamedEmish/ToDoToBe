@@ -21,10 +21,13 @@ import com.example.amosh.todotobe.Categories.WorkActivity;
 
 
 public class MyGroupsActivity extends AppCompatActivity {
+    String username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_groups_layout);
+
+        username = getIntent().getStringExtra("name");
 
         ImageView menu_icon = (ImageView) findViewById(R.id.my_groups_menu_icon);
         final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.my_groups_drawer_layout);
@@ -49,12 +52,17 @@ public class MyGroupsActivity extends AppCompatActivity {
 //                        break;
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(MyGroupsActivity.this, MainScreenActivity.class);
+                        mainScreenActivity.putExtra("name", username);
                         startActivity(mainScreenActivity);
                         break;
                     case R.id.nav_overview:
+                        Intent overviewActivity = new Intent(MyGroupsActivity.this, OverviewActivity.class);
+                        overviewActivity.putExtra("name", username);
+                        startActivity(overviewActivity);
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(MyGroupsActivity.this, MyGroupsActivity.class);
+                        groupsActivity.putExtra("name", username);
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
@@ -65,6 +73,7 @@ public class MyGroupsActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(MyGroupsActivity.this, SettingsActivity.class);
+                        settingsActivity.putExtra("name", username);
                         startActivity(settingsActivity);
                         break;
                     case R.id.nav_logout:

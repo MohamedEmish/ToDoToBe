@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,13 +23,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.amosh.todotobe.Adapters.EventCursorAdapter;
+import com.example.amosh.todotobe.Adapters.EventDecorator;
+import com.example.amosh.todotobe.Data.EventsContract;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.example.amosh.todotobe.Data.UsersContract;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class MainScreenActivity extends AppCompatActivity {
@@ -38,12 +46,22 @@ public class MainScreenActivity extends AppCompatActivity {
     ImageView searchIcon;
     EditText searchEditText;
     String searchText;
+    ImageView menu_icon;
+    DrawerLayout mDrawerLayout;
+    ImageView close;
+    View header;
+
     FloatingActionButton fab;
     MaterialCalendarView calendarView;
+
+    ListView eventListView;
+
+    int dotColor;
 
     EventCursorAdapter eCursorAdapter;
 
     String userName;
+    ArrayList<CalendarDay> eventsDays;
     MyUsersDbHelper usersDbHelper;
 
     public static final int PICK_IMAGE_REQUEST = 0;
@@ -55,12 +73,40 @@ public class MainScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen_activity);
 
+        usersDbHelper = new MyUsersDbHelper(this);
+        // Getting signed in username
+        userName = getIntent().getStringExtra("name");
+
+        // Getting current date & time
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
-        userName = getIntent().getStringExtra("name");
+        // Getting current Date
+        Date date = calendar.getTime();
+
+        // setting Date & Time Format
+        DateFormat dateFormat = new SimpleDateFormat("h:mm aaa");
+        String FormattedTimeDate = dateFormat.format(date);
+
+        DateFormat dateFormat1 = new SimpleDateFormat("MMMM d,yyyy");
+        String FormattedDate = dateFormat1.format(date);
+
+        // Getting Day,month and year to be passed to DB and other intents
+        int dayToPass = getDateDay(FormattedDate);
+        int monthToPass = getDateMonth(FormattedDate);
+        int yearToPass = getDateYear(FormattedDate);
+
+        String day = String.valueOf(dayToPass);
+        String month = String.valueOf(monthToPass);
+        String year = String.valueOf(yearToPass);
+
+        // Setting greet MSG according to current Hour
+        setGreetMsg(hour);
+
+        // Setting user profile picture
         setProfilePic(userName);
 
+        // Changing profile picture
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,26 +114,65 @@ public class MainScreenActivity extends AppCompatActivity {
             }
         });
 
-        setGreetMsg(hour);
-        usersDbHelper = new MyUsersDbHelper(this);
-
-        // Find the ListView which will be populated with the unit data
-        ListView eventListView = (ListView) findViewById(R.id.main_screen_list_View);
+        // Find the ListView which will be populated with the event data
+        eventListView = (ListView) findViewById(R.id.main_screen_list_View);
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
         eventListView.setEmptyView(emptyView);
 
-        MaterialCalendarView calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
-
-        int daySelected = calendarView.getCurrentDate().getDay();
-        String day = String.valueOf(daySelected);
-
-        Cursor cursor = usersDbHelper.readEvent(userName, day);
+        // Cursor to populate listView
+        Cursor cursor = usersDbHelper.readEvent(userName, day, month, year);
         eCursorAdapter = new EventCursorAdapter(this, cursor);
         eventListView.setAdapter(eCursorAdapter);
 
+        // Defining UI calendar
+        calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
 
+        // Set current date selection
+        calendarView.setSelectedDate(CalendarDay.from(yearToPass, monthToPass, dayToPass));
+
+        // on day change event list change
+        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView materialCalendarView, @NonNull CalendarDay calendarDay, boolean b) {
+                int newDay = materialCalendarView.getSelectedDate().getDay();
+                int newMonth = materialCalendarView.getSelectedDate().getMonth();
+                int newYear = materialCalendarView.getSelectedDate().getYear();
+
+                Cursor newCursor = usersDbHelper.readEvent(userName, String.valueOf(newDay), String.valueOf(newMonth), String.valueOf(newYear));
+                eCursorAdapter = new EventCursorAdapter(MainScreenActivity.this, newCursor);
+                eventListView.setAdapter(eCursorAdapter);
+            }
+        });
+
+        // On month tab click
+        calendarView.setOnTitleClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calenderTitleClick();
+            }
+        });
+
+        // Decoration of calendar (the dot on events days)
+        Cursor eventsCursor = usersDbHelper.readEvent(userName);
+        int length = eventsCursor.getCount();
+        if (length > 0) {
+            eventsDays = new ArrayList<>();
+            for (eventsCursor.moveToFirst(); !eventsCursor.isAfterLast(); eventsCursor.moveToNext()) {
+                int eventDayNu = eventsCursor.getInt(eventsCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY));
+                int eventMonthNu = eventsCursor.getInt(eventsCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH));
+                int eventYearNu = eventsCursor.getInt(eventsCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR));
+
+                CalendarDay eventDay = CalendarDay.from(eventYearNu, eventMonthNu, eventDayNu);
+                eventsDays.add(eventDay);
+            }
+
+            dotColor = getResources().getColor(R.color.colorAccent);
+            calendarView.addDecorator(new EventDecorator(dotColor, eventsDays));
+        }
+
+        // Adding new event FAB
         fab = (FloatingActionButton) findViewById(R.id.main_screen_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +180,9 @@ public class MainScreenActivity extends AppCompatActivity {
                 addNewEvent(userName);
             }
         });
-        searchEditText = (EditText) findViewById(R.id.main_screen_search_text);
 
+        // Search TextView and Function
+        searchEditText = (EditText) findViewById(R.id.main_screen_search_text);
         searchIcon = (ImageView) findViewById(R.id.main_screen_search_button);
         searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,24 +200,12 @@ public class MainScreenActivity extends AppCompatActivity {
             }
         });
 
-
-        calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
-
-        calendarView.setOnTitleClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                calenderTitleClick();
-            }
-
-        });
-
-        ImageView menu_icon = (ImageView) findViewById(R.id.main_screen_menu_icon);
-        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.main_screen_drawer_layout);
+        // Navigation Drawer image and items
+        menu_icon = (ImageView) findViewById(R.id.main_screen_menu_icon);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.main_screen_drawer_layout);
         menu_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 mDrawerLayout.openDrawer(Gravity.START);
             }
         });
@@ -182,8 +256,8 @@ public class MainScreenActivity extends AppCompatActivity {
             }
         });
 
-        View header = navigationView.getHeaderView(0);
-        ImageView close = (ImageView) header.findViewById(R.id.nav_head_close);
+        header = navigationView.getHeaderView(0);
+        close = (ImageView) header.findViewById(R.id.nav_head_close);
 
         header.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,6 +276,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
     }
 
+    // open gallery to get image
     private void openGallery() {
         Intent intent;
         if (Build.VERSION.SDK_INT < 19) {
@@ -231,11 +306,13 @@ public class MainScreenActivity extends AppCompatActivity {
     }
 
 
+    // search function
     private void searchForEvent(String searchText) {
         // TODO : // search method
         Toast.makeText(MainScreenActivity.this, "SEARCHING FOR " + searchText, Toast.LENGTH_SHORT).show();
     }
 
+    // Getting profile picture from DB to set
     private void setProfilePic(String userName) {
         profilePic = (ImageView) findViewById(R.id.main_screen_user_pic);
         usersDbHelper = new MyUsersDbHelper(MainScreenActivity.this);
@@ -256,6 +333,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
     }
 
+    // Setting greet MSG according to hour
     private void setGreetMsg(int hour) {
         greet = (TextView) findViewById(R.id.main_screen_greet_msg);
 
@@ -270,21 +348,136 @@ public class MainScreenActivity extends AppCompatActivity {
         }
     }
 
+    // Function to open addRemainder to add new event
     private void addNewEvent(String name) {
         Intent ADDActivity = new Intent(MainScreenActivity.this, AddRemainderActivity.class);
         ADDActivity.putExtra("name", name);
         startActivity(ADDActivity);
     }
 
+    // on month click open detailed list
     private void calenderTitleClick() {
 
         calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
 
-        CalendarDay selected = calendarView.getCurrentDate();
-
+        CalendarDay selected = calendarView.getSelectedDate();
         int month = selected.getMonth();
 
+        String monthName = getMonthName(month);
+
+        int year = selected.getYear();
+        String yearString = String.valueOf(year).trim();
+
+        int day = selected.getDay();
+        String dayString = String.valueOf(day);
+
+        Intent monthPreview = new Intent(MainScreenActivity.this, com.example.amosh.todotobe.Fragments.MonthPreviewActivity.class);
+
+        monthPreview.putExtra("yearString", yearString);
+        monthPreview.putExtra("yearNumber", String.valueOf(year));
+        monthPreview.putExtra("monthName", monthName);
+        monthPreview.putExtra("monthNumber", String.valueOf(month));
+        monthPreview.putExtra("dayString", dayString);
+        monthPreview.putExtra("dayNumber", String.valueOf(day));
+        monthPreview.putExtra("name", userName);
+
+
+        startActivity(monthPreview);
+    }
+
+    // Function to return day number
+    private int getDateDay(String date) {
+
+        String[] cutMonthFromRest = date.split("\\s+");
+        String monthName = cutMonthFromRest[0];
+        String dayAndYearString = cutMonthFromRest[1];
+
+        String[] cut2ndPhase = dayAndYearString.split(",");
+        String dayString = cut2ndPhase[0];
+        String yearString = cut2ndPhase[1];
+
+        int dayNumber = Integer.parseInt(dayString.trim());
+
+        return dayNumber;
+    }
+
+    // Function to return month number
+    private int getDateMonth(String date) {
+
+        String[] cutMonthFromRest = date.split("\\s+");
+        String monthName = cutMonthFromRest[0];
+        String dayAndYearString = cutMonthFromRest[1];
+
+        String[] cut2ndPhase = dayAndYearString.split(",");
+        String dayString = cut2ndPhase[0];
+        String yearString = cut2ndPhase[1];
+
+        int monthNumber = getMonthNumber(monthName.trim());
+
+        return monthNumber;
+    }
+
+    // Function to return year number
+    private int getDateYear(String date) {
+
+        String[] cutMonthFromRest = date.split("\\s+");
+        String monthName = cutMonthFromRest[0];
+        String dayAndYearString = cutMonthFromRest[1];
+
+        String[] cut2ndPhase = dayAndYearString.split(",");
+        String dayString = cut2ndPhase[0];
+        String yearString = cut2ndPhase[1];
+
+        int yearNumber = Integer.parseInt(yearString.trim());
+
+        return yearNumber;
+    }
+
+    // Function to return hour number
+    private int getTimeHour(String time) {
+
+        String[] cutHourFromRest = time.split(":");
+        String hourString = cutHourFromRest[0];
+        String minutesAndXm = cutHourFromRest[1];
+
+        String[] cut2ndPhase = minutesAndXm.split("\\s+");
+        String minutesString = cut2ndPhase[0];
+        String am_pm = cut2ndPhase[1];
+
+        int hour = Integer.parseInt(hourString.trim());
+        int hourNumber = 0;
+        if (am_pm.equals("am")) {
+            hourNumber = hour;
+        }
+        if (am_pm.equals("pm")) {
+            hourNumber = hour + 12;
+        }
+
+        return hourNumber;
+    }
+
+    // Function to return minute number
+    private int getTimeMinute(String time) {
+
+        String timeFromCurrentString = time;
+        String[] cutHourFromRest = timeFromCurrentString.split(":");
+        String hourString = cutHourFromRest[0];
+        String minutesAndXm = cutHourFromRest[1];
+
+        String[] cut2ndPhase = minutesAndXm.split("\\s+");
+        String minutesString = cut2ndPhase[0];
+        String am_pm = cut2ndPhase[1];
+
+        int minuteNumber = Integer.parseInt(minutesString.trim());
+
+        return minuteNumber;
+    }
+
+    // Function to convert month number into month name
+    private String getMonthName(int month) {
+
         String monthName = "";
+
         if (month == 1) {
             monthName = "January";
         }
@@ -322,25 +515,53 @@ public class MainScreenActivity extends AppCompatActivity {
             monthName = "December";
         }
 
-        int year = selected.getYear();
-        String yearString = String.valueOf(year).trim();
-
-        int day = selected.getDay();
-        String dayString = String.valueOf(day);
-
-        String finalMonthName = monthName;
-
-        Intent monthPreview = new Intent(MainScreenActivity.this, com.example.amosh.todotobe.Fragments.MonthPreviewActivity.class);
-
-        monthPreview.putExtra("year", yearString);
-        monthPreview.putExtra("month", finalMonthName);
-        monthPreview.putExtra("day", dayString);
-        monthPreview.putExtra("monthNumber", month);
-        monthPreview.putExtra("name", userName);
-
-
-        startActivity(monthPreview);
+        return monthName;
     }
 
+    // Function to convert month name into month number
+    private int getMonthNumber(String monthName) {
+
+        int monthNumber = 0;
+
+        switch (monthName) {
+            case "January":
+                monthNumber = 1;
+                break;
+            case ("February"):
+                monthNumber = 2;
+                break;
+            case ("March"):
+                monthNumber = 3;
+                break;
+            case ("April"):
+                monthNumber = 4;
+                break;
+            case ("May"):
+                monthNumber = 5;
+                break;
+            case ("June"):
+                monthNumber = 6;
+                break;
+            case ("July"):
+                monthNumber = 7;
+                break;
+            case ("August"):
+                monthNumber = 8;
+                break;
+            case ("September"):
+                monthNumber = 9;
+                break;
+            case ("October"):
+                monthNumber = 10;
+                break;
+            case ("November"):
+                monthNumber = 11;
+                break;
+            case ("December"):
+                monthNumber = 12;
+                break;
+        }
+        return monthNumber;
+    }
 
 }

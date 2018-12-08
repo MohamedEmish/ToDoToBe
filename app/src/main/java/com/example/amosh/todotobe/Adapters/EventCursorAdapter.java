@@ -8,21 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.amosh.todotobe.Data.EventsContract;
-import com.example.amosh.todotobe.MainScreenActivity;
 import com.example.amosh.todotobe.R;
-import com.squareup.picasso.Picasso;
 
 public class EventCursorAdapter extends CursorAdapter {
 
 
-    private final MainScreenActivity activity;
-
-    public EventCursorAdapter(MainScreenActivity context, Cursor c) {
-        super(context, c, 0);
-        this.activity = context;
+    public EventCursorAdapter(Context context, Cursor c) {
+        super(context, c);
     }
 
     @Override
@@ -38,34 +34,60 @@ public class EventCursorAdapter extends CursorAdapter {
         TextView timeToTextView = (TextView) view.findViewById(R.id.list_event_time_to);
         TextView am_pmTextView = (TextView) view.findViewById(R.id.list_event_time_to_am_pm);
         TextView locationTextView = (TextView) view.findViewById(R.id.list_event_location);
-
+        TextView withTextView = (TextView) view.findViewById(R.id.list_event_with);
         ImageView eImage = (ImageView) view.findViewById(R.id.list_event_image);
+        LinearLayout stateColor = (LinearLayout) view.findViewById(R.id.list_event_state_color);
 
         String title = cursor.getString(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_TITLE));
         String people = cursor.getString(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_PEOPLE));
-        String timeFrom = cursor.getString(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR));
-        String timeTo = cursor.getString(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_TIME_TO_HOUR));
+        int timeFrom = cursor.getInt(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR));
+        int timeTo = cursor.getInt(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_TIME_TO_HOUR));
         String location = cursor.getString(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_LOCATION));
+        String imageUriString = cursor.getString(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_IMAGE));
 
-        Uri imageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_IMAGE)));
+        if (!imageUriString.equals("")) {
+            Uri imageUri = Uri.parse(imageUriString);
+            eImage.setImageURI(imageUri);
+        } else {
+            eImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_calendar_no_eimage));
+        }
 
-        Picasso.with(context).load(imageUri).into(eImage);
+
+        if (timeFrom > 12) {
+            timeFromTextView.setText(String.valueOf(timeFrom - 12));
+        } else {
+            timeFromTextView.setText(String.valueOf(timeFrom));
+        }
+
+        if (timeTo > 12) {
+            timeToTextView.setText(String.valueOf(timeTo - 12));
+        } else {
+            timeToTextView.setText(String.valueOf(timeTo));
+        }
+
+        if (people.equals("")) {
+            withTextView.setVisibility(View.GONE);
+        }
 
         titleTextView.setText(title);
         peopleTextView.setText(people);
-        timeFromTextView.setText(timeFrom);
-        timeToTextView.setText(timeTo);
         locationTextView.setText(location);
 
-        int hour = Integer.valueOf(timeTo);
-        if (hour >= 12) {
+        if (timeTo >= 12) {
             am_pmTextView.setText("pm");
         }
-        if (hour < 12) {
+        if (timeTo < 12) {
             am_pmTextView.setText("am");
         }
 
-        long id = cursor.getLong(cursor.getColumnIndex(EventsContract.EventsEntry._ID));
+
+//        if (state.equals("1")){stateColor.setBackgroundColor(context.getResources().getColor(R.color.green)); }
+//        else if (state.equals("2")){stateColor.setBackgroundColor(context.getResources().getColor(R.color.orange)); }
+//        else if (state.equals("3")){stateColor.setBackgroundColor(context.getResources().getColor(R.color.light_purple)); }
+//        else {stateColor.setBackgroundColor(context.getResources().getColor(R.color.white_color)); }
+
+
+//        long id = cursor.getLong(cursor.getColumnIndex(EventsContract.EventsEntry._ID));
 
     }
 }

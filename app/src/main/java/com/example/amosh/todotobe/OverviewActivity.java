@@ -13,10 +13,13 @@ import android.view.View;
 import android.widget.ImageView;
 
 public class OverviewActivity extends AppCompatActivity {
+    String username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.overview_layout);
+
+        username = getIntent().getStringExtra("name");
 
         FloatingActionButton summary = (FloatingActionButton) findViewById(R.id.overview_fab);
         summary.setOnClickListener(new View.OnClickListener() {
@@ -48,14 +51,17 @@ public class OverviewActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(OverviewActivity.this, MainScreenActivity.class);
+                        mainScreenActivity.putExtra("name", username);
                         startActivity(mainScreenActivity);
                         break;
                     case R.id.nav_overview:
                         Intent overviewActivity = new Intent(OverviewActivity.this, OverviewActivity.class);
+                        overviewActivity.putExtra("name", username);
                         startActivity(overviewActivity);
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(OverviewActivity.this, MyGroupsActivity.class);
+                        groupsActivity.putExtra("name", username);
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
@@ -66,6 +72,7 @@ public class OverviewActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(OverviewActivity.this, SettingsActivity.class);
+                        settingsActivity.putExtra("name", username);
                         startActivity(settingsActivity);
                         break;
                     case R.id.nav_logout:

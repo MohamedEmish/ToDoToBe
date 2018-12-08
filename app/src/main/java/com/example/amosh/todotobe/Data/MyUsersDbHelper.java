@@ -178,6 +178,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
     public Cursor readEvent(String name) {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {
+                EventsContract.EventsEntry._ID,
                 EventsContract.EventsEntry.COLUMN_USER_NAME,
                 EventsContract.EventsEntry.COLUMN_TITLE,
                 EventsContract.EventsEntry.COLUMN_DESCRIPTION,
@@ -203,6 +204,12 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?";
         String[] selectionArgs = new String[]{name};
 
+        String order = EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR + " ASC,"
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE + " ASC";
+
         Cursor cursor = db.query(
                 EventsContract.EventsEntry.TABLE_EVENTS,
                 projection,
@@ -210,7 +217,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 selectionArgs,
                 null,
                 null,
-                null
+                order
         );
         return cursor;
     }
@@ -218,6 +225,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
     public Cursor readEvent(String name, String dayFrom) {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {
+                EventsContract.EventsEntry._ID,
                 EventsContract.EventsEntry.COLUMN_USER_NAME,
                 EventsContract.EventsEntry.COLUMN_TITLE,
                 EventsContract.EventsEntry.COLUMN_DESCRIPTION,
@@ -241,8 +249,14 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_IMAGE
         };
         String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?"
-                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY;
+                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + "=?";
         String[] selectionArgs = new String[]{name, dayFrom};
+
+        String order = EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR + " ASC,"
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE + " ASC";
 
         Cursor cursor = db.query(
                 EventsContract.EventsEntry.TABLE_EVENTS,
@@ -251,11 +265,10 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 selectionArgs,
                 null,
                 null,
-                null
+                order
         );
         return cursor;
     }
-
 
     public Cursor readEvent(long id) {
         SQLiteDatabase db = getReadableDatabase();
@@ -285,6 +298,12 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         String selection = EventsContract.EventsEntry._ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
 
+        String order = EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR + " ASC,"
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE + " ASC";
+
         Cursor cursor = db.query(
                 EventsContract.EventsEntry.TABLE_EVENTS,
                 projection,
@@ -292,7 +311,57 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 selectionArgs,
                 null,
                 null,
-                null
+                order
+        );
+        return cursor;
+    }
+
+    public Cursor readEvent(String name, String dayFrom, String monthFrom, String yearFrom) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                EventsContract.EventsEntry._ID,
+                EventsContract.EventsEntry.COLUMN_USER_NAME,
+                EventsContract.EventsEntry.COLUMN_TITLE,
+                EventsContract.EventsEntry.COLUMN_DESCRIPTION,
+
+                EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY,
+                EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH,
+                EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR,
+                EventsContract.EventsEntry.COLUMN_DATE_TO_DAY,
+                EventsContract.EventsEntry.COLUMN_DATE_TO_MONTH,
+                EventsContract.EventsEntry.COLUMN_DATE_TO_YEAR,
+
+                EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR,
+                EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE,
+                EventsContract.EventsEntry.COLUMN_TIME_TO_HOUR,
+                EventsContract.EventsEntry.COLUMN_TIME_TO_MINUTE,
+
+                EventsContract.EventsEntry.COLUMN_LOCATION,
+                EventsContract.EventsEntry.COLUMN_NOTIFICATION,
+                EventsContract.EventsEntry.COLUMN_REPEAT,
+                EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_IMAGE
+        };
+        String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + "=?";
+        String[] selectionArgs = new String[]{name, dayFrom, monthFrom, yearFrom};
+
+        String order = EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR + " ASC,"
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE + " ASC";
+
+        Cursor cursor = db.query(
+                EventsContract.EventsEntry.TABLE_EVENTS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                order
         );
         return cursor;
     }

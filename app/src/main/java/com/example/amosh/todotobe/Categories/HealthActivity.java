@@ -10,16 +10,20 @@ import com.example.amosh.todotobe.MyGroupsActivity;
 import com.example.amosh.todotobe.R;
 
 public class HealthActivity extends AppCompatActivity {
+    String userName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.health_layout);
+
+        userName = getIntent().getStringExtra("name");
 
         ImageView backIcon = (ImageView) findViewById(R.id.health_back_icon);
         backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent myGroupsIntent = new Intent(HealthActivity.this, MyGroupsActivity.class);
+                myGroupsIntent.putExtra("name", userName);
                 startActivity(myGroupsIntent);
             }
         });

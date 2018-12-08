@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.amosh.todotobe.Adapters.MonthPreviewPagerAdapter;
 import com.example.amosh.todotobe.MainScreenActivity;
 import com.example.amosh.todotobe.MyGroupsActivity;
+import com.example.amosh.todotobe.OverviewActivity;
 import com.example.amosh.todotobe.R;
 import com.example.amosh.todotobe.SettingsActivity;
 import com.example.amosh.todotobe.SignInActivity;
@@ -24,27 +25,55 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 public class MonthPreviewActivity extends AppCompatActivity {
 
+    String username;
+    String yearString;
+    int yearNumber;
+    String monthName;
+    int monthNumber;
+    String dayString;
+    int dayNumber;
+
+    MaterialCalendarView weekCalendarView;
+    MaterialCalendarView monthCalendarView;
+
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    TabItem dayTab;
+    TabItem weekTab;
+    TabItem monthTab;
+
+    TextView monthTextView;
+    TextView yearTextView;
+    ImageView menu_icon;
+    DrawerLayout mDrawerLayout;
+    NavigationView navigationView;
+
+    MonthPreviewPagerAdapter monthPreviewPagerAdapter;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.month_preview);
 
+        username = getIntent().getStringExtra("name");
 
-        final MaterialCalendarView weekCalendarView = (MaterialCalendarView) findViewById(R.id.month_periview_week_calender);
-        final MaterialCalendarView monthCalendarView = (MaterialCalendarView) findViewById(R.id.month_periview_month_calender);
+        weekCalendarView = (MaterialCalendarView) findViewById(R.id.month_periview_week_calender);
+        monthCalendarView = (MaterialCalendarView) findViewById(R.id.month_preview_month_calender);
 
-        String yearString = getIntent().getStringExtra("year");
-        String monthName = getIntent().getStringExtra("month");
-        String dayString = getIntent().getStringExtra("day");
-        String monthNumber = getIntent().getStringExtra("monthNumber");
+        yearString = getIntent().getStringExtra("yearString");
+        yearNumber = Integer.valueOf(getIntent().getStringExtra("yearNumber"));
+        monthName = getIntent().getStringExtra("monthName");
+        monthNumber = Integer.valueOf(getIntent().getStringExtra("monthNumber"));
+        dayString = getIntent().getStringExtra("dayString");
+        dayNumber = Integer.valueOf(getIntent().getStringExtra("dayNumber"));
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.month_preview_tab_layout);
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.month_preview_view_pager);
-        TabItem dayTab = (TabItem) findViewById(R.id.month_preview_day_tab);
-        TabItem weekTab = (TabItem) findViewById(R.id.month_preview_week_tab);
-        TabItem monthTab = (TabItem) findViewById(R.id.month_preview_month_tab);
 
-        MonthPreviewPagerAdapter monthPreviewPagerAdapter;
+        tabLayout = (TabLayout) findViewById(R.id.month_preview_tab_layout);
+        viewPager = (ViewPager) findViewById(R.id.month_preview_view_pager);
+        dayTab = (TabItem) findViewById(R.id.month_preview_day_tab);
+        weekTab = (TabItem) findViewById(R.id.month_preview_week_tab);
+        monthTab = (TabItem) findViewById(R.id.month_preview_month_tab);
+
         monthPreviewPagerAdapter = new MonthPreviewPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(monthPreviewPagerAdapter);
         viewPager.setCurrentItem(0);
@@ -76,15 +105,15 @@ public class MonthPreviewActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
 
-        TextView monthTextView = (TextView) findViewById(R.id.month_preview_month_name);
+        monthTextView = (TextView) findViewById(R.id.month_preview_month_name);
         monthTextView.setText(monthName);
 
-        TextView yearTextView = (TextView) findViewById(R.id.month_preview_year);
+        yearTextView = (TextView) findViewById(R.id.month_preview_year);
         yearTextView.setText(yearString);
 
 
-        ImageView menu_icon = (ImageView) findViewById(R.id.month_preview_menu_icon);
-        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.month_preview_drawer_layout);
+        menu_icon = (ImageView) findViewById(R.id.month_preview_menu_icon);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.month_preview_drawer_layout);
         menu_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +122,7 @@ public class MonthPreviewActivity extends AppCompatActivity {
             }
         });
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.month_preview_navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.month_preview_navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -106,12 +135,17 @@ public class MonthPreviewActivity extends AppCompatActivity {
 //                        break;
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(MonthPreviewActivity.this, MainScreenActivity.class);
+                        mainScreenActivity.putExtra("name", username);
                         startActivity(mainScreenActivity);
                         break;
                     case R.id.nav_overview:
+                        Intent overView = new Intent(MonthPreviewActivity.this, OverviewActivity.class);
+                        overView.putExtra("name", username);
+                        startActivity(overView);
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(MonthPreviewActivity.this, MyGroupsActivity.class);
+                        groupsActivity.putExtra("name", username);
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
@@ -122,6 +156,7 @@ public class MonthPreviewActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(MonthPreviewActivity.this, SettingsActivity.class);
+                        settingsActivity.putExtra("name", username);
                         startActivity(settingsActivity);
                         break;
                     case R.id.nav_logout:
@@ -134,4 +169,37 @@ public class MonthPreviewActivity extends AppCompatActivity {
         });
 
     }
+
+    public String getUserName() {
+        return username;
+    }
+
+    public int getDayNumber() {
+        return dayNumber;
+    }
+
+    public int getMonthNumber() {
+        return monthNumber;
+    }
+
+    public int getYearNumber() {
+        return yearNumber;
+    }
+
+    public String getDayString() {
+        return dayString;
+    }
+
+    public String getYearString() {
+        return yearString;
+    }
+
+    public String getMonthName() {
+        return monthName;
+    }
+
+    public String getMonthNumberString() {
+        return String.valueOf(monthNumber);
+    }
+
 }
