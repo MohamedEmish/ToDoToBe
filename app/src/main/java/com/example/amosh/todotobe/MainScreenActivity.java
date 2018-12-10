@@ -219,9 +219,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
                 switch (id) {
                     case R.id.nav_home:
-                        Intent mainScreenActivity = new Intent(MainScreenActivity.this, MainScreenActivity.class);
-                        mainScreenActivity.putExtra("name", userName);
-                        startActivity(mainScreenActivity);
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
                         break;
                     case R.id.nav_overview:
                         Intent overviewActivity = new Intent(MainScreenActivity.this, OverviewActivity.class);

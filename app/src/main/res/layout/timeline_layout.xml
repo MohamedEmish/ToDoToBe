@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     tools:context=".MyGroupsActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -17,51 +17,121 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_height="180dp"
             android:background="#9E9E9E"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:paddingTop="16dp">
-
-                <ImageView
-                    android:id="@+id/timeline_menu_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingLeft="16dp"
-                    android:src="@drawable/ic_menu_black_24dp" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:paddingEnd="16dp"
-                    android:paddingRight="16dp"
-                    android:src="@drawable/ic_search_black_24dp" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="32dp"
-                    android:text="Timeline"
-                    android:textSize="30sp" />
-
-            </LinearLayout>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
         </LinearLayout>
-    </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/xx"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:paddingTop="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/timeline_menu_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingStart="16dp"
+                android:paddingLeft="16dp"
+                android:src="@drawable/ic_menu_black_24dp" />
+
+            <ImageView
+                android:id="@+id/timeline_search_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingEnd="16dp"
+                android:paddingRight="16dp"
+                android:src="@drawable/ic_search_black_24dp" />
+
+            <EditText
+                android:id="@+id/timeline_search_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_toStartOf="@id/timeline_search_icon"
+                android:layout_toEndOf="@+id/timeline_menu_icon"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:hint="@string/main_screen_search_hint"
+                android:paddingStart="8dp"
+                android:textColorHint="#9E9E9E"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/xxx"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/xx">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="32dp"
+                android:text="Timeline"
+                android:textSize="30sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/xxxxx"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/xxx">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timeline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="true"
+            app:layout_constraintTop_toBottomOf="@id/xxxxx">
+
+
+            <ListView
+                android:id="@+id/timeline_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="true" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+
+            android:id="@+id/add_remainder_add_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_more"
+            app:backgroundTint="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/xxxxx"
+            app:layout_constraintTop_toTopOf="@+id/xxxxx" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/timeline_navigation_view"
