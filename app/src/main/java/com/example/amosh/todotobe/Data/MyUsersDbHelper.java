@@ -19,6 +19,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(UsersContract.UsersEntry.CREATE_TABLE_USERS);
         db.execSQL(EventsContract.EventsEntry.CREATE_TABLE_EVENTS);
+        db.execSQL(ItemsContract.ItemsEntry.CREATE_TABLE_ITEMS);
 
     }
 
@@ -38,52 +39,6 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         long id = db.insert(UsersContract.UsersEntry.TABLE_USERS, null, values);
     }
 
-    public Cursor readUser() {
-        SQLiteDatabase db = getReadableDatabase();
-        String[] projection = {
-                UsersContract.UsersEntry._ID,
-                UsersContract.UsersEntry.COLUMN_NAME,
-                UsersContract.UsersEntry.COLUMN_PASSWORD,
-                UsersContract.UsersEntry.COLUMN_EMAIL,
-                UsersContract.UsersEntry.COLUMN_BIRTHDAY,
-                UsersContract.UsersEntry.COLUMN_IMAGE,
-        };
-        Cursor cursor = db.query(
-                UsersContract.UsersEntry.TABLE_USERS,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-        return cursor;
-    }
-
-    public Cursor readUser(long itemId) {
-        SQLiteDatabase db = getReadableDatabase();
-        String[] projection = {
-                UsersContract.UsersEntry._ID,
-                UsersContract.UsersEntry.COLUMN_NAME,
-                UsersContract.UsersEntry.COLUMN_PASSWORD,
-                UsersContract.UsersEntry.COLUMN_EMAIL,
-                UsersContract.UsersEntry.COLUMN_BIRTHDAY,
-                UsersContract.UsersEntry.COLUMN_IMAGE,
-        };
-        String selection = UsersContract.UsersEntry._ID + "=?";
-        String[] selectionArgs = new String[]{String.valueOf(itemId)};
-
-        Cursor cursor = db.query(
-                UsersContract.UsersEntry.TABLE_USERS,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
-        return cursor;
-    }
 
     public Cursor readUser(String name) {
         SQLiteDatabase db = getReadableDatabase();
@@ -125,18 +80,21 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
     }
 
 
-    public void updatePassword(String email, String password) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(UsersContract.UsersEntry.COLUMN_PASSWORD, password);
-        db.update(UsersContract.UsersEntry.TABLE_USERS,
-                values,
-                UsersContract.UsersEntry.COLUMN_EMAIL + " =?", new String[]{email});
-    }
-
     public void updateImage(String name, String image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(UsersContract.UsersEntry.COLUMN_IMAGE, image);
+        db.update(UsersContract.UsersEntry.TABLE_USERS,
+                values,
+                UsersContract.UsersEntry.COLUMN_NAME + " =?", new String[]{name});
+    }
+
+    public void updateUserDetails(String name, String mail, String pass, String image, String bDay) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(UsersContract.UsersEntry.COLUMN_EMAIL, mail);
+        values.put(UsersContract.UsersEntry.COLUMN_PASSWORD, pass);
+        values.put(UsersContract.UsersEntry.COLUMN_BIRTHDAY, bDay);
         values.put(UsersContract.UsersEntry.COLUMN_IMAGE, image);
         db.update(UsersContract.UsersEntry.TABLE_USERS,
                 values,
@@ -404,12 +362,75 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(true,
                 EventsContract.EventsEntry.TABLE_EVENTS,
                 projection,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY,
                 null,
                 null,
                 null);
         return cursor;
     }
+
+    // Items Functions
+
+    public void insertItem(Items item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ItemsContract.ItemsEntry.COLUMN_USERNAME, item.getUsername());
+        values.put(ItemsContract.ItemsEntry.COLUMN_CATEGORY, item.getCategory());
+        values.put(ItemsContract.ItemsEntry.COLUMN_STATE, item.getState());
+        values.put(ItemsContract.ItemsEntry.COLUMN_ITEM, item.getName());
+        long id = db.insert(ItemsContract.ItemsEntry.TABLE_ITEMS, null, values);
+    }
+
+    public Cursor readItems(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                ItemsContract.ItemsEntry._ID,
+                ItemsContract.ItemsEntry.COLUMN_USERNAME,
+                ItemsContract.ItemsEntry.COLUMN_ITEM,
+                ItemsContract.ItemsEntry.COLUMN_CATEGORY,
+                ItemsContract.ItemsEntry.COLUMN_STATE
+        };
+        String selection = ItemsContract.ItemsEntry.COLUMN_USERNAME + "=?";
+        String[] selectionArgs = new String[]{username};
+
+        Cursor cursor = db.query(
+                ItemsContract.ItemsEntry.TABLE_ITEMS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        return cursor;
+    }
+
+    public Cursor readItems(String username, String category) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                ItemsContract.ItemsEntry._ID,
+                ItemsContract.ItemsEntry.COLUMN_USERNAME,
+                ItemsContract.ItemsEntry.COLUMN_ITEM,
+                ItemsContract.ItemsEntry.COLUMN_CATEGORY,
+                ItemsContract.ItemsEntry.COLUMN_STATE
+        };
+        String selection = ItemsContract.ItemsEntry.COLUMN_USERNAME + "=?"
+                + " AND " + ItemsContract.ItemsEntry.COLUMN_CATEGORY + "=?";
+
+        String[] selectionArgs = new String[]{username, category};
+
+        Cursor cursor = db.query(
+                ItemsContract.ItemsEntry.TABLE_ITEMS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        return cursor;
+    }
+
 }

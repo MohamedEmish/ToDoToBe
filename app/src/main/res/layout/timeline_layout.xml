@@ -106,22 +106,65 @@
         <LinearLayout
             android:id="@+id/timeline"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true"
+            android:layout_height="match_parent"
+            android:layout_marginTop="180dp"
+            android:background="#E0E0E0"
             app:layout_constraintTop_toBottomOf="@id/xxxxx">
 
-
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/timeline_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:nestedScrollingEnabled="true" />
+                android:background="#E0E0E0" />
+
+            <RelativeLayout
+                android:id="@+id/timeline_empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical|clip_horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/empty_inventory_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/no_event_to_show" />
+
+                <TextView
+                    android:id="@+id/empty_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/empty_inventory_image"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingTop="16dp"
+                    android:text="No Events"
+                    android:textAppearance="?android:textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/empty_subtitle_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/empty_title_text"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="sans-serif"
+                    android:paddingTop="8dp"
+                    android:text="@string/list_plz_add_events"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="#A2AAB0" />
+            </RelativeLayout>
+
 
         </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton
 
-            android:id="@+id/add_remainder_add_fab"
+            android:id="@+id/timeline_add_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"

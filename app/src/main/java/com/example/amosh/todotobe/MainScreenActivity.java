@@ -13,16 +13,19 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.amosh.todotobe.Adapters.EventCursorAdapter;
+import com.example.amosh.todotobe.Adapters.EventAdapter;
 import com.example.amosh.todotobe.Adapters.EventDecorator;
 import com.example.amosh.todotobe.Data.EventsContract;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
@@ -46,19 +49,24 @@ public class MainScreenActivity extends AppCompatActivity {
     ImageView searchIcon;
     EditText searchEditText;
     String searchText;
-    ImageView menu_icon;
-    DrawerLayout mDrawerLayout;
-    ImageView close;
-    View header;
+
+    RelativeLayout emptyView;
 
     FloatingActionButton fab;
     MaterialCalendarView calendarView;
 
-    ListView eventListView;
+    RecyclerView eventListView;
 
     int dotColor;
 
-    EventCursorAdapter eCursorAdapter;
+    DrawerLayout mDrawerLayout;
+    ImageView close;
+    View header;
+    NavigationView navigationView;
+    ImageView menu_icon;
+
+
+    EventAdapter eEventAdapter;
 
     String userName;
     ArrayList<CalendarDay> eventsDays;
@@ -114,17 +122,26 @@ public class MainScreenActivity extends AppCompatActivity {
             }
         });
 
-        // Find the ListView which will be populated with the event data
-        eventListView = (ListView) findViewById(R.id.main_screen_list_View);
+        // Find and set empty view on the recycler View, so that it only shows when the list has 0 items.
 
-        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
-        View emptyView = findViewById(R.id.empty_view);
-        eventListView.setEmptyView(emptyView);
+        emptyView = (RelativeLayout) findViewById(R.id.main_screen_empty_view);
 
-        // Cursor to populate listView
+        // Find the Recycler View which will be populated with the event data
+        eventListView = (RecyclerView) findViewById(R.id.main_screen_list_View);
+        eventListView.addItemDecoration(new DividerItemDecoration(eventListView.getContext(), DividerItemDecoration.VERTICAL));
+        eventListView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Cursor to populate recycler View
         Cursor cursor = usersDbHelper.readEvent(userName, day, month, year);
-        eCursorAdapter = new EventCursorAdapter(this, cursor);
-        eventListView.setAdapter(eCursorAdapter);
+        if (cursor.getCount() == 0) {
+            eventListView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        } else {
+            eventListView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
+        eEventAdapter = new EventAdapter(this, cursor);
+        eventListView.setAdapter(eEventAdapter);
 
         // Defining UI calendar
         calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
@@ -141,8 +158,16 @@ public class MainScreenActivity extends AppCompatActivity {
                 int newYear = materialCalendarView.getSelectedDate().getYear();
 
                 Cursor newCursor = usersDbHelper.readEvent(userName, String.valueOf(newDay), String.valueOf(newMonth), String.valueOf(newYear));
-                eCursorAdapter = new EventCursorAdapter(MainScreenActivity.this, newCursor);
-                eventListView.setAdapter(eCursorAdapter);
+                eEventAdapter = new EventAdapter(MainScreenActivity.this, newCursor);
+                eventListView.setAdapter(eEventAdapter);
+
+                if (newCursor.getCount() == 0) {
+                    eventListView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                } else {
+                    eventListView.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -209,8 +234,7 @@ public class MainScreenActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(Gravity.START);
             }
         });
-
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.main_screen_navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.main_screen_navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -234,6 +258,9 @@ public class MainScreenActivity extends AppCompatActivity {
                     case R.id.nav_lists:
                         break;
                     case R.id.nav_profile:
+                        Intent profileActivity = new Intent(MainScreenActivity.this, ProfileActivity.class);
+                        profileActivity.putExtra("name", userName);
+                        startActivity(profileActivity);
                         break;
                     case R.id.nav_timeline:
                         Intent timelineActivity = new Intent(MainScreenActivity.this, TimelineActivity.class);
