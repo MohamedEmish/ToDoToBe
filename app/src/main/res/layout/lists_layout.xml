@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-lists"
+    xmlns:app2="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,12 +48,14 @@
             android:textColor="#FFFFFF" />
 
         <ImageView
+            android:id="@+id/lists_item_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:paddingEnd="16dp"
             android:paddingRight="16dp"
             android:src="@drawable/ic_search_black_24dp" />
+
     </RelativeLayout>
 
 
@@ -64,6 +67,7 @@
         android:paddingLeft="32dp"
         android:text="Lists"
         android:textSize="30sp"
+        app2:layout_constraintTop_toBottomOf="@+id/relativeLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
@@ -73,32 +77,80 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteY="120dp">
+        app2:layout_constraintTop_toBottomOf="@+id/textView">
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/lists_recycler"
+    <LinearLayout
+        android:id="@+id/lists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="180dp"
         android:background="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+        android:orientation="vertical"
+        app2:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/lists_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/lists_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical|clip_horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/empty_inventory_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/no_event_to_show" />
+
+            <TextView
+                android:id="@+id/empty_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/empty_inventory_image"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-medium"
+                android:paddingTop="16dp"
+                android:text="No items"
+                android:textAppearance="?android:textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/empty_subtitle_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/empty_title_text"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif"
+                android:paddingTop="8dp"
+                android:text="add more items to your list"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="#A2AAB0" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
 
-        android:id="@+id/addFloatingActionButton"
+        android:id="@+id/lists_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        app2:layout_constraintEnd_toEndOf="@+id/linearLayout"
         android:src="@drawable/ic_add_black_24dp"
-        app:backgroundTint="@color/colorAccent"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
+        app2:layout_constraintTop_toTopOf="@+id/linearLayout"
+        app:backgroundTint="@color/colorAccent" />
 
 </android.support.constraint.ConstraintLayout>

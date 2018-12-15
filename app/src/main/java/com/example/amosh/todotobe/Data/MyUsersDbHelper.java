@@ -433,4 +433,28 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor checkItems() {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {ItemsContract.ItemsEntry.COLUMN_ITEM,
+                ItemsContract.ItemsEntry.COLUMN_CATEGORY};
+        Cursor cursor = db.query(ItemsContract.ItemsEntry.TABLE_ITEMS,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null);
+        return cursor;
+    }
+
+    public void updateItemState(String username, String itemName, int state) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ItemsContract.ItemsEntry.COLUMN_STATE, state);
+        db.update(ItemsContract.ItemsEntry.TABLE_ITEMS,
+                values,
+                ItemsContract.ItemsEntry.COLUMN_USERNAME + " =?"
+                        + " AND " + ItemsContract.ItemsEntry.COLUMN_ITEM + "=?", new String[]{username, itemName});
+    }
+
 }

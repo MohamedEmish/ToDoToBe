@@ -12,4 +12,15 @@
         <item>Weekly</item>
         <item>Daily</item>
     </string-array>
+
+     <string-array name="array_category_options">
+        <item>Auto</item>
+        <item>Bills</item>
+        <item>Health</item>
+        <item>Shop</item>
+        <item>Travel</item>
+        <item>Work</item>
+
+    </string-array>
+
 </resources>

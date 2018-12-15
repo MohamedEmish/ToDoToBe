@@ -47,9 +47,6 @@ public class MyGroupsActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 switch (id) {
-//                    case R.id.nav_close:
-//                        mDrawerLayout.closeDrawer(GravityCompat.START);
-//                        break;
                     case R.id.nav_home:
                         Intent mainScreenActivity = new Intent(MyGroupsActivity.this, MainScreenActivity.class);
                         mainScreenActivity.putExtra("name", username);

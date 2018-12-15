@@ -50,11 +50,12 @@ public class MainScreenActivity extends AppCompatActivity {
     EditText searchEditText;
     String searchText;
 
-    RelativeLayout emptyView;
 
     FloatingActionButton fab;
     MaterialCalendarView calendarView;
 
+    EventAdapter eEventAdapter;
+    RelativeLayout emptyView;
     RecyclerView eventListView;
 
     int dotColor;
@@ -64,9 +65,6 @@ public class MainScreenActivity extends AppCompatActivity {
     View header;
     NavigationView navigationView;
     ImageView menu_icon;
-
-
-    EventAdapter eEventAdapter;
 
     String userName;
     ArrayList<CalendarDay> eventsDays;
@@ -256,6 +254,9 @@ public class MainScreenActivity extends AppCompatActivity {
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
+                        Intent listsActivity = new Intent(MainScreenActivity.this, ListsActivity.class);
+                        listsActivity.putExtra("name", userName);
+                        startActivity(listsActivity);
                         break;
                     case R.id.nav_profile:
                         Intent profileActivity = new Intent(MainScreenActivity.this, ProfileActivity.class);
