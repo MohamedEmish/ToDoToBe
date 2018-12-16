@@ -7,6 +7,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,14 +37,15 @@ public class SettingsActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 switch (id) {
-//                    case R.id.nav_close:
-//                        mDrawerLayout.closeDrawer(GravityCompat.START);
                     case R.id.nav_home:
-                        Intent mainScreenActivity = new Intent(SettingsActivity.this, MainScreenActivity.class);
-                        mainScreenActivity.putExtra("name", username);
-                        startActivity(mainScreenActivity);
+                        Intent homeActivity = new Intent(SettingsActivity.this, MainScreenActivity.class);
+                        homeActivity.putExtra("name", username);
+                        startActivity(homeActivity);
                         break;
                     case R.id.nav_overview:
+                        Intent overviewActivity = new Intent(SettingsActivity.this, OverviewActivity.class);
+                        overviewActivity.putExtra("name", username);
+                        startActivity(overviewActivity);
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(SettingsActivity.this, MyGroupsActivity.class);
@@ -51,15 +53,24 @@ public class SettingsActivity extends AppCompatActivity {
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
+                        Intent listsActivity = new Intent(SettingsActivity.this, ListsActivity.class);
+                        String category = "";
+                        listsActivity.putExtra("category", category);
+                        listsActivity.putExtra("name", username);
+                        startActivity(listsActivity);
                         break;
                     case R.id.nav_profile:
+                        Intent profileActivity = new Intent(SettingsActivity.this, ProfileActivity.class);
+                        profileActivity.putExtra("name", username);
+                        startActivity(profileActivity);
                         break;
                     case R.id.nav_timeline:
+                        Intent timelineActivity = new Intent(SettingsActivity.this, TimelineActivity.class);
+                        timelineActivity.putExtra("name", username);
+                        startActivity(timelineActivity);
                         break;
                     case R.id.nav_settings:
-                        Intent settingsActivity = new Intent(SettingsActivity.this, SettingsActivity.class);
-                        settingsActivity.putExtra("name", username);
-                        startActivity(settingsActivity);
+                        mDrawerLayout.closeDrawer(Gravity.START);
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(SettingsActivity.this, SignInActivity.class);

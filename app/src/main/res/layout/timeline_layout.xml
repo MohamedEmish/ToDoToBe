@@ -108,14 +108,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="180dp"
-            android:background="#E0E0E0"
+            android:background="#FFFFFF"
             app:layout_constraintTop_toBottomOf="@id/xxxxx">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/timeline_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#E0E0E0" />
+                android:background="#FFFFFF" />
 
             <RelativeLayout
                 android:id="@+id/timeline_empty_view"

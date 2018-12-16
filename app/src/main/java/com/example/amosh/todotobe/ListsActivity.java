@@ -52,6 +52,9 @@ public class ListsActivity extends AppCompatActivity {
     ImageView search;
     ImageView next;
     ImageView backIcon;
+    TextView title;
+
+    String keyCategory;
 
     Cursor cursor;
 
@@ -66,9 +69,19 @@ public class ListsActivity extends AppCompatActivity {
         setContentView(R.layout.lists_layout);
 
         username = getIntent().getStringExtra("name");
+        keyCategory = getIntent().getStringExtra("category");
 
         usersDbHelper = new MyUsersDbHelper(this);
 
+        title = (TextView) findViewById(R.id.lists_layout_title);
+
+        fab = (FloatingActionButton) findViewById(R.id.lists_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCustomDialog(ListsActivity.this);
+            }
+        });
 
         next = (ImageView) findViewById(R.id.lists_next_button);
         search = (ImageView) findViewById(R.id.lists_item_search);
@@ -79,51 +92,29 @@ public class ListsActivity extends AppCompatActivity {
             }
         });
 
-        // Find and set empty view on the recycler View, so that it only shows when the list has 0 items.
-
-        emptyView = (RelativeLayout) findViewById(R.id.lists_empty_view);
-
-        // Find the Recycler View which will be populated with the event data
-        itemsListView = (RecyclerView) findViewById(R.id.lists_recycler);
-        itemsListView.addItemDecoration(new DividerItemDecoration(itemsListView.getContext(), DividerItemDecoration.VERTICAL));
-        itemsListView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Cursor to populate recycler View
-        cursor = usersDbHelper.readItems(username);
-        if (cursor.getCount() == 0) {
-            itemsListView.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
-        } else {
-            itemsListView.setVisibility(View.VISIBLE);
-            emptyView.setVisibility(View.GONE);
+        switch (keyCategory) {
+            case "":
+                goNext(keyCategory);
+                break;
+            case "Auto":
+                goNext(keyCategory);
+                break;
+            case "Bills":
+                goNext(keyCategory);
+                break;
+            case "Health":
+                goNext(keyCategory);
+                break;
+            case "Shop":
+                goNext(keyCategory);
+                break;
+            case "Travel":
+                goNext(keyCategory);
+                break;
+            case "Work":
+                goNext(keyCategory);
+                break;
         }
-        eItemAdapter = new ItemAdapter(this, cursor);
-        eItemAdapter.notifyDataSetChanged();
-        itemsListView.setAdapter(eItemAdapter);
-
-
-        listNumber = (TextView) findViewById(R.id.lists_item_num);
-        listNumber.setText(String.valueOf(cursor.getCount()));
-
-        fab = (FloatingActionButton) findViewById(R.id.lists_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showCustomDialog(ListsActivity.this);
-            }
-        });
-
-
-        backIcon = (ImageView) findViewById(R.id.lists_back_icon);
-        backIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent myGroupsIntent = new Intent(ListsActivity.this, MainScreenActivity.class);
-                myGroupsIntent.putExtra("name", username);
-                startActivity(myGroupsIntent);
-            }
-        });
-
     }
 
     public void showCustomDialog(final Context context) {
@@ -229,7 +220,7 @@ public class ListsActivity extends AppCompatActivity {
 
     private boolean isOldItem(String name) {
         SQLiteDatabase db = usersDbHelper.getReadableDatabase();
-        Cursor items = usersDbHelper.checkItems();
+        Cursor items = usersDbHelper.checkItems(username);
 
         if (items.getCount() == 0) {
             return false;
@@ -249,6 +240,90 @@ public class ListsActivity extends AppCompatActivity {
 
     private void searchClick() {
         // TODO : custom Dialog box to search
+    }
+
+    private void goNext(final String category) {
+
+        final String guide = category;
+
+        backIcon = (ImageView) findViewById(R.id.lists_back_icon);
+        backIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (guide.equals("")) {
+                    Intent maiScreen = new Intent(ListsActivity.this, MainScreenActivity.class);
+                    maiScreen.putExtra("name", username);
+                    startActivity(maiScreen);
+                } else {
+                    Intent myGroupsIntent = new Intent(ListsActivity.this, MyGroupsActivity.class);
+                    myGroupsIntent.putExtra("name", username);
+                    startActivity(myGroupsIntent);
+                }
+            }
+        });
+
+        if (guide.equals("")) {
+
+            title.setText("Lists");
+            // Find and set empty view on the recycler View, so that it only shows when the list has 0 items.
+
+            emptyView = (RelativeLayout) findViewById(R.id.lists_empty_view);
+
+            // Find the Recycler View which will be populated with the event data
+            itemsListView = (RecyclerView) findViewById(R.id.lists_recycler);
+            itemsListView.addItemDecoration(new DividerItemDecoration(itemsListView.getContext(), DividerItemDecoration.VERTICAL));
+            itemsListView.setLayoutManager(new LinearLayoutManager(this));
+
+            // Cursor to populate recycler View
+            cursor = usersDbHelper.readItems(username);
+            if (cursor.getCount() == 0) {
+                itemsListView.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                itemsListView.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
+            }
+            eItemAdapter = new ItemAdapter(this, cursor);
+            eItemAdapter.notifyDataSetChanged();
+            itemsListView.setAdapter(eItemAdapter);
+
+
+            listNumber = (TextView) findViewById(R.id.lists_item_num);
+            listNumber.setText(String.valueOf(cursor.getCount()));
+        } else {
+            title.setText(guide);
+            // Find and set empty view on the recycler View, so that it only shows when the list has 0 items.
+
+            emptyView = (RelativeLayout) findViewById(R.id.lists_empty_view);
+
+            // Find the Recycler View which will be populated with the event data
+            itemsListView = (RecyclerView) findViewById(R.id.lists_recycler);
+            itemsListView.addItemDecoration(new DividerItemDecoration(itemsListView.getContext(), DividerItemDecoration.VERTICAL));
+            itemsListView.setLayoutManager(new LinearLayoutManager(this));
+
+            // Cursor to populate recycler View
+            cursor = usersDbHelper.readItems(username, guide);
+            if (cursor.getCount() == 0) {
+                itemsListView.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                itemsListView.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
+            }
+            eItemAdapter = new ItemAdapter(this, cursor);
+            eItemAdapter.notifyDataSetChanged();
+            itemsListView.setAdapter(eItemAdapter);
+
+
+            listNumber = (TextView) findViewById(R.id.lists_item_num);
+            listNumber.setText(String.valueOf(cursor.getCount()));
+        }
+
+    }
+
+    public void updateData() {
+        eItemAdapter = new ItemAdapter(this, cursor);
+        itemsListView.setAdapter(eItemAdapter);
     }
 
 

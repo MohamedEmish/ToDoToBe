@@ -78,4 +78,14 @@
     </style>
 
 
-    </resources>
+    <style name="Spinner" parent="Widget.AppCompat.Light.DropDownItem.Spinner">
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:textColor">@color/white_color</item>
+        <item name="android:textColorHint">@color/white_color</item>
+        <item name="android:colorBackground">@color/pop_up_dia</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
+</resources>

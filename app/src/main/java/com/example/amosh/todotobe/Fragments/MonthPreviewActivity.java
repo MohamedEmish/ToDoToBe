@@ -15,12 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.amosh.todotobe.Adapters.MonthPreviewPagerAdapter;
+import com.example.amosh.todotobe.ListsActivity;
 import com.example.amosh.todotobe.MainScreenActivity;
 import com.example.amosh.todotobe.MyGroupsActivity;
 import com.example.amosh.todotobe.OverviewActivity;
+import com.example.amosh.todotobe.ProfileActivity;
 import com.example.amosh.todotobe.R;
 import com.example.amosh.todotobe.SettingsActivity;
 import com.example.amosh.todotobe.SignInActivity;
+import com.example.amosh.todotobe.TimelineActivity;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 public class MonthPreviewActivity extends AppCompatActivity {
@@ -130,18 +133,15 @@ public class MonthPreviewActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 switch (id) {
-//                    case R.id.nav_close:
-//                        mDrawerLayout.closeDrawer(GravityCompat.START);
-//                        break;
                     case R.id.nav_home:
-                        Intent mainScreenActivity = new Intent(MonthPreviewActivity.this, MainScreenActivity.class);
-                        mainScreenActivity.putExtra("name", username);
-                        startActivity(mainScreenActivity);
+                        Intent homeActivity = new Intent(MonthPreviewActivity.this, MainScreenActivity.class);
+                        homeActivity.putExtra("name", username);
+                        startActivity(homeActivity);
                         break;
                     case R.id.nav_overview:
-                        Intent overView = new Intent(MonthPreviewActivity.this, OverviewActivity.class);
-                        overView.putExtra("name", username);
-                        startActivity(overView);
+                        Intent overviewActivity = new Intent(MonthPreviewActivity.this, OverviewActivity.class);
+                        overviewActivity.putExtra("name", username);
+                        startActivity(overviewActivity);
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(MonthPreviewActivity.this, MyGroupsActivity.class);
@@ -149,10 +149,21 @@ public class MonthPreviewActivity extends AppCompatActivity {
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
+                        Intent listsActivity = new Intent(MonthPreviewActivity.this, ListsActivity.class);
+                        String category = "";
+                        listsActivity.putExtra("category", category);
+                        listsActivity.putExtra("name", username);
+                        startActivity(listsActivity);
                         break;
                     case R.id.nav_profile:
+                        Intent profileActivity = new Intent(MonthPreviewActivity.this, ProfileActivity.class);
+                        profileActivity.putExtra("name", username);
+                        startActivity(profileActivity);
                         break;
                     case R.id.nav_timeline:
+                        Intent timelineActivity = new Intent(MonthPreviewActivity.this, TimelineActivity.class);
+                        timelineActivity.putExtra("name", username);
+                        startActivity(timelineActivity);
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(MonthPreviewActivity.this, SettingsActivity.class);

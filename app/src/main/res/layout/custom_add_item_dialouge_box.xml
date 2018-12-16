@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
+    android:background="@color/pop_up_dia"
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
     android:padding="32dp">
@@ -23,8 +23,8 @@
         android:layout_marginTop="16dp"
         android:background="@null"
         android:hint="Item name"
-        android:paddingLeft="8dp"
         android:textColor="#FFFFFF"
+        android:paddingLeft="8dp"
         android:textColorHint="#FFFFFF" />
 
     <View
@@ -40,10 +40,10 @@
         android:gravity="center_vertical">
 
         <TextView
+            android:padding="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:padding="8dp"
             android:paddingLeft="8dp"
             android:text="Category"
             android:textColor="#FFFFFF"
@@ -57,7 +57,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:gravity="center_vertical"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:theme="@style/Spinner">
 
         </Spinner>
 

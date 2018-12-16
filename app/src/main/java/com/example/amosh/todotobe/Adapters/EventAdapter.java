@@ -43,6 +43,22 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         int timeTo = mCursor.getInt(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_TIME_TO_HOUR));
         String location = mCursor.getString(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_LOCATION));
         String imageUriString = mCursor.getString(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_IMAGE));
+        int state = mCursor.getInt(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_STATE));
+
+        switch (state) {
+            case 0:
+                holder.stateColor.setBackgroundColor(mContext.getResources().getColor(R.color.white_color));
+                break;
+            case 1:
+                holder.stateColor.setBackgroundColor(mContext.getResources().getColor(R.color.green));
+                break;
+            case 2:
+                holder.stateColor.setBackgroundColor(mContext.getResources().getColor(R.color.orange));
+                break;
+            case 3:
+                holder.stateColor.setBackgroundColor(mContext.getResources().getColor(R.color.light_purple));
+                break;
+        }
 
         if (!imageUriString.equals("")) {
             Uri imageUri = Uri.parse(imageUriString);

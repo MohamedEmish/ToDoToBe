@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 public class OverviewActivity extends AppCompatActivity {
     String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,17 +48,14 @@ public class OverviewActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
 
                 int id = menuItem.getItemId();
-
                 switch (id) {
                     case R.id.nav_home:
-                        Intent mainScreenActivity = new Intent(OverviewActivity.this, MainScreenActivity.class);
-                        mainScreenActivity.putExtra("name", username);
-                        startActivity(mainScreenActivity);
+                        Intent homeActivity = new Intent(OverviewActivity.this, MainScreenActivity.class);
+                        homeActivity.putExtra("name", username);
+                        startActivity(homeActivity);
                         break;
                     case R.id.nav_overview:
-                        Intent overviewActivity = new Intent(OverviewActivity.this, OverviewActivity.class);
-                        overviewActivity.putExtra("name", username);
-                        startActivity(overviewActivity);
+                        mDrawerLayout.closeDrawer(Gravity.START);
                         break;
                     case R.id.nav_groups:
                         Intent groupsActivity = new Intent(OverviewActivity.this, MyGroupsActivity.class);
@@ -65,10 +63,21 @@ public class OverviewActivity extends AppCompatActivity {
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
+                        Intent listsActivity = new Intent(OverviewActivity.this, ListsActivity.class);
+                        String category = "";
+                        listsActivity.putExtra("category", category);
+                        listsActivity.putExtra("name", username);
+                        startActivity(listsActivity);
                         break;
                     case R.id.nav_profile:
+                        Intent profileActivity = new Intent(OverviewActivity.this, ProfileActivity.class);
+                        profileActivity.putExtra("name", username);
+                        startActivity(profileActivity);
                         break;
                     case R.id.nav_timeline:
+                        Intent timelineActivity = new Intent(OverviewActivity.this, TimelineActivity.class);
+                        timelineActivity.putExtra("name", username);
+                        startActivity(timelineActivity);
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(OverviewActivity.this, SettingsActivity.class);

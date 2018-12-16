@@ -128,6 +128,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         values.put(EventsContract.EventsEntry.COLUMN_REPEAT, event.getRepeat());
         values.put(EventsContract.EventsEntry.COLUMN_PEOPLE, event.getPeople());
         values.put(EventsContract.EventsEntry.COLUMN_IMAGE, event.getImage());
+        values.put(EventsContract.EventsEntry.COLUMN_STATE, event.getState());
 
 
         long id = db.insert(EventsContract.EventsEntry.TABLE_EVENTS, null, values);
@@ -157,6 +158,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_STATE,
                 EventsContract.EventsEntry.COLUMN_IMAGE
         };
         String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?";
@@ -204,6 +206,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_STATE,
                 EventsContract.EventsEntry.COLUMN_IMAGE
         };
         String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?"
@@ -251,6 +254,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_STATE,
                 EventsContract.EventsEntry.COLUMN_IMAGE
         };
         String selection = EventsContract.EventsEntry._ID + "=?";
@@ -298,6 +302,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_STATE,
                 EventsContract.EventsEntry.COLUMN_IMAGE
         };
         String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?"
@@ -348,7 +353,8 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
-                EventsContract.EventsEntry.COLUMN_IMAGE
+                EventsContract.EventsEntry.COLUMN_IMAGE,
+                EventsContract.EventsEntry.COLUMN_STATE
         };
         String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?";
         String[] selectionArgs = new String[]{name};
@@ -433,14 +439,18 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor checkItems() {
+    public Cursor checkItems(String name) {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {ItemsContract.ItemsEntry.COLUMN_ITEM,
-                ItemsContract.ItemsEntry.COLUMN_CATEGORY};
+                ItemsContract.ItemsEntry.COLUMN_USERNAME};
+        String selection = ItemsContract.ItemsEntry.COLUMN_USERNAME + "=?";
+        String[] selectionArgs = new String[]{name};
+
+
         Cursor cursor = db.query(ItemsContract.ItemsEntry.TABLE_ITEMS,
                 projection,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null,
                 null,
                 null);

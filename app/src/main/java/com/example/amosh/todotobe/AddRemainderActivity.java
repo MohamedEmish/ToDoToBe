@@ -27,7 +27,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.amosh.todotobe.Data.Events;
-import com.example.amosh.todotobe.Data.EventsContract;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 
 import java.text.DateFormat;
@@ -89,7 +88,7 @@ public class AddRemainderActivity extends AppCompatActivity {
     String userName;
 
 
-    int eState = EventsContract.EventsEntry.NO_STATE;
+    int eState = 0;
     Uri imageUri;
 
     @Override

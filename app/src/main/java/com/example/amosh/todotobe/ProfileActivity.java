@@ -145,9 +145,9 @@ public class ProfileActivity extends AppCompatActivity {
 
                 switch (id) {
                     case R.id.nav_home:
-                        Intent home = new Intent(ProfileActivity.this, MainScreenActivity.class);
-                        home.putExtra("name", username);
-                        startActivity(home);
+                        Intent homeActivity = new Intent(ProfileActivity.this, MainScreenActivity.class);
+                        homeActivity.putExtra("name", username);
+                        startActivity(homeActivity);
                         break;
                     case R.id.nav_overview:
                         Intent overviewActivity = new Intent(ProfileActivity.this, OverviewActivity.class);
@@ -160,14 +160,19 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
+                        Intent listsActivity = new Intent(ProfileActivity.this, ListsActivity.class);
+                        String category = "";
+                        listsActivity.putExtra("category", category);
+                        listsActivity.putExtra("name", username);
+                        startActivity(listsActivity);
                         break;
                     case R.id.nav_profile:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        mDrawerLayout.closeDrawer(Gravity.START);
                         break;
                     case R.id.nav_timeline:
-                        Intent profileActivity = new Intent(ProfileActivity.this, TimelineActivity.class);
-                        profileActivity.putExtra("name", username);
-                        startActivity(profileActivity);
+                        Intent timelineActivity = new Intent(ProfileActivity.this, TimelineActivity.class);
+                        timelineActivity.putExtra("name", username);
+                        startActivity(timelineActivity);
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(ProfileActivity.this, SettingsActivity.class);

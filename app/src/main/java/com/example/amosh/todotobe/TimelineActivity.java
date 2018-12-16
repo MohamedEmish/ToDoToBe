@@ -22,8 +22,10 @@ import android.widget.Toast;
 
 import com.example.amosh.todotobe.Adapters.SectionAdapter;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
+import com.example.amosh.todotobe.Fragments.MonthPreviewActivity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class TimelineActivity extends AppCompatActivity {
     String username;
@@ -127,9 +129,9 @@ public class TimelineActivity extends AppCompatActivity {
 
                 switch (id) {
                     case R.id.nav_home:
-                        Intent home = new Intent(TimelineActivity.this, MainScreenActivity.class);
-                        home.putExtra("name", username);
-                        startActivity(home);
+                        Intent homeActivity = new Intent(TimelineActivity.this, MainScreenActivity.class);
+                        homeActivity.putExtra("name", username);
+                        startActivity(homeActivity);
                         break;
                     case R.id.nav_overview:
                         Intent overviewActivity = new Intent(TimelineActivity.this, OverviewActivity.class);
@@ -142,6 +144,11 @@ public class TimelineActivity extends AppCompatActivity {
                         startActivity(groupsActivity);
                         break;
                     case R.id.nav_lists:
+                        Intent listsActivity = new Intent(TimelineActivity.this, ListsActivity.class);
+                        String category = "";
+                        listsActivity.putExtra("category", category);
+                        listsActivity.putExtra("name", username);
+                        startActivity(listsActivity);
                         break;
                     case R.id.nav_profile:
                         Intent profileActivity = new Intent(TimelineActivity.this, ProfileActivity.class);
@@ -149,7 +156,7 @@ public class TimelineActivity extends AppCompatActivity {
                         startActivity(profileActivity);
                         break;
                     case R.id.nav_timeline:
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        mDrawerLayout.closeDrawer(Gravity.START);
                         break;
                     case R.id.nav_settings:
                         Intent settingsActivity = new Intent(TimelineActivity.this, SettingsActivity.class);
@@ -187,7 +194,27 @@ public class TimelineActivity extends AppCompatActivity {
 
     private void moreClick() {
         // TODO : // more on click
-        Toast.makeText(TimelineActivity.this, "ha .. looking for more .. \n scroll down :D " + searchText, Toast.LENGTH_SHORT).show();
+
+        Intent monthPreview = new Intent(TimelineActivity.this, MonthPreviewActivity.class);
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+
+        String yearString = String.valueOf(year);
+        String dayString = String.valueOf(day);
+        String monthName = getMonthName(month + 1);
+
+        monthPreview.putExtra("yearString", yearString);
+        monthPreview.putExtra("yearNumber", String.valueOf(year));
+        monthPreview.putExtra("monthName", monthName);
+        monthPreview.putExtra("monthNumber", String.valueOf(month + 1));
+        monthPreview.putExtra("dayString", dayString);
+        monthPreview.putExtra("dayNumber", String.valueOf(day));
+        monthPreview.putExtra("name", username);
+
+
+        startActivity(monthPreview);
 
     }
 
@@ -196,5 +223,50 @@ public class TimelineActivity extends AppCompatActivity {
         // TODO : // search method
         Toast.makeText(TimelineActivity.this, "SEARCHING FOR " + searchText, Toast.LENGTH_SHORT).show();
     }
+
+    private String getMonthName(int month) {
+
+        String monthName = "";
+
+        if (month == 1) {
+            monthName = "January";
+        }
+        if (month == 2) {
+            monthName = "February";
+        }
+        if (month == 3) {
+            monthName = "March";
+        }
+        if (month == 4) {
+            monthName = "April";
+        }
+        if (month == 5) {
+            monthName = "May";
+        }
+        if (month == 6) {
+            monthName = "June";
+        }
+        if (month == 7) {
+            monthName = "July";
+        }
+        if (month == 8) {
+            monthName = "August";
+        }
+        if (month == 9) {
+            monthName = "September";
+        }
+        if (month == 10) {
+            monthName = "October";
+        }
+        if (month == 11) {
+            monthName = "November";
+        }
+        if (month == 12) {
+            monthName = "December";
+        }
+
+        return monthName;
+    }
+
 
 }

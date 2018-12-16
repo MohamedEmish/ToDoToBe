@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#9E9E9E</color>
-    <color name="colorPrimaryDark">#757575</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF4081</color>
     <color name="gray">#9E9E9E</color>
     <color name="green">#1DE9B6</color>
     <color name="orange">#FFB300</color>
     <color name="light_purple">#CE93D8</color>
     <color name="light_gary">#EAEAEA</color>
+    <color name="light_blue">#0F959E</color>
+    <color name="purble">#F06292</color>
+    <color name="dark_blue">#06089E</color>
 
     <color name="dialoge_box">#F8BBD0</color>
 
     <color name="white_color">#FFFFFF</color>
     <!-- Primary color for the editor -->
     <color name="editorColorPrimary">#42A5F5</color>
+
+    <color name="pop_up_dia">#F48FB1</color>
 
     <!-- Primary dark color for the editor -->
     <color name="editorColorPrimaryDark">#42A5F5</color>

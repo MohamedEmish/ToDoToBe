@@ -50,6 +50,8 @@ public class MainScreenActivity extends AppCompatActivity {
     EditText searchEditText;
     String searchText;
 
+    TextView notify;
+
 
     FloatingActionButton fab;
     MaterialCalendarView calendarView;
@@ -84,7 +86,7 @@ public class MainScreenActivity extends AppCompatActivity {
         userName = getIntent().getStringExtra("name");
 
         // Getting current date & time
-        Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
         // Getting current Date
@@ -141,6 +143,12 @@ public class MainScreenActivity extends AppCompatActivity {
         eEventAdapter = new EventAdapter(this, cursor);
         eventListView.setAdapter(eEventAdapter);
 
+        notify = (TextView) findViewById(R.id.badge_notify);
+        if (cursor.getCount() == 0) {
+            notify.setVisibility(View.GONE);
+        } else {
+            notify.setText(String.valueOf(cursor.getCount()));
+        }
         // Defining UI calendar
         calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
 
@@ -255,6 +263,8 @@ public class MainScreenActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_lists:
                         Intent listsActivity = new Intent(MainScreenActivity.this, ListsActivity.class);
+                        String category = "";
+                        listsActivity.putExtra("category", category);
                         listsActivity.putExtra("name", userName);
                         startActivity(listsActivity);
                         break;
