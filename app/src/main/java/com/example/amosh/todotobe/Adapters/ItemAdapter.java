@@ -1,7 +1,6 @@
 package com.example.amosh.todotobe.Adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,19 +9,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.amosh.todotobe.Data.ItemsContract;
+import com.example.amosh.todotobe.Data.Items;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.example.amosh.todotobe.R;
+
+import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
     MyUsersDbHelper usersDbHelper;
     private Context mContext;
-    private Cursor mCursor;
+    private List<Items> mItemsArrayList;
+    private ItemClickListener mClickListener;
+    private ItemLongClickListener mLongClickListener;
 
-    public ItemAdapter(Context context, Cursor cursor) {
+
+    public ItemAdapter(Context context, List<Items> arrayList) {
         mContext = context;
-        mCursor = cursor;
+        mItemsArrayList = arrayList;
     }
 
     @Override
@@ -35,15 +39,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, final int position) {
 
-        if (!mCursor.moveToPosition(position)) {
-            return;
-        }
-
-        String name = mCursor.getString(mCursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_ITEM));
-        int state = mCursor.getInt(mCursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_STATE));
-        String category = mCursor.getString(mCursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_CATEGORY));
-
-        holder.itemName.setText(name);
+        holder.itemName.setText(mItemsArrayList.get(position).getName());
+        int state = mItemsArrayList.get(position).getState();
+        final String category = mItemsArrayList.get(position).getCategory();
         if (state == 0) {
             holder.container.setBackgroundColor(mContext.getResources().getColor(R.color.white_color));
             holder.itemName.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
@@ -74,48 +72,38 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     break;
             }
         }
-        holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                usersDbHelper = new MyUsersDbHelper(mContext);
-                int modPosition = holder.getLayoutPosition();
-                mCursor.moveToPosition(modPosition);
-                String name = mCursor.getString(mCursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_ITEM));
-                int state = mCursor.getInt(mCursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_STATE));
-                String username = mCursor.getString(mCursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_USERNAME));
-
-                if (state == 0) {
-                    usersDbHelper.updateItemState(username, name, 1);
-                    ItemAdapter.this.notifyItemChanged(modPosition);
-                    ItemAdapter.this.notifyDataSetChanged();
-                } else if (state == 1) {
-                    usersDbHelper.updateItemState(username, name, 0);
-                    ItemAdapter.this.notifyItemChanged(modPosition);
-                    ItemAdapter.this.notifyDataSetChanged();
-                }
-            }
-        });
 
     }
 
     @Override
     public int getItemCount() {
-        return mCursor.getCount();
+        return mItemsArrayList.size();
     }
 
-    public void swapCursor(Cursor newCursor) {
-        if (mCursor != null) {
-            mCursor.close();
-
-        }
-        mCursor = newCursor;
-        if (newCursor != null) {
-
-            notifyDataSetChanged();
-        }
+    // allows clicks events to be caught
+    public void setClickListener(ItemClickListener itemClickListener) {
+        this.mClickListener = itemClickListener;
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder {
+    public void setLongClickListener(ItemLongClickListener itemLongClickListener) {
+        this.mLongClickListener = itemLongClickListener;
+    }
+
+    // return data
+    public String getItemName(int id) {
+        return mItemsArrayList.get(id).getName();
+    }
+
+    // parent activity will implement this method to respond to click events
+    public interface ItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public interface ItemLongClickListener {
+        void onItemLongClick(View view, int position);
+    }
+
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         public LinearLayout container;
         public LinearLayout stateColor;
@@ -124,6 +112,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
 
             container = (LinearLayout) itemView.findViewById(R.id.lists_item_container);
             stateColor = (LinearLayout) itemView.findViewById(R.id.lists_item_state_color);
@@ -131,5 +121,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             itemName = (TextView) itemView.findViewById(R.id.lists_item_name);
         }
 
+        @Override
+        public void onClick(View view) {
+            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            if (mLongClickListener != null) {
+                mLongClickListener.onItemLongClick(view, getAdapterPosition());
+                return true;
+            } else {
+
+                return true;
+            }
+        }
     }
 }

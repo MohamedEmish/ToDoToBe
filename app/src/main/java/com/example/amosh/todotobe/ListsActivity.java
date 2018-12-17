@@ -31,7 +31,9 @@ import com.example.amosh.todotobe.Adapters.ItemAdapter;
 import com.example.amosh.todotobe.Data.Items;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 
-public class ListsActivity extends AppCompatActivity {
+import java.util.List;
+
+public class ListsActivity extends AppCompatActivity implements ItemAdapter.ItemClickListener, ItemAdapter.ItemLongClickListener {
     String username;
 
     ItemAdapter eItemAdapter;
@@ -44,7 +46,9 @@ public class ListsActivity extends AppCompatActivity {
     String eCategory;
 
     EditText name;
+    TextView dName;
     Button add;
+    Button delete;
     Button close;
     Dialog dialog;
     String newName;
@@ -56,7 +60,7 @@ public class ListsActivity extends AppCompatActivity {
 
     String keyCategory;
 
-    Cursor cursor;
+    List<Items> itemsList;
 
     TextView listNumber;
 
@@ -204,16 +208,21 @@ public class ListsActivity extends AppCompatActivity {
         } else if (name.getText().toString().trim().equals("")) {
             name.setError("Type item name");
         } else if (!isOldItem(newName) && !newName.equals("")) {
-            Items item = new Items(
-                    username,
-                    newName,
-                    0,
-                    eCategory);
+            Items item = new Items();
+            item.setmUsername(username);
+            item.setmName(newName);
+            item.setmCategory(eCategory);
+            item.setmState(0);
+
             usersDbHelper.insertItem(item);
-            Cursor newCursor = usersDbHelper.readItems(username);
-            ItemAdapter newAdapter = new ItemAdapter(ListsActivity.this, newCursor);
-            itemsListView.setAdapter(newAdapter);
-            listNumber.setText(String.valueOf(newCursor.getCount()));
+            itemsList.add(item);
+            eItemAdapter.notifyDataSetChanged();
+            eItemAdapter.setClickListener(this);
+            eItemAdapter.setLongClickListener(this);
+
+            itemsListView.setAdapter(eItemAdapter);
+
+            listNumber.setText(String.valueOf(itemsList.size()));
             dialog.dismiss();
         }
     }
@@ -251,9 +260,9 @@ public class ListsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (guide.equals("")) {
-                    Intent maiScreen = new Intent(ListsActivity.this, MainScreenActivity.class);
-                    maiScreen.putExtra("name", username);
-                    startActivity(maiScreen);
+                    Intent mainScreen = new Intent(ListsActivity.this, MainScreenActivity.class);
+                    mainScreen.putExtra("name", username);
+                    startActivity(mainScreen);
                 } else {
                     Intent myGroupsIntent = new Intent(ListsActivity.this, MyGroupsActivity.class);
                     myGroupsIntent.putExtra("name", username);
@@ -274,22 +283,24 @@ public class ListsActivity extends AppCompatActivity {
             itemsListView.addItemDecoration(new DividerItemDecoration(itemsListView.getContext(), DividerItemDecoration.VERTICAL));
             itemsListView.setLayoutManager(new LinearLayoutManager(this));
 
-            // Cursor to populate recycler View
-            cursor = usersDbHelper.readItems(username);
-            if (cursor.getCount() == 0) {
+            // List<Items> to populate recycler View
+            itemsList = usersDbHelper.readItemsList(username);
+            if (itemsList.size() == 0) {
                 itemsListView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             } else {
                 itemsListView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
             }
-            eItemAdapter = new ItemAdapter(this, cursor);
+            eItemAdapter = new ItemAdapter(this, itemsList);
+            eItemAdapter.setClickListener(this);
+            eItemAdapter.setLongClickListener(this);
             eItemAdapter.notifyDataSetChanged();
             itemsListView.setAdapter(eItemAdapter);
 
 
             listNumber = (TextView) findViewById(R.id.lists_item_num);
-            listNumber.setText(String.valueOf(cursor.getCount()));
+            listNumber.setText(String.valueOf(itemsList.size()));
         } else {
             title.setText(guide);
             // Find and set empty view on the recycler View, so that it only shows when the list has 0 items.
@@ -301,30 +312,102 @@ public class ListsActivity extends AppCompatActivity {
             itemsListView.addItemDecoration(new DividerItemDecoration(itemsListView.getContext(), DividerItemDecoration.VERTICAL));
             itemsListView.setLayoutManager(new LinearLayoutManager(this));
 
-            // Cursor to populate recycler View
-            cursor = usersDbHelper.readItems(username, guide);
-            if (cursor.getCount() == 0) {
+            // List<Items> to populate recycler View
+            itemsList = usersDbHelper.readItemsList(username, guide);
+            if (itemsList.size() == 0) {
                 itemsListView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             } else {
                 itemsListView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
             }
-            eItemAdapter = new ItemAdapter(this, cursor);
+            eItemAdapter = new ItemAdapter(this, itemsList);
             eItemAdapter.notifyDataSetChanged();
+            eItemAdapter.setClickListener(this);
+            eItemAdapter.setLongClickListener(this);
             itemsListView.setAdapter(eItemAdapter);
 
 
             listNumber = (TextView) findViewById(R.id.lists_item_num);
-            listNumber.setText(String.valueOf(cursor.getCount()));
+            listNumber.setText(String.valueOf(itemsList.size()));
         }
 
     }
 
     public void updateData() {
-        eItemAdapter = new ItemAdapter(this, cursor);
+        eItemAdapter = new ItemAdapter(this, itemsList);
         itemsListView.setAdapter(eItemAdapter);
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+
+        usersDbHelper = new MyUsersDbHelper(this);
+        String name = itemsList.get(position).getName();
+        int state = itemsList.get(position).getState();
+        String username = itemsList.get(position).getUsername();
+        if (state == 0) {
+            usersDbHelper.updateItemState(username, name, 1);
+            itemsList.get(position).setmState(1);
+            eItemAdapter.notifyItemChanged(position);
+        } else if (state == 1) {
+            usersDbHelper.updateItemState(username, name, 0);
+            itemsList.get(position).setmState(0);
+            eItemAdapter.notifyItemChanged(position);
+        }
+
+
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        showCustomDeleteDialog(ListsActivity.this, position);
+    }
+
+    public void showCustomDeleteDialog(final Context context, final int iPosition) {
+        dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_delete_item_dialoge, null, false);
+
+        /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
+        dName = view.findViewById(R.id.item_name);
+        dName.setText(itemsList.get(iPosition).getName());
+
+        delete = view.findViewById(R.id.item_delete);
+        close = view.findViewById(R.id.item_close);
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteItem(itemsList.get(iPosition).getName(), iPosition);
+                dialog.dismiss();
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setContentView(view);
+        final Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawableResource(R.color.dialoge_box);
+        window.setGravity(Gravity.CENTER);
+        dialog.show();
+    }
+
+    public void deleteItem(String name, int i) {
+        usersDbHelper.deleteItem(name, username);
+        itemsList.remove(i);
+        eItemAdapter.notifyItemRemoved(i);
+        listNumber.setText(String.valueOf(itemsList.size()));
+
+
+    }
 
 }

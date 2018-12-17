@@ -1,18 +1,18 @@
 package com.example.amosh.todotobe.Data;
 
 public class Items {
-    private final String mUsername;
-    private final String mName;
-    private final int mState;
-    private final String mCategory;
+    private String mUsername;
+    private String mName;
+    private int mState;
+    private String mCategory;
 
-
-    public Items(String username, String name, int state, String category) {
-        mUsername = username;
-        this.mName = name;
-        this.mState = state;
-        this.mCategory = category;
-    }
+//
+//    public Items(String username, String name, int state, String category) {
+//        mUsername = username;
+//        this.mName = name;
+//        this.mState = state;
+//        this.mCategory = category;
+//    }
 
     public String getName() {
         return mName;
@@ -28,5 +28,21 @@ public class Items {
 
     public String getUsername() {
         return mUsername;
+    }
+
+    public void setmName(String name) {
+        this.mName = name;
+    }
+
+    public void setmCategory(String Category) {
+        this.mCategory = Category;
+    }
+
+    public void setmUsername(String username) {
+        this.mUsername = username;
+    }
+
+    public void setmState(int state) {
+        this.mState = state;
     }
 }

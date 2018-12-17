@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MyUsersDbHelper extends SQLiteOpenHelper {
 
     public final static String USERS_DB = "users.db";
@@ -389,6 +392,15 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         long id = db.insert(ItemsContract.ItemsEntry.TABLE_ITEMS, null, values);
     }
 
+    public void deleteItem(String itemName, String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = ItemsContract.ItemsEntry.COLUMN_USERNAME + "=?"
+                + " AND " + ItemsContract.ItemsEntry.COLUMN_ITEM + "=?";
+        String[] whereArgs = new String[]{username, itemName};
+
+        db.delete(ItemsContract.ItemsEntry.TABLE_ITEMS, where, whereArgs);
+    }
+
     public Cursor readItems(String username) {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {
@@ -466,5 +478,91 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 ItemsContract.ItemsEntry.COLUMN_USERNAME + " =?"
                         + " AND " + ItemsContract.ItemsEntry.COLUMN_ITEM + "=?", new String[]{username, itemName});
     }
+
+    public ArrayList<Items> readItemsList(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                ItemsContract.ItemsEntry._ID,
+                ItemsContract.ItemsEntry.COLUMN_USERNAME,
+                ItemsContract.ItemsEntry.COLUMN_ITEM,
+                ItemsContract.ItemsEntry.COLUMN_CATEGORY,
+                ItemsContract.ItemsEntry.COLUMN_STATE
+        };
+        String selection = ItemsContract.ItemsEntry.COLUMN_USERNAME + "=?";
+        String[] selectionArgs = new String[]{username};
+
+        ArrayList<Items> itemsList = new ArrayList<Items>();
+
+
+        Cursor cursor = db.query(
+                ItemsContract.ItemsEntry.TABLE_ITEMS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        if (cursor.moveToFirst()) {
+            do {
+                Items Item = new Items();
+                Item.setmName(cursor.getString(cursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_ITEM)));
+                Item.setmCategory(cursor.getString(cursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_CATEGORY)));
+                Item.setmState(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_STATE))));
+                Item.setmUsername(cursor.getString(cursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_USERNAME)));
+                // Adding user record to list
+                itemsList.add(Item);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return itemsList;
+    }
+
+    public List<Items> readItemsList(String username, String category) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                ItemsContract.ItemsEntry._ID,
+                ItemsContract.ItemsEntry.COLUMN_USERNAME,
+                ItemsContract.ItemsEntry.COLUMN_ITEM,
+                ItemsContract.ItemsEntry.COLUMN_CATEGORY,
+                ItemsContract.ItemsEntry.COLUMN_STATE
+        };
+        String selection = ItemsContract.ItemsEntry.COLUMN_USERNAME + "=?"
+                + " AND " + ItemsContract.ItemsEntry.COLUMN_CATEGORY + "=?";
+
+        String[] selectionArgs = new String[]{username, category};
+
+        List<Items> itemsList = new ArrayList<Items>();
+
+        Cursor cursor = db.query(
+                ItemsContract.ItemsEntry.TABLE_ITEMS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        if (cursor.moveToFirst()) {
+            do {
+                Items Item = new Items();
+                Item.setmName(cursor.getString(cursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_ITEM)));
+                Item.setmCategory(cursor.getString(cursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_CATEGORY)));
+                Item.setmState(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_STATE))));
+                Item.setmUsername(cursor.getString(cursor.getColumnIndex(ItemsContract.ItemsEntry.COLUMN_USERNAME)));
+                // Adding user record to list
+                itemsList.add(Item);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return itemsList;
+    }
+
 
 }
