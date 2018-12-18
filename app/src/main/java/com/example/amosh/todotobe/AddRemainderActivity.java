@@ -329,9 +329,15 @@ public class AddRemainderActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        close.setOnClickListener(new View.OnClickListener() {
+        closePeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                people.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_ppl));
+                people2.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_ppl));
+                people2.setVisibility(View.GONE);
+                people3.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_ppl));
+                people3.setVisibility(View.GONE);
+
                 dialog.dismiss();
             }
         });

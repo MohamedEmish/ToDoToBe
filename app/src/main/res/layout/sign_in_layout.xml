@@ -48,7 +48,7 @@
                 android:maxLines="1"
                 android:hint="@string/sign_in_name"
                 android:paddingLeft="8dp"
-                android:paddingRight="16dp"
+                android:paddingRight="50dp"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#F5F5F5" />
         </LinearLayout>

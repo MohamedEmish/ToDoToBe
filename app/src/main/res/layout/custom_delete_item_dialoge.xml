@@ -37,7 +37,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="8dp"
             android:text="shop"
-            android:textColor="#FFFFFF"
+            android:textColor="#06089E"
             android:textSize="18sp" />
 
         <TextView

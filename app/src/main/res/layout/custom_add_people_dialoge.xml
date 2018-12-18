@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
+    android:background="@color/pop_up_dia"
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
     android:padding="32dp">
@@ -51,6 +51,7 @@
             android:layout_toRightOf="@+id/txt"
             android:background="@null"
             android:hint="Name"
+            android:textColorHint="#FFFFFF"
             android:paddingLeft="8dp"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
@@ -67,7 +68,7 @@
             android:layout_marginEnd="27dp"
             android:layout_marginRight="27dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_add_ppl" />
+            android:src="@drawable/ic_add_ppl_white" />
 
 
     </RelativeLayout>

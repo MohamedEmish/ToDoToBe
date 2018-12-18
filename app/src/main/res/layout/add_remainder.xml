@@ -89,7 +89,7 @@
             android:hint="@string/add_remainder_add_description"
             android:maxLines="2"
             android:paddingLeft="24dp"
-            android:paddingRight="24dp" />
+            android:paddingRight="75dp" />
 
         <View
             android:layout_width="match_parent"
