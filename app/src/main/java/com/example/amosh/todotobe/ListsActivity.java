@@ -26,11 +26,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.amosh.todotobe.Adapters.ItemAdapter;
 import com.example.amosh.todotobe.Data.Items;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListsActivity extends AppCompatActivity implements ItemAdapter.ItemClickListener, ItemAdapter.ItemLongClickListener {
@@ -49,6 +51,9 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
     TextView dName;
     Button add;
     Button delete;
+    Button searchButton;
+    EditText searchText;
+
     Button close;
     Dialog dialog;
     String newName;
@@ -88,13 +93,6 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
         });
 
         next = (ImageView) findViewById(R.id.lists_next_button);
-        search = (ImageView) findViewById(R.id.lists_item_search);
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchClick();
-            }
-        });
 
         switch (keyCategory) {
             case "":
@@ -214,14 +212,21 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
             item.setmCategory(eCategory);
             item.setmState(0);
 
+            if (itemsList.size() == 0) {
+                itemsList.add(item);
+                itemsListView.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
+                eItemAdapter.notifyDataSetChanged();
+                eItemAdapter.setClickListener(this);
+                eItemAdapter.setLongClickListener(this);
+            } else {
+                itemsList.add(item);
+                eItemAdapter.notifyDataSetChanged();
+                eItemAdapter.setClickListener(this);
+                eItemAdapter.setLongClickListener(this);
+                itemsListView.setAdapter(eItemAdapter);
+            }
             usersDbHelper.insertItem(item);
-            itemsList.add(item);
-            eItemAdapter.notifyDataSetChanged();
-            eItemAdapter.setClickListener(this);
-            eItemAdapter.setLongClickListener(this);
-
-            itemsListView.setAdapter(eItemAdapter);
-
             listNumber.setText(String.valueOf(itemsList.size()));
             dialog.dismiss();
         }
@@ -247,8 +252,57 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
         return true;
     }
 
-    private void searchClick() {
-        // TODO : custom Dialog box to search
+    private void showCustomSearchDialog(Context context, final List<Items> list) {
+        dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_search_dialoge, null, false);
+
+        /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
+        searchText = view.findViewById(R.id.item_search_text);
+
+        searchButton = view.findViewById(R.id.item_search);
+        close = view.findViewById(R.id.item_search_close);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchFor(searchText.getText().toString().trim(), list);
+                dialog.dismiss();
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setContentView(view);
+        final Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawableResource(R.color.dialoge_box);
+        window.setGravity(Gravity.CENTER);
+        dialog.show();
+    }
+
+    private void searchFor(String text, List<Items> list) {
+        List<Items> searchList = new ArrayList<>();
+        for (Items item : list) {
+            if (item.getName().equals(text)) {
+                searchList.add(item);
+            }
+        }
+        if (searchList.size() == 0) {
+            Toast.makeText(ListsActivity.this, "No item " + text + " in this list", Toast.LENGTH_LONG).show();
+        } else {
+
+
+            ItemAdapter searchAdapter = new ItemAdapter(this, searchList);
+            itemsListView.setAdapter(searchAdapter);
+        }
     }
 
     private void goNext(final String category) {
@@ -271,9 +325,11 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
             }
         });
 
+
         if (guide.equals("")) {
 
             title.setText("Lists");
+
             // Find and set empty view on the recycler View, so that it only shows when the list has 0 items.
 
             emptyView = (RelativeLayout) findViewById(R.id.lists_empty_view);
@@ -297,6 +353,14 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
             eItemAdapter.setLongClickListener(this);
             eItemAdapter.notifyDataSetChanged();
             itemsListView.setAdapter(eItemAdapter);
+
+            search = (ImageView) findViewById(R.id.lists_item_search);
+            search.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showCustomSearchDialog(ListsActivity.this, itemsList);
+                }
+            });
 
 
             listNumber = (TextView) findViewById(R.id.lists_item_num);
@@ -326,6 +390,14 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
             eItemAdapter.setClickListener(this);
             eItemAdapter.setLongClickListener(this);
             itemsListView.setAdapter(eItemAdapter);
+
+            search = (ImageView) findViewById(R.id.lists_item_search);
+            search.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showCustomSearchDialog(ListsActivity.this, itemsList);
+                }
+            });
 
 
             listNumber = (TextView) findViewById(R.id.lists_item_num);
@@ -406,6 +478,10 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
         itemsList.remove(i);
         eItemAdapter.notifyItemRemoved(i);
         listNumber.setText(String.valueOf(itemsList.size()));
+        if (itemsList.size() == 0) {
+            itemsListView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
 
 
     }

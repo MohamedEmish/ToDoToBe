@@ -2,7 +2,9 @@ package com.example.amosh.todotobe;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -13,9 +15,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -36,13 +43,23 @@ import java.util.Date;
 
 public class AddRemainderActivity extends AppCompatActivity {
 
-    public static final int PICK_IMAGE_REQUEST = 0;
+    public static final int PICK_IMAGE_REQUEST_EVENT = 0;
+    public static final int PICK_IMAGE_REQUEST_PEOPLE = 1;
+    public static final int PICK_IMAGE_REQUEST_PEOPLE2 = 2;
+    public static final int PICK_IMAGE_REQUEST_PEOPLE3 = 3;
+
 
     DatePickerDialog.OnDateSetListener mDateSetListenerFrom;
     TimePickerDialog.OnTimeSetListener mTimeSetListenerFrom;
 
     DatePickerDialog.OnDateSetListener mDateSetListenerTo;
     TimePickerDialog.OnTimeSetListener mTimeSetListenerTo;
+
+    Dialog dialog;
+    EditText nameOfPeople;
+    ImageView imageOfPeople;
+    Button addPeople;
+    Button closePeople;
 
     Spinner notificationSpinner;
     Spinner repeatSpinner;
@@ -61,6 +78,9 @@ public class AddRemainderActivity extends AppCompatActivity {
     MyUsersDbHelper usersDbHelper;
 
     ImageView people;
+    ImageView people2;
+    ImageView people3;
+
     ImageView imageForEvent;
     ImageView close;
 
@@ -81,6 +101,9 @@ public class AddRemainderActivity extends AppCompatActivity {
     int eTimeToMinute;
 
     String ePeople = "";
+    String ePeopleImageUri = "";
+    String ePeopleImageUri2 = "";
+    String ePeopleImageUri3 = "";
     String eImageUri = "";
 
     String eNotification;
@@ -90,6 +113,10 @@ public class AddRemainderActivity extends AppCompatActivity {
 
     int eState = 0;
     Uri imageUri;
+    Uri peopleImageUri;
+    Uri peopleImageUri2;
+    Uri peopleImageUri3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,7 +238,7 @@ public class AddRemainderActivity extends AppCompatActivity {
         imageForEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openGallery();
+                openGallery(PICK_IMAGE_REQUEST_EVENT);
             }
         });
 
@@ -221,6 +248,28 @@ public class AddRemainderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addNewEvent();
+            }
+        });
+
+        people = (ImageView) findViewById(R.id.add_remainder_people_add);
+        people.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddPeopleCustomDialog(AddRemainderActivity.this, PICK_IMAGE_REQUEST_PEOPLE);
+            }
+        });
+        people2 = (ImageView) findViewById(R.id.add_remainder_people_add_2);
+        people2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddPeopleCustomDialog(AddRemainderActivity.this, PICK_IMAGE_REQUEST_PEOPLE2);
+            }
+        });
+        people3 = (ImageView) findViewById(R.id.add_remainder_people_add_3);
+        people3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddPeopleCustomDialog(AddRemainderActivity.this, PICK_IMAGE_REQUEST_PEOPLE3);
             }
         });
 
@@ -245,6 +294,58 @@ public class AddRemainderActivity extends AppCompatActivity {
             return true;
         }
     }
+
+    public void showAddPeopleCustomDialog(final Context context, final int picker) {
+        dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_add_people_dialoge, null, false);
+
+        /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
+        nameOfPeople = view.findViewById(R.id.dialog_people_name);
+        imageOfPeople = view.findViewById(R.id.dialog_add_people_image);
+
+        addPeople = view.findViewById(R.id.dialog_people_add);
+        closePeople = view.findViewById(R.id.dialog_people_close);
+
+
+        imageOfPeople.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGallery(picker);
+            }
+        });
+        addPeople.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (picker == PICK_IMAGE_REQUEST_PEOPLE) {
+                    ePeople = nameOfPeople.getText().toString().trim();
+                }
+                if (people2.getVisibility() == View.GONE) {
+                    people2.setVisibility(View.VISIBLE);
+                } else if (people2.getVisibility() == View.VISIBLE && people3.getVisibility() == View.GONE) {
+                    people3.setVisibility(View.VISIBLE);
+                }
+                dialog.dismiss();
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setContentView(view);
+        final Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawableResource(R.color.dialoge_box);
+        window.setGravity(Gravity.CENTER);
+        dialog.show();
+    }
+
 
 
     // Function to check values existence
@@ -306,7 +407,7 @@ public class AddRemainderActivity extends AppCompatActivity {
         Events event = new Events(userName, eTitle, eDescription, eDateFromDay, eDateFromMonth,
                 eDateFromYear, eDateToDay, eDateToMonth, eDateToYear,
                 eTimeFromHour, eTimeFromMinute, eTimeToHour, eTimeToMinute,
-                eLocation, eNotification, ePeople, eRepeat, eImageUri, eState);
+                eLocation, eNotification, ePeople, ePeopleImageUri, ePeopleImageUri2, ePeopleImageUri3, eRepeat, eImageUri, eState);
         usersDbHelper.insertEvent(event);
 
         return true;
@@ -716,7 +817,6 @@ public class AddRemainderActivity extends AppCompatActivity {
     private void timeTo() {
 
         final TextView timeTo = (TextView) findViewById(R.id.add_remainder_time_to);
-
         String timeToCurrentString = timeTo.getText().toString();
         String[] cutHourFromRest = timeToCurrentString.split(":");
         String hourString = cutHourFromRest[0];
@@ -761,7 +861,7 @@ public class AddRemainderActivity extends AppCompatActivity {
     }
 
     // Function to retrieve image
-    private void openGallery() {
+    private void openGallery(int PICKER) {
         Intent intent;
         if (Build.VERSION.SDK_INT < 19) {
             intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -770,19 +870,57 @@ public class AddRemainderActivity extends AppCompatActivity {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
         }
         intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICKER);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PICK_IMAGE_REQUEST_EVENT && resultCode == Activity.RESULT_OK) {
 
             if (resultData != null) {
                 imageUri = resultData.getData();
                 imageForEvent.setImageURI(imageUri);
                 imageForEvent.invalidate();
                 eImageUri = imageUri.toString();
+            }
+
+        }
+        if (requestCode == PICK_IMAGE_REQUEST_PEOPLE && resultCode == Activity.RESULT_OK) {
+
+            if (resultData != null) {
+                peopleImageUri = resultData.getData();
+                people.setImageURI(peopleImageUri);
+                people.invalidate();
+                ePeopleImageUri = peopleImageUri.toString();
+                imageOfPeople.setImageURI(peopleImageUri);
+                imageOfPeople.invalidate();
+            }
+
+        }
+        if (requestCode == PICK_IMAGE_REQUEST_PEOPLE2 && resultCode == Activity.RESULT_OK) {
+
+            if (resultData != null) {
+                peopleImageUri2 = resultData.getData();
+                people2.setImageURI(peopleImageUri2);
+                people2.invalidate();
+                ePeopleImageUri2 = peopleImageUri2.toString();
+                imageOfPeople.setImageURI(peopleImageUri2);
+                imageOfPeople.invalidate();
+
+
+            }
+
+        }
+        if (requestCode == PICK_IMAGE_REQUEST_PEOPLE3 && resultCode == Activity.RESULT_OK) {
+
+            if (resultData != null) {
+                peopleImageUri3 = resultData.getData();
+                people3.setImageURI(peopleImageUri3);
+                people3.invalidate();
+                ePeopleImageUri3 = peopleImageUri3.toString();
+                imageOfPeople.setImageURI(peopleImageUri3);
+                imageOfPeople.invalidate();
             }
 
         }

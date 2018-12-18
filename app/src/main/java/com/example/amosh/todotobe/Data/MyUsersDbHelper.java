@@ -130,6 +130,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         values.put(EventsContract.EventsEntry.COLUMN_NOTIFICATION, event.getNotification());
         values.put(EventsContract.EventsEntry.COLUMN_REPEAT, event.getRepeat());
         values.put(EventsContract.EventsEntry.COLUMN_PEOPLE, event.getPeople());
+        values.put(EventsContract.EventsEntry.COLUMN_PEOPLE_IMAGE, event.getPeopleImage());
         values.put(EventsContract.EventsEntry.COLUMN_IMAGE, event.getImage());
         values.put(EventsContract.EventsEntry.COLUMN_STATE, event.getState());
 
@@ -161,6 +162,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_PEOPLE_IMAGE,
                 EventsContract.EventsEntry.COLUMN_STATE,
                 EventsContract.EventsEntry.COLUMN_IMAGE
         };
@@ -209,6 +211,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_PEOPLE_IMAGE,
                 EventsContract.EventsEntry.COLUMN_STATE,
                 EventsContract.EventsEntry.COLUMN_IMAGE
         };
@@ -257,6 +260,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_PEOPLE_IMAGE,
                 EventsContract.EventsEntry.COLUMN_STATE,
                 EventsContract.EventsEntry.COLUMN_IMAGE
         };
@@ -305,6 +309,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_PEOPLE_IMAGE,
                 EventsContract.EventsEntry.COLUMN_STATE,
                 EventsContract.EventsEntry.COLUMN_IMAGE
         };
@@ -356,6 +361,7 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
                 EventsContract.EventsEntry.COLUMN_NOTIFICATION,
                 EventsContract.EventsEntry.COLUMN_REPEAT,
                 EventsContract.EventsEntry.COLUMN_PEOPLE,
+                EventsContract.EventsEntry.COLUMN_PEOPLE_IMAGE,
                 EventsContract.EventsEntry.COLUMN_IMAGE,
                 EventsContract.EventsEntry.COLUMN_STATE
         };

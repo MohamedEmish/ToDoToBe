@@ -18,13 +18,16 @@ public class Events {
     private final String mLocation;
     private final String mNotification;
     private final String mPeople;
+    private final String mPeopleImage;
+    private final String mPeopleImage2;
+    private final String mPeopleImage3;
     private final String mRepeat;
     private final String mImage;
     private final int mState;
 
 
     public Events(String uName, String title, String description, int dateFromDay, int dateFromMonth, int dateFromYear, int dateToDay, int dateToMonth, int dateToYear,
-                  int timeFromHour, int timeFromMinute, int timeToHour, int timeToMinute, String location, String notification, String people,
+                  int timeFromHour, int timeFromMinute, int timeToHour, int timeToMinute, String location, String notification, String people, String peopleImage, String peopleImage2, String peopleImage3,
                   String repeat, String image, int state) {
         mUserName = uName;
         this.mTitle = title;
@@ -43,6 +46,9 @@ public class Events {
         this.mLocation = location;
         this.mNotification = notification;
         this.mPeople = people;
+        this.mPeopleImage = peopleImage;
+        this.mPeopleImage2 = peopleImage2;
+        this.mPeopleImage3 = peopleImage3;
         this.mRepeat = repeat;
         this.mImage = image;
     }
@@ -122,5 +128,17 @@ public class Events {
 
     public String getUserName() {
         return mUserName;
+    }
+
+    public String getPeopleImage() {
+        return mPeopleImage;
+    }
+
+    public String getPeopleImage2() {
+        return mPeopleImage2;
+    }
+
+    public String getPeopleImage3() {
+        return mPeopleImage3;
     }
 }

@@ -134,7 +134,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 return true;
             } else {
 
-                return true;
+                return false;
             }
         }
     }

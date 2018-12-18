@@ -22,10 +22,9 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginLeft="8dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:layout_marginRight="16dp"
+        android:layout_gravity="center_vertical"
         android:scaleType="centerCrop"
+        android:layout_marginRight="16dp"
         android:src="@drawable/ic_calendar_no_eimage" />
 
     <LinearLayout

@@ -28,6 +28,9 @@ public class EventsContract {
         public static final String COLUMN_LOCATION = "location";
         public static final String COLUMN_NOTIFICATION = "notification";
         public static final String COLUMN_PEOPLE = "people";
+        public static final String COLUMN_PEOPLE_IMAGE = "people_image";
+        public static final String COLUMN_PEOPLE_IMAGE2 = "people_image2";
+        public static final String COLUMN_PEOPLE_IMAGE3 = "people_image3";
         public static final String COLUMN_REPEAT = "repeat";
         public static final String COLUMN_IMAGE = "image";
         public static final String COLUMN_STATE = "state";
@@ -57,6 +60,9 @@ public class EventsContract {
                 + EventsEntry.COLUMN_LOCATION + " TEXT NOT NULL,"
                 + EventsEntry.COLUMN_NOTIFICATION + " TEXT NOT NULL,"
                 + EventsEntry.COLUMN_PEOPLE + " TEXT,"
+                + EventsEntry.COLUMN_PEOPLE_IMAGE + " TEXT,"
+                + EventsEntry.COLUMN_PEOPLE_IMAGE2 + " TEXT,"
+                + EventsEntry.COLUMN_PEOPLE_IMAGE3 + " TEXT,"
                 + EventsEntry.COLUMN_REPEAT + " TEXT NOT NULL,"
                 + EventsEntry.COLUMN_STATE + " INTEGER ,"
                 + EventsEntry.COLUMN_IMAGE + " TEXT);"
