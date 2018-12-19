@@ -10,14 +10,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.amosh.todotobe.Data.Items;
-import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.example.amosh.todotobe.R;
 
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
-    MyUsersDbHelper usersDbHelper;
     private Context mContext;
     private List<Items> mItemsArrayList;
     private ItemClickListener mClickListener;

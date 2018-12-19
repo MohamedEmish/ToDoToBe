@@ -6,14 +6,8 @@ public class Items {
     private int mState;
     private String mCategory;
 
-//
-//    public Items(String username, String name, int state, String category) {
-//        mUsername = username;
-//        this.mName = name;
-//        this.mState = state;
-//        this.mCategory = category;
-//    }
 
+    // gets
     public String getName() {
         return mName;
     }
@@ -30,6 +24,7 @@ public class Items {
         return mUsername;
     }
 
+    // sets
     public void setmName(String name) {
         this.mName = name;
     }

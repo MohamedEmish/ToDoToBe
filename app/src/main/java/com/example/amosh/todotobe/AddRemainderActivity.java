@@ -117,6 +117,10 @@ public class AddRemainderActivity extends AppCompatActivity {
     Uri peopleImageUri2;
     Uri peopleImageUri3;
 
+    int peopleFlag1 = 0;
+    int peopleFlag2 = 0;
+    int peopleFlag3 = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -255,6 +259,9 @@ public class AddRemainderActivity extends AppCompatActivity {
         people.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                peopleFlag1 = 1;
+                peopleFlag2 = 0;
+                peopleFlag3 = 0;
                 showAddPeopleCustomDialog(AddRemainderActivity.this, PICK_IMAGE_REQUEST_PEOPLE);
             }
         });
@@ -262,6 +269,9 @@ public class AddRemainderActivity extends AppCompatActivity {
         people2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                peopleFlag1 = 0;
+                peopleFlag2 = 1;
+                peopleFlag3 = 0;
                 showAddPeopleCustomDialog(AddRemainderActivity.this, PICK_IMAGE_REQUEST_PEOPLE2);
             }
         });
@@ -269,6 +279,9 @@ public class AddRemainderActivity extends AppCompatActivity {
         people3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                peopleFlag1 = 0;
+                peopleFlag2 = 0;
+                peopleFlag3 = 1;
                 showAddPeopleCustomDialog(AddRemainderActivity.this, PICK_IMAGE_REQUEST_PEOPLE3);
             }
         });
@@ -332,13 +345,16 @@ public class AddRemainderActivity extends AppCompatActivity {
         closePeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                people.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_ppl));
-                people2.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_ppl));
-                people2.setVisibility(View.GONE);
-                people3.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_ppl));
-                people3.setVisibility(View.GONE);
+                if (peopleFlag1 == 1) {
+                    people.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_ppl));
+                } else if (peopleFlag2 == 1) {
+                    people2.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_ppl));
+                } else if (peopleFlag3 == 1) {
+                    people3.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_ppl));
+                }
 
                 dialog.dismiss();
+
             }
         });
 
@@ -410,10 +426,36 @@ public class AddRemainderActivity extends AppCompatActivity {
         eNotification = notificationSpinner.getSelectedItem().toString().trim();
         eRepeat = repeatSpinner.getSelectedItem().toString().trim();
 
-        Events event = new Events(userName, eTitle, eDescription, eDateFromDay, eDateFromMonth,
-                eDateFromYear, eDateToDay, eDateToMonth, eDateToYear,
-                eTimeFromHour, eTimeFromMinute, eTimeToHour, eTimeToMinute,
-                eLocation, eNotification, ePeople, ePeopleImageUri, ePeopleImageUri2, ePeopleImageUri3, eRepeat, eImageUri, eState);
+        Events event = new Events();
+
+        event.setTitle(eTitle);
+        event.setDescription(eDescription);
+        event.setLocation(eLocation);
+
+        event.setDateFromDay(eDateFromDay);
+        event.setDateFromMonth(eDateFromMonth);
+        event.setDateFromYear(eDateFromYear);
+        event.setTimeFromHour(eTimeFromHour);
+        event.setTimeFromMinutes(eTimeFromMinute);
+
+        event.setDateToDay(eDateToDay);
+        event.setDateToMonth(eDateToMonth);
+        event.setDateToYear(eDateToYear);
+        event.setTimeToHour(eTimeToHour);
+        event.setTimeToMinutes(eTimeToMinute);
+
+        event.setNotification(eNotification);
+        event.setRepeat(eRepeat);
+        event.setState(eState);
+        event.setImage(eImageUri);
+
+        event.setPeople(ePeople);
+        event.setPeopleImage(ePeopleImageUri);
+        event.setPeopleImage2(ePeopleImageUri2);
+        event.setPeopleImage3(ePeopleImageUri3);
+
+        event.setUserName(userName);
+
         usersDbHelper.insertEvent(event);
 
         return true;

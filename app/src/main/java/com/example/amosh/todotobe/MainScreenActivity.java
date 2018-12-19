@@ -1,6 +1,8 @@
 package com.example.amosh.todotobe;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,9 +19,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +33,7 @@ import android.widget.Toast;
 
 import com.example.amosh.todotobe.Adapters.EventAdapter;
 import com.example.amosh.todotobe.Adapters.EventDecorator;
+import com.example.amosh.todotobe.Data.Events;
 import com.example.amosh.todotobe.Data.EventsContract;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.example.amosh.todotobe.Data.UsersContract;
@@ -40,9 +47,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
-public class MainScreenActivity extends AppCompatActivity {
+public class MainScreenActivity extends AppCompatActivity implements EventAdapter.EventClickListener, EventAdapter.EventLongClickListener {
 
     TextView greet;
     ImageView profilePic;
@@ -51,6 +59,9 @@ public class MainScreenActivity extends AppCompatActivity {
     String searchText;
 
     TextView notify;
+    Dialog dialog;
+
+    FrameLayout completeAction, snoozeAction, overdueAction, editAcion, deleteAction, closeAction;
 
 
     FloatingActionButton fab;
@@ -76,6 +87,9 @@ public class MainScreenActivity extends AppCompatActivity {
     Uri imageUri;
     String mImageUriString;
 
+    List<Events> eventsList;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +98,7 @@ public class MainScreenActivity extends AppCompatActivity {
         usersDbHelper = new MyUsersDbHelper(this);
         // Getting signed in username
         userName = getIntent().getStringExtra("name");
+
 
         // Getting current date & time
         final Calendar calendar = Calendar.getInstance();
@@ -132,22 +147,25 @@ public class MainScreenActivity extends AppCompatActivity {
         eventListView.setLayoutManager(new LinearLayoutManager(this));
 
         // Cursor to populate recycler View
-        Cursor cursor = usersDbHelper.readEvent(userName, day, month, year);
-        if (cursor.getCount() == 0) {
+        eventsList = usersDbHelper.readEventList(userName, day, month, year);
+        if (eventsList.size() == 0) {
             eventListView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         } else {
             eventListView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
         }
-        eEventAdapter = new EventAdapter(this, cursor);
+        eEventAdapter = new EventAdapter(this, eventsList);
+        eEventAdapter.setClickListener(this);
+        eEventAdapter.setLongClickListener(this);
+        eEventAdapter.notifyDataSetChanged();
         eventListView.setAdapter(eEventAdapter);
 
         notify = (TextView) findViewById(R.id.badge_notify);
-        if (cursor.getCount() == 0) {
+        if (eventsList.size() == 0) {
             notify.setVisibility(View.GONE);
         } else {
-            notify.setText(String.valueOf(cursor.getCount()));
+            notify.setText(String.valueOf(eventsList.size()));
         }
         // Defining UI calendar
         calendarView = (MaterialCalendarView) findViewById(R.id.main_screen_calender);
@@ -163,11 +181,15 @@ public class MainScreenActivity extends AppCompatActivity {
                 int newMonth = materialCalendarView.getSelectedDate().getMonth();
                 int newYear = materialCalendarView.getSelectedDate().getYear();
 
-                Cursor newCursor = usersDbHelper.readEvent(userName, String.valueOf(newDay), String.valueOf(newMonth), String.valueOf(newYear));
-                eEventAdapter = new EventAdapter(MainScreenActivity.this, newCursor);
+                eventsList = usersDbHelper.readEventList(userName, String.valueOf(newDay), String.valueOf(newMonth), String.valueOf(newYear));
+                eEventAdapter = new EventAdapter(MainScreenActivity.this, eventsList);
+                eEventAdapter.setClickListener(MainScreenActivity.this);
+                eEventAdapter.setLongClickListener(MainScreenActivity.this);
+                eEventAdapter.notifyDataSetChanged();
                 eventListView.setAdapter(eEventAdapter);
 
-                if (newCursor.getCount() == 0) {
+
+                if (eventsList.size() == 0) {
                     eventListView.setVisibility(View.GONE);
                     emptyView.setVisibility(View.VISIBLE);
                 } else {
@@ -598,6 +620,99 @@ public class MainScreenActivity extends AppCompatActivity {
                 break;
         }
         return monthNumber;
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+
+        showCustomActionsDialog(MainScreenActivity.this, position);
+
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+
+    }
+
+    public void showCustomActionsDialog(final Context context, final int iPosition) {
+        dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_event_action_dialog, null, false);
+
+        /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
+        closeAction = (FrameLayout) view.findViewById(R.id.event_frame_close);
+        closeAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        completeAction = (FrameLayout) view.findViewById(R.id.event_frame_completed);
+        completeAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                usersDbHelper.updateEventState(userName,
+                        eventsList.get(iPosition).getTitle(), EventsContract.EventsEntry.STATE_COMPLETED,
+                        eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
+                eventsList.get(iPosition).setState(EventsContract.EventsEntry.STATE_COMPLETED);
+                eEventAdapter.notifyDataSetChanged();
+
+                dialog.dismiss();
+            }
+        });
+
+        snoozeAction = (FrameLayout) view.findViewById(R.id.event_frame_snoozed);
+        snoozeAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                usersDbHelper.updateEventState(userName,
+                        eventsList.get(iPosition).getTitle(), EventsContract.EventsEntry.STATE_SNOOZED,
+                        eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
+                eventsList.get(iPosition).setState(EventsContract.EventsEntry.STATE_SNOOZED);
+                eEventAdapter.notifyDataSetChanged();
+
+                dialog.dismiss();
+            }
+        });
+
+        overdueAction = (FrameLayout) view.findViewById(R.id.event_frame_overdued);
+        overdueAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                usersDbHelper.updateEventState(eventsList.get(iPosition).getUserName(),
+                        eventsList.get(iPosition).getTitle(), EventsContract.EventsEntry.STATE_OVERDUE,
+                        eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
+                eventsList.get(iPosition).setState(EventsContract.EventsEntry.STATE_OVERDUE);
+                eEventAdapter.notifyDataSetChanged();
+
+                dialog.dismiss();
+            }
+        });
+
+        deleteAction = (FrameLayout) view.findViewById(R.id.event_frame_delete);
+        deleteAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                usersDbHelper.deleteEvent(eventsList.get(iPosition).getTitle(), eventsList.get(iPosition).getUserName(),
+                        eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
+                eventsList.remove(iPosition);
+                eEventAdapter.notifyItemRemoved(iPosition);
+
+                dialog.dismiss();
+            }
+        });
+
+
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setContentView(view);
+        final Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        window.setBackgroundDrawableResource(R.color.trans);
+        window.setGravity(Gravity.BOTTOM);
+        window.setGravity(Gravity.CENTER);
+        dialog.show();
     }
 
 }

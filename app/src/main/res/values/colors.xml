@@ -22,4 +22,5 @@
 
     <!-- Primary dark color for the editor -->
     <color name="editorColorPrimaryDark">#42A5F5</color>
+    <color name="trans">#0DF48FB1</color>
 </resources>

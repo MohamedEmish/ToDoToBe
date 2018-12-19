@@ -29,8 +29,8 @@ public class EventsContract {
         public static final String COLUMN_NOTIFICATION = "notification";
         public static final String COLUMN_PEOPLE = "people";
         public static final String COLUMN_PEOPLE_IMAGE = "people_image";
-        public static final String COLUMN_PEOPLE_IMAGE2 = "people_image2";
-        public static final String COLUMN_PEOPLE_IMAGE3 = "people_image3";
+        public static final String COLUMN_PEOPLE_IMAGE2 = "people_image_two";
+        public static final String COLUMN_PEOPLE_IMAGE3 = "people_image_three";
         public static final String COLUMN_REPEAT = "repeat";
         public static final String COLUMN_IMAGE = "image";
         public static final String COLUMN_STATE = "state";

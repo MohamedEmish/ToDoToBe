@@ -1,7 +1,6 @@
 package com.example.amosh.todotobe.Adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,17 +10,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.amosh.todotobe.Data.EventsContract;
+import com.example.amosh.todotobe.Data.Events;
 import com.example.amosh.todotobe.R;
+
+import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private Context mContext;
-    private Cursor mCursor;
+    private List<Events> mEventsArrayList;
+    private EventClickListener mClickListener;
+    private EventLongClickListener mLongClickListener;
 
-    public EventAdapter(Context context, Cursor cursor) {
+    public EventAdapter(Context context, List<Events> arrayList) {
         mContext = context;
-        mCursor = cursor;
+        mEventsArrayList = arrayList;
     }
 
     @Override
@@ -33,18 +36,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     @Override
     public void onBindViewHolder(EventViewHolder holder, int position) {
-        if (!mCursor.moveToPosition(position)) {
-            return;
-        }
-
-        String title = mCursor.getString(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_TITLE));
-        String people = mCursor.getString(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_PEOPLE));
-        int timeFrom = mCursor.getInt(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR));
-        int timeTo = mCursor.getInt(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_TIME_TO_HOUR));
-        String location = mCursor.getString(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_LOCATION));
-        String imageUriString = mCursor.getString(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_IMAGE));
-        int state = mCursor.getInt(mCursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_STATE));
-
+        int state = mEventsArrayList.get(position).getState();
         switch (state) {
             case 0:
                 holder.stateColor.setBackgroundColor(mContext.getResources().getColor(R.color.white_color));
@@ -59,6 +51,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 holder.stateColor.setBackgroundColor(mContext.getResources().getColor(R.color.light_purple));
                 break;
         }
+        String imageUriString = mEventsArrayList.get(position).getImage();
 
         if (!imageUriString.equals("")) {
             Uri imageUri = Uri.parse(imageUriString);
@@ -67,26 +60,28 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             holder.eImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_calendar_no_eimage));
         }
 
-
+        int timeFrom = mEventsArrayList.get(position).getTimeFromHour();
         if (timeFrom > 12) {
             holder.timeFromTextView.setText(String.valueOf(timeFrom - 12));
         } else {
             holder.timeFromTextView.setText(String.valueOf(timeFrom));
         }
 
+        int timeTo = mEventsArrayList.get(position).getTimeToHour();
         if (timeTo > 12) {
             holder.timeToTextView.setText(String.valueOf(timeTo - 12));
         } else {
             holder.timeToTextView.setText(String.valueOf(timeTo));
         }
 
+        String people = mEventsArrayList.get(position).getPeople();
         if (people.equals("")) {
             holder.withTextView.setVisibility(View.GONE);
         }
 
-        holder.titleTextView.setText(title);
+        holder.titleTextView.setText(mEventsArrayList.get(position).getTitle());
         holder.peopleTextView.setText(people);
-        holder.locationTextView.setText(location);
+        holder.locationTextView.setText(mEventsArrayList.get(position).getLocation());
 
         if (timeTo >= 12) {
             holder.am_pmTextView.setText("pm");
@@ -99,21 +94,34 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     @Override
     public int getItemCount() {
-        return mCursor.getCount();
+        return mEventsArrayList.size();
     }
 
-    public void swapCursor(Cursor newCursor) {
-        if (mCursor != null) {
-            mCursor.close();
-
-        }
-        mCursor = newCursor;
-        if (newCursor != null) {
-            notifyDataSetChanged();
-        }
+    // allows clicks events to be caught
+    public void setClickListener(EventClickListener eventClickListener) {
+        this.mClickListener = eventClickListener;
     }
 
-    public class EventViewHolder extends RecyclerView.ViewHolder {
+    public void setLongClickListener(EventLongClickListener eventLongClickListener) {
+        this.mLongClickListener = eventLongClickListener;
+    }
+
+    // return data
+    public String getItemName(int id) {
+        return mEventsArrayList.get(id).getTitle();
+    }
+
+    // parent activity will implement this method to respond to click events
+    public interface EventClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public interface EventLongClickListener {
+        void onItemLongClick(View view, int position);
+    }
+
+    public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+
 
         public TextView titleTextView;
         public TextView peopleTextView;
@@ -127,6 +135,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         public EventViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
 
             titleTextView = itemView.findViewById(R.id.list_event_title);
             peopleTextView = itemView.findViewById(R.id.list_event_people);
@@ -137,6 +147,23 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             withTextView = itemView.findViewById(R.id.list_event_with);
             eImage = itemView.findViewById(R.id.list_event_image);
             stateColor = itemView.findViewById(R.id.list_event_state_color);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            if (mLongClickListener != null) {
+                mLongClickListener.onItemLongClick(view, getAdapterPosition());
+                return true;
+            } else {
+
+                return false;
+            }
         }
     }
 }

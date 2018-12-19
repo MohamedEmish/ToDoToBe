@@ -9,11 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.amosh.todotobe.Data.Events;
 import com.example.amosh.todotobe.Data.EventsContract;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.example.amosh.todotobe.R;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionViewHolder> {
@@ -55,14 +57,13 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
         String year = String.valueOf(dateFromYear);
 
 
-        Cursor listCursor = usersDbHelper.readEvent(myUsername, day, month, year);
-        listCursor.moveToFirst();
+        List<Events> eventsList = usersDbHelper.readEventList(myUsername, day, month, year);
 
 
         RecyclerView.LayoutManager layoutManager = new CustomLinearLayoutManager(mContext);
         holder.recyclerView.setLayoutManager(layoutManager);
 
-        eEventAdapter = new EventAdapter(mContext, listCursor);
+        eEventAdapter = new EventAdapter(mContext, eventsList);
         holder.recyclerView.addItemDecoration(new DividerItemDecoration(holder.recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         holder.recyclerView.setAdapter(eEventAdapter);
 
