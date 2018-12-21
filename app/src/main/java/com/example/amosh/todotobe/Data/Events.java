@@ -24,6 +24,15 @@ public class Events {
     private String mRepeat;
     private String mImage;
     private int mState;
+    private long mId;
+
+    public long getId() {
+        return mId;
+    }
+
+    public void setId(long id) {
+        this.mId = id;
+    }
 
     public String getTitle() {
         return mTitle;

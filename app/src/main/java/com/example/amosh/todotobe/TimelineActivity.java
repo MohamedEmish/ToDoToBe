@@ -1,7 +1,6 @@
 package com.example.amosh.todotobe;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,11 +20,13 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.amosh.todotobe.Adapters.SectionAdapter;
+import com.example.amosh.todotobe.Data.Events;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.example.amosh.todotobe.Fragments.MonthPreviewActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity {
     String username;
@@ -35,6 +36,8 @@ public class TimelineActivity extends AppCompatActivity {
     DrawerLayout mDrawerLayout;
     ImageView menu_icon;
     NavigationView navigationView;
+
+    List<Events> sectionList;
 
     FloatingActionButton fab;
 
@@ -60,8 +63,8 @@ public class TimelineActivity extends AppCompatActivity {
 
         listView = (RecyclerView) findViewById(R.id.timeline_list);
         linearLayoutManager = new LinearLayoutManager(this);
-        Cursor cursor = usersDbHelper.readEventSection(username);
-        sCursorAdapter = new SectionAdapter(this, cursor, username);
+        sectionList = usersDbHelper.readEventSectionList(username);
+        sCursorAdapter = new SectionAdapter(this, sectionList, username);
         listView.addItemDecoration(
                 new DividerItemDecoration(this, linearLayoutManager.getOrientation()) {
                     @Override
@@ -74,7 +77,7 @@ public class TimelineActivity extends AppCompatActivity {
         listView.setLayoutManager(linearLayoutManager);
         listView.setAdapter(sCursorAdapter);
 
-        if (cursor.getCount() == 0) {
+        if (sectionList.size() == 0) {
             listView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         } else {

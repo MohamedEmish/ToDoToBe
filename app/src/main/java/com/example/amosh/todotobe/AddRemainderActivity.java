@@ -1,8 +1,10 @@
 package com.example.amosh.todotobe;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -121,6 +123,9 @@ public class AddRemainderActivity extends AppCompatActivity {
     int peopleFlag2 = 0;
     int peopleFlag3 = 0;
 
+    String idString;
+    long id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +138,7 @@ public class AddRemainderActivity extends AppCompatActivity {
         // open DB
         usersDbHelper = new MyUsersDbHelper(this);
 
-        // defining UI omponents
+        // defining UI Components
         title = (EditText) findViewById(R.id.add_remainder_title);
         description = (EditText) findViewById(R.id.add_remainder_description);
         location = (EditText) findViewById(R.id.add_remainder_location_text);
@@ -369,7 +374,6 @@ public class AddRemainderActivity extends AppCompatActivity {
     }
 
 
-
     // Function to check values existence
     private void addNewEvent() {
 
@@ -457,6 +461,8 @@ public class AddRemainderActivity extends AppCompatActivity {
         event.setUserName(userName);
 
         usersDbHelper.insertEvent(event);
+
+        notification(eDateFromDay, eDateFromMonth, eDateFromYear, eTimeFromHour, eTimeFromMinute, eRepeat);
 
         return true;
     }
@@ -973,5 +979,41 @@ public class AddRemainderActivity extends AppCompatActivity {
 
         }
     }
+
+    public void notification(int day, int month, int year, int hour, int minute, String repeat) {
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+
+        notificationIntent.setAction("my.action.string");
+        notificationIntent.putExtra("title", eTitle);
+        notificationIntent.putExtra("description", eDescription);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+
+        // Define pending intent
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // set() schedules an alarm
+        long time = calendar.getTimeInMillis();
+
+        switch (repeat) {
+            case "Daily":
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, alarmManager.INTERVAL_DAY, pendingIntent);
+                break;
+            case "Weekly":
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, alarmManager.INTERVAL_DAY * 7, pendingIntent);
+                break;
+            case "Monthly":
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time, alarmManager.INTERVAL_DAY * calendar.getActualMaximum(Calendar.DAY_OF_MONTH), pendingIntent);
+                break;
+        }
+
+    }
+
 
 }

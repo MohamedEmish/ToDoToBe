@@ -105,6 +105,12 @@ public class month_preview_month_tab_fargment extends Fragment implements EventA
             emptyView.setVisibility(View.GONE);
         }
         eEventAdapter = new EventAdapter(getContext(), list);
+        eEventAdapter.setClickListener(new EventAdapter.EventClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                showCustomActionsDialog(getContext(), position);
+            }
+        });
         eventListView.setAdapter(eEventAdapter);
 
         materialCalendarView = view.findViewById(R.id.month_preview_month_calender);
@@ -158,6 +164,7 @@ public class month_preview_month_tab_fargment extends Fragment implements EventA
     private void addNewEvent(String name) {
         Intent ADDActivity = new Intent(getContext(), AddRemainderActivity.class);
         ADDActivity.putExtra("name", name);
+        ADDActivity.putExtra("id", "");
         startActivity(ADDActivity);
     }
 

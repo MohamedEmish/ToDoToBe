@@ -61,7 +61,7 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
     TextView notify;
     Dialog dialog;
 
-    FrameLayout completeAction, snoozeAction, overdueAction, editAcion, deleteAction, closeAction;
+    FrameLayout completeAction, snoozeAction, overdueAction, deleteAction, closeAction;
 
 
     FloatingActionButton fab;
@@ -88,7 +88,6 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
     String mImageUriString;
 
     List<Events> eventsList;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -330,8 +329,6 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
                 mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
-
-
     }
 
     // open gallery to get image
@@ -410,6 +407,7 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
     private void addNewEvent(String name) {
         Intent ADDActivity = new Intent(MainScreenActivity.this, AddRemainderActivity.class);
         ADDActivity.putExtra("name", name);
+        ADDActivity.putExtra("id", "");
         startActivity(ADDActivity);
     }
 
@@ -653,7 +651,7 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
         completeAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                usersDbHelper.updateEventState(userName,
+                usersDbHelper.updateEventState(eventsList.get(iPosition).getUserName(),
                         eventsList.get(iPosition).getTitle(), EventsContract.EventsEntry.STATE_COMPLETED,
                         eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
                 eventsList.get(iPosition).setState(EventsContract.EventsEntry.STATE_COMPLETED);
@@ -667,7 +665,7 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
         snoozeAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                usersDbHelper.updateEventState(userName,
+                usersDbHelper.updateEventState(eventsList.get(iPosition).getUserName(),
                         eventsList.get(iPosition).getTitle(), EventsContract.EventsEntry.STATE_SNOOZED,
                         eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
                 eventsList.get(iPosition).setState(EventsContract.EventsEntry.STATE_SNOOZED);
@@ -699,7 +697,10 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
                         eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
                 eventsList.remove(iPosition);
                 eEventAdapter.notifyItemRemoved(iPosition);
-
+                if (eventsList.size() == 0) {
+                    emptyView.setVisibility(View.VISIBLE);
+                    eventListView.setVisibility(View.GONE);
+                }
                 dialog.dismiss();
             }
         });

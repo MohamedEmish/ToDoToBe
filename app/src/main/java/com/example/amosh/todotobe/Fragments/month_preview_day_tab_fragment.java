@@ -91,6 +91,12 @@ public class month_preview_day_tab_fragment extends Fragment implements EventAda
             emptyView.setVisibility(View.GONE);
         }
         eEventAdapter = new EventAdapter(getContext(), eventsList);
+        eEventAdapter.setClickListener(new EventAdapter.EventClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                showCustomActionsDialog(getContext(), position);
+            }
+        });
         eventListView.setAdapter(eEventAdapter);
 
         return view;
@@ -99,6 +105,7 @@ public class month_preview_day_tab_fragment extends Fragment implements EventAda
     private void addNewEvent(String name) {
         Intent ADDActivity = new Intent(getContext(), AddRemainderActivity.class);
         ADDActivity.putExtra("name", name);
+        ADDActivity.putExtra("id", "");
         startActivity(ADDActivity);
     }
 
