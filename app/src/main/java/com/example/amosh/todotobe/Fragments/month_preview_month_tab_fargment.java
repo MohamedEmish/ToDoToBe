@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.amosh.todotobe.Adapters.EventAdapter;
@@ -53,6 +55,7 @@ public class month_preview_month_tab_fargment extends Fragment implements EventA
     MyUsersDbHelper usersDbHelper;
 
     MaterialCalendarView materialCalendarView;
+    ImageView actionImage;
 
 
     Dialog dialog;
@@ -181,6 +184,15 @@ public class month_preview_month_tab_fargment extends Fragment implements EventA
         View view = inflater.inflate(R.layout.custom_event_action_dialog, null, false);
 
         /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
+
+        actionImage = (ImageView) view.findViewById(R.id.event_frame_image);
+        if (!eventsList.get(iPosition).getImage().equals("")) {
+            Uri imageUri = Uri.parse(eventsList.get(iPosition).getImage());
+            actionImage.setImageURI(imageUri);
+        } else {
+            actionImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_cal_white));
+        }
+
         closeAction = (FrameLayout) view.findViewById(R.id.event_frame_close);
         closeAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,6 +252,10 @@ public class month_preview_month_tab_fargment extends Fragment implements EventA
                 eventsList.remove(iPosition);
                 eEventAdapter.notifyItemRemoved(iPosition);
 
+                if (eventsList.size() == 0) {
+                    emptyView.setVisibility(View.VISIBLE);
+                    eventListView.setVisibility(View.GONE);
+                }
                 dialog.dismiss();
             }
         });
@@ -248,7 +264,7 @@ public class month_preview_month_tab_fargment extends Fragment implements EventA
         ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         dialog.setContentView(view);
         final Window window = dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.setBackgroundDrawableResource(R.color.trans);
         window.setGravity(Gravity.BOTTOM);
         window.setGravity(Gravity.CENTER);

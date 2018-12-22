@@ -21,6 +21,7 @@ import com.example.amosh.todotobe.MyGroupsActivity;
 import com.example.amosh.todotobe.OverviewActivity;
 import com.example.amosh.todotobe.ProfileActivity;
 import com.example.amosh.todotobe.R;
+import com.example.amosh.todotobe.SaveSharedPreference;
 import com.example.amosh.todotobe.SettingsActivity;
 import com.example.amosh.todotobe.SignInActivity;
 import com.example.amosh.todotobe.TimelineActivity;
@@ -172,6 +173,7 @@ public class MonthPreviewActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(MonthPreviewActivity.this, SignInActivity.class);
+                        SaveSharedPreference.clearUserName(MonthPreviewActivity.this);
                         startActivity(signInActivity);
                         break;
                 }

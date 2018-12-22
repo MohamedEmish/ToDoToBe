@@ -7,22 +7,32 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.TextView;
+
 
 public class SettingsActivity extends AppCompatActivity {
+    ImageView menu_icon;
     String username;
+    DrawerLayout mDrawerLayout;
+    SwitchCompat notification;
+    TextView usernameView;
+
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
 
         username = getIntent().getStringExtra("name");
+        usernameView.setText(username);
 
-        ImageView menu_icon = (ImageView) findViewById(R.id.settings_menu_icon);
-        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.settings_drawer_layout);
+        menu_icon = (ImageView) findViewById(R.id.settings_menu_icon);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.settings_drawer_layout);
         menu_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,11 +84,28 @@ public class SettingsActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(SettingsActivity.this, SignInActivity.class);
+                        SaveSharedPreference.clearUserName(SettingsActivity.this);
                         startActivity(signInActivity);
                         break;
                 }
                 return true;
             }
         });
+        notification = (SwitchCompat) findViewById(R.id.setting_notification_switch);
+        notification.setChecked(true);
+        notification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                                    @Override
+                                                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                                                        if (isChecked) {
+                                                            SaveSharedPreference.setPrefNotification(SettingsActivity.this, "on");
+                                                        } else if (!isChecked) {
+                                                            SaveSharedPreference.setPrefNotification(SettingsActivity.this, "off");
+
+                                                        }
+
+                                                    }
+                                                }
+        );
     }
+
 }

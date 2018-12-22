@@ -582,13 +582,10 @@ public class AddRemainderActivity extends AppCompatActivity {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals("via Email")) {
-                        // TODO : set selection
                         eNotification = "via Email";
                     } else if (selection.equals("via Ring")) {
-                        // TODO : set selection
                         eNotification = "via Ring";
                     } else {
-                        // TODO : set selection
                         eNotification = "via MSG";
                     }
                 }
@@ -620,10 +617,8 @@ public class AddRemainderActivity extends AppCompatActivity {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals("Daily")) {
-                        // TODO : set selection
                         eRepeat = "Daily";
                     } else if (selection.equals("Weekly")) {
-                        // TODO : set selection
                         eRepeat = "Weekly";
                     } else {
                         // TODO : set selection
@@ -982,12 +977,27 @@ public class AddRemainderActivity extends AppCompatActivity {
 
     public void notification(int day, int month, int year, int hour, int minute, String repeat) {
 
+        String eTime;
+        String pm_am;
+
+        if (eTimeFromHour > 12) {
+            eTime = String.valueOf(eTimeFromHour - 12);
+            pm_am = "pm";
+        } else {
+            eTime = String.valueOf(eTimeFromHour);
+            pm_am = "am";
+        }
+
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent notificationIntent = new Intent(this, AlarmReceiver.class);
 
         notificationIntent.setAction("my.action.string");
         notificationIntent.putExtra("title", eTitle);
         notificationIntent.putExtra("description", eDescription);
+        notificationIntent.putExtra("hour", eTime);
+        notificationIntent.putExtra("minutes", String.valueOf(eTimeFromMinute));
+        notificationIntent.putExtra("am_pm", pm_am);
+
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, day);

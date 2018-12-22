@@ -383,11 +383,11 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?";
         String[] selectionArgs = new String[]{name};
 
-        String order = EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + " ASC , "
-                + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + " ASC , "
-                + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + " ASC , "
-                + EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR + " ASC,"
-                + EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE + " ASC";
+        String order = EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + " DESC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + " DESC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + " DESC , "
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR + " DESC,"
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE + " DESC";
 
         Cursor cursor = db.query(true,
                 EventsContract.EventsEntry.TABLE_EVENTS,
@@ -588,6 +588,96 @@ public class MyUsersDbHelper extends SQLiteOpenHelper {
         // return user list
         return eventsList;
     }
+
+    public List<Events> readEventList(String name, String dayFrom, String monthFrom, String yearFrom, String state) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                EventsContract.EventsEntry._ID
+        };
+        String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_STATE + "=?";
+
+        String[] selectionArgs = new String[]{name, dayFrom, monthFrom, yearFrom, state};
+
+        String order = EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_DAY + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR + " ASC,"
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE + " ASC";
+
+        Cursor cursor = db.query(
+                EventsContract.EventsEntry.TABLE_EVENTS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                order);
+        List<Events> eventsList = new ArrayList<Events>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                Events event = new Events();
+
+                event.setId(cursor.getLong(cursor.getColumnIndex(EventsContract.EventsEntry._ID)));
+                // Adding user record to list
+                eventsList.add(event);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return eventsList;
+    }
+
+    public List<Events> readEventListStateNoDay(String name, String monthFrom, String yearFrom, String state) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                EventsContract.EventsEntry._ID,
+                EventsContract.EventsEntry.COLUMN_IMAGE
+        };
+        String selection = EventsContract.EventsEntry.COLUMN_USER_NAME + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + "=?"
+                + " AND " + EventsContract.EventsEntry.COLUMN_STATE + "=?";
+        String[] selectionArgs = new String[]{name, monthFrom, yearFrom, state};
+
+        String order = EventsContract.EventsEntry.COLUMN_DATE_FROM_YEAR + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_DATE_FROM_MONTH + " ASC , "
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_HOUR + " ASC,"
+                + EventsContract.EventsEntry.COLUMN_TIME_FROM_MINUTE + " ASC";
+
+        Cursor cursor = db.query(
+                EventsContract.EventsEntry.TABLE_EVENTS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                order);
+        List<Events> eventsList = new ArrayList<Events>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                Events event = new Events();
+
+                event.setImage(cursor.getString(cursor.getColumnIndex(EventsContract.EventsEntry.COLUMN_IMAGE)));
+                event.setId(cursor.getLong(cursor.getColumnIndex(EventsContract.EventsEntry._ID)));
+                // Adding user record to list
+                eventsList.add(event);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return eventsList;
+    }
+
 
     public void deleteEvent(String eventTitle, String username, int dateFromDay, int dateToDay) {
         SQLiteDatabase db = this.getWritableDatabase();

@@ -20,6 +20,7 @@ import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.example.amosh.todotobe.R;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,6 +63,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
         String year = String.valueOf(dateFromYear);
 
         eventsList = usersDbHelper.readEventList(myUsername, day, month, year);
+        Collections.reverse(eventsList);
 
         RecyclerView.LayoutManager layoutManager = new CustomLinearLayoutManager(mContext);
         holder.recyclerView.setLayoutManager(layoutManager);

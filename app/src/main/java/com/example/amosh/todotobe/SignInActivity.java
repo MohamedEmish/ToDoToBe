@@ -64,7 +64,10 @@ public class SignInActivity extends AppCompatActivity {
         String name = getIntent().getStringExtra("name");
         String password = getIntent().getStringExtra("password");
 
-        usersDbHelper = new MyUsersDbHelper(this);
+        if (SaveSharedPreference.getUserName(SignInActivity.this).length() != 0) {
+            passedUserName = SaveSharedPreference.getUserName(SignInActivity.this);
+            startMainScreenIntent(passedUserName);
+        }
 
         userName = (EditText) findViewById(R.id.sign_in_name);
         userPassword = (EditText) findViewById(R.id.sign_in_password);
@@ -72,21 +75,12 @@ public class SignInActivity extends AppCompatActivity {
         userName.setText(name);
         userPassword.setText(password);
 
-        eye = (ImageView) findViewById(R.id.sign_in_eye);
 
+        eye = (ImageView) findViewById(R.id.sign_in_eye);
         eye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (eyeVisibility == 1) {
-                    eyeVisibility = 0;
-                    userPassword.setTransformationMethod(null);
-                    eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_visibility_button_colored));
-                } else {
-                    eyeVisibility = 1;
-                    userPassword.setTransformationMethod(new PasswordTransformationMethod());
-                    eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_visibility_button_gray));
-                }
+                eyeAction();
             }
         });
 
@@ -104,32 +98,7 @@ public class SignInActivity extends AppCompatActivity {
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                passedUserName = userName.getText().toString().trim();
-                if (hasReadPermission() && hasWritePermission()) {
-                    if (!doesDatabaseExist(SignInActivity.this, "users.db")) {
-                        Toast.makeText(SignInActivity.this, "NO USERS INFO. DETECTED\nPLEASE.. SIGN UP", Toast.LENGTH_SHORT).show();
-                    } else {
-                        if (!isUserExist(userName.getText().toString().trim(), userPassword.getText().toString().trim())) {
-                            Toast.makeText(SignInActivity.this, "Wrong username or password", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // initialize SharePreference
-                            loginPreference = getSharedPreferences(MY_PREF, Context.MODE_PRIVATE);
-
-                            // this condition will do the trick.
-                            if (loginPreference.getString("tag", "notOk").equals("notOk")) {
-
-                                // add tag in SharedPreference here..
-                                SharedPreferences.Editor edit = loginPreference.edit();
-                                edit.putString("tag", "ok");
-                                edit.commit();
-                                startSplashScreen(passedUserName);
-
-                            } else if (loginPreference.getString("tag", null).equals("ok")) {
-                                startMainScreenIntent(passedUserName);
-                            }
-                        }
-                    }
-                }
+                signInAction();
             }
         });
 
@@ -142,6 +111,49 @@ public class SignInActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void signInAction() {
+        usersDbHelper = new MyUsersDbHelper(SignInActivity.this);
+        passedUserName = userName.getText().toString().trim();
+        if (hasReadPermission() && hasWritePermission()) {
+            if (!doesDatabaseExist(SignInActivity.this, "users.db")) {
+                Toast.makeText(SignInActivity.this, "NO USERS INFO. DETECTED\nPLEASE.. SIGN UP", Toast.LENGTH_SHORT).show();
+            } else {
+                if (!isUserExist(userName.getText().toString().trim(), userPassword.getText().toString().trim())) {
+                    Toast.makeText(SignInActivity.this, "Wrong username or password", Toast.LENGTH_SHORT).show();
+                } else {
+                    // initialize SharePreference
+                    loginPreference = getSharedPreferences(MY_PREF, Context.MODE_PRIVATE);
+
+                    // this condition will do the trick.
+                    if (loginPreference.getString("tag", "notOk").equals("notOk")) {
+
+                        // add tag in SharedPreference here..
+                        SharedPreferences.Editor edit = loginPreference.edit();
+                        edit.putString("tag", "ok");
+                        edit.commit();
+                        startSplashScreen(passedUserName);
+
+                    } else if (loginPreference.getString("tag", null).equals("ok")) {
+                        SaveSharedPreference.setUserName(this, passedUserName);
+                        startMainScreenIntent(passedUserName);
+                    }
+                }
+            }
+        }
+    }
+
+    private void eyeAction() {
+        if (eyeVisibility == 1) {
+            eyeVisibility = 0;
+            userPassword.setTransformationMethod(null);
+            eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_visibility_button_colored));
+        } else {
+            eyeVisibility = 1;
+            userPassword.setTransformationMethod(new PasswordTransformationMethod());
+            eye.setImageDrawable(getResources().getDrawable(R.drawable.ic_visibility_button_gray));
+        }
     }
 
     private void startSignUpIntent() {

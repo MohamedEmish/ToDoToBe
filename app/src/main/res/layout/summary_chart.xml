@@ -67,6 +67,7 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
             <TextView
+                android:id="@+id/summary_username"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:gravity="center_vertical"
@@ -91,6 +92,7 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
             <TextView
+                android:id="@+id/summary_month_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
@@ -99,6 +101,7 @@
                 android:textColor="#000000" />
 
             <TextView
+                android:id="@+id/summary_year_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
@@ -277,6 +280,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/summary_completed_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
@@ -306,6 +310,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/summary_snoozed_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
@@ -335,6 +340,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/summary_overdue_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"

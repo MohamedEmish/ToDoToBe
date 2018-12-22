@@ -82,6 +82,7 @@ public class MyGroupsActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(MyGroupsActivity.this, SignInActivity.class);
+                        SaveSharedPreference.clearUserName(MyGroupsActivity.this);
                         startActivity(signInActivity);
                         break;
                 }

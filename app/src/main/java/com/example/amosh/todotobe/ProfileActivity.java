@@ -181,6 +181,7 @@ public class ProfileActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(ProfileActivity.this, SignInActivity.class);
+                        SaveSharedPreference.clearUserName(ProfileActivity.this);
                         startActivity(signInActivity);
                         break;
                 }

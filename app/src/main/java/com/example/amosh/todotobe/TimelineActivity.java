@@ -26,6 +26,7 @@ import com.example.amosh.todotobe.Fragments.MonthPreviewActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity {
@@ -64,6 +65,7 @@ public class TimelineActivity extends AppCompatActivity {
         listView = (RecyclerView) findViewById(R.id.timeline_list);
         linearLayoutManager = new LinearLayoutManager(this);
         sectionList = usersDbHelper.readEventSectionList(username);
+        Collections.reverse(sectionList);
         sCursorAdapter = new SectionAdapter(this, sectionList, username);
         listView.addItemDecoration(
                 new DividerItemDecoration(this, linearLayoutManager.getOrientation()) {
@@ -168,6 +170,7 @@ public class TimelineActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(TimelineActivity.this, SignInActivity.class);
+                        SaveSharedPreference.clearUserName(TimelineActivity.this);
                         startActivity(signInActivity);
                         break;
                 }

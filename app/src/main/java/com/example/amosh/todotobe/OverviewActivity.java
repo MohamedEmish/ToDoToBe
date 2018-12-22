@@ -27,6 +27,7 @@ public class OverviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent summary = new Intent(OverviewActivity.this, SummaryChartActivity.class);
+                summary.putExtra("name", username);
                 startActivity(summary);
             }
         });
@@ -86,6 +87,7 @@ public class OverviewActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(OverviewActivity.this, SignInActivity.class);
+                        SaveSharedPreference.clearUserName(OverviewActivity.this);
                         startActivity(signInActivity);
                         break;
                 }

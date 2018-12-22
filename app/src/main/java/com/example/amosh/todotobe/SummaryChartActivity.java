@@ -11,7 +11,11 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.example.amosh.todotobe.Data.Events;
+import com.example.amosh.todotobe.Data.EventsContract;
+import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -19,15 +23,57 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class SummaryChartActivity extends AppCompatActivity {
     String username;
+    TextView usernameTxt, completedTxt, snoozedTxt, overduedTxt, monthTxt, yearTxt;
+    MyUsersDbHelper usersDbHelper;
+    List<Events> complete;
+    List<Events> overdue;
+    List<Events> snooze;
+
+    int dayC1_2 = 0, dayC3_5 = 0, dayC6_8 = 0, dayC9_11 = 0, dayC12_14 = 0, dayC15_17 = 0, dayC18_20 = 0, dayC21_23 = 0, dayC24_26 = 0, dayC_27_31 = 0;
+    int dayS1_2 = 0, dayS3_5 = 0, dayS6_8 = 0, dayS9_11 = 0, dayS12_14 = 0, dayS15_17 = 0, dayS18_20 = 0, dayS21_23 = 0, dayS24_26 = 0, dayS_27_31 = 0;
+    int dayO1_2 = 0, dayO3_5 = 0, dayO6_8 = 0, dayO9_11 = 0, dayO12_14 = 0, dayO15_17 = 0, dayO18_20 = 0, dayO21_23 = 0, dayO24_26 = 0, dayO_27_31 = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.summary_chart);
 
+        usersDbHelper = new MyUsersDbHelper(this);
+
         username = getIntent().getStringExtra("name");
+
+        usernameTxt = (TextView) findViewById(R.id.summary_username);
+        usernameTxt.setText(username);
+
+        Calendar calendar = Calendar.getInstance();
+
+        yearTxt = (TextView) findViewById(R.id.summary_year_text);
+        monthTxt = (TextView) findViewById(R.id.summary_month_text);
+        yearTxt.setText(String.valueOf(calendar.get(Calendar.YEAR)));
+        monthTxt.setText(String.valueOf(getMonthName(calendar.get(Calendar.MONTH) + 1)));
+        monthTxt.setAllCaps(true);
+
+        String monthS = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+        String yearS = String.valueOf(calendar.get(Calendar.YEAR));
+
+        overdue = usersDbHelper.readEventListStateNoDay(username, monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_OVERDUE));
+        overduedTxt = (TextView) findViewById(R.id.summary_overdue_text);
+        overduedTxt.setText(String.valueOf(overdue.size()));
+
+        complete = usersDbHelper.readEventListStateNoDay(username, monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_COMPLETED));
+        completedTxt = (TextView) findViewById(R.id.summary_completed_text);
+        completedTxt.setText(String.valueOf(complete.size()));
+
+        snooze = usersDbHelper.readEventListStateNoDay(username, monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_SNOOZED));
+        snoozedTxt = (TextView) findViewById(R.id.summary_snoozed_text);
+        snoozedTxt.setText(String.valueOf(snooze.size()));
+
         FloatingActionButton overview = (FloatingActionButton) findViewById(R.id.summary_fab);
         overview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +140,7 @@ public class SummaryChartActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_logout:
                         Intent signInActivity = new Intent(SummaryChartActivity.this, SignInActivity.class);
+                        SaveSharedPreference.clearUserName(SummaryChartActivity.this);
                         startActivity(signInActivity);
                         break;
                 }
@@ -117,21 +164,183 @@ public class SummaryChartActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
-
+        for (int i = 0; i <= 31; i++) {
+            List<Events> listC, listS, listO;
+            listO = usersDbHelper.readEventList(username, String.valueOf(i), monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_OVERDUE));
+            listS = usersDbHelper.readEventList(username, String.valueOf(i), monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_SNOOZED));
+            listC = usersDbHelper.readEventList(username, String.valueOf(i), monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_COMPLETED));
+            switch (i) {
+                case 1:
+                    dayC1_2 += listC.size();
+                    dayS1_2 += listS.size();
+                    dayO1_2 += listO.size();
+                    break;
+                case 2:
+                    dayC1_2 += listC.size();
+                    dayS1_2 += listS.size();
+                    dayO1_2 += listO.size();
+                    break;
+                case 3:
+                    dayC3_5 += listC.size();
+                    dayS3_5 += listS.size();
+                    dayO3_5 += listO.size();
+                    break;
+                case 4:
+                    dayC3_5 += listC.size();
+                    dayS3_5 += listS.size();
+                    dayO3_5 += listO.size();
+                    break;
+                case 5:
+                    dayC3_5 += listC.size();
+                    dayS3_5 += listS.size();
+                    dayO3_5 += listO.size();
+                    break;
+                case 6:
+                    dayC6_8 += listC.size();
+                    dayS6_8 += listS.size();
+                    dayO6_8 += listO.size();
+                    break;
+                case 7:
+                    dayC6_8 += listC.size();
+                    dayS6_8 += listS.size();
+                    dayO6_8 += listO.size();
+                    break;
+                case 8:
+                    dayC6_8 += listC.size();
+                    dayS6_8 += listS.size();
+                    dayO6_8 += listO.size();
+                    break;
+                case 9:
+                    dayC9_11 += listC.size();
+                    dayS9_11 += listS.size();
+                    dayO9_11 += listO.size();
+                    break;
+                case 10:
+                    dayC9_11 += listC.size();
+                    dayS9_11 += listS.size();
+                    dayO9_11 += listO.size();
+                    break;
+                case 11:
+                    dayC9_11 += listC.size();
+                    dayS9_11 += listS.size();
+                    dayO9_11 += listO.size();
+                    break;
+                case 12:
+                    dayC12_14 += listC.size();
+                    dayS12_14 += listS.size();
+                    dayO12_14 += listO.size();
+                    break;
+                case 13:
+                    dayC12_14 += listC.size();
+                    dayS12_14 += listS.size();
+                    dayO12_14 += listO.size();
+                    break;
+                case 14:
+                    dayC12_14 += listC.size();
+                    dayS12_14 += listS.size();
+                    dayO12_14 += listO.size();
+                    break;
+                case 15:
+                    dayC15_17 += listC.size();
+                    dayS15_17 += listS.size();
+                    dayO15_17 += listO.size();
+                    break;
+                case 16:
+                    dayC15_17 += listC.size();
+                    dayS15_17 += listS.size();
+                    dayO15_17 += listO.size();
+                    break;
+                case 17:
+                    dayC15_17 += listC.size();
+                    dayS15_17 += listS.size();
+                    dayO15_17 += listO.size();
+                    break;
+                case 18:
+                    dayC18_20 += listC.size();
+                    dayS18_20 += listS.size();
+                    dayO18_20 += listO.size();
+                    break;
+                case 19:
+                    dayC18_20 += listC.size();
+                    dayS18_20 += listS.size();
+                    dayO18_20 += listO.size();
+                    break;
+                case 20:
+                    dayC18_20 += listC.size();
+                    dayS18_20 += listS.size();
+                    dayO18_20 += listO.size();
+                    break;
+                case 21:
+                    dayC21_23 += listC.size();
+                    dayS21_23 += listS.size();
+                    dayO21_23 += listO.size();
+                    break;
+                case 22:
+                    dayC21_23 += listC.size();
+                    dayS21_23 += listS.size();
+                    dayO21_23 += listO.size();
+                    break;
+                case 23:
+                    dayC21_23 += listC.size();
+                    dayS21_23 += listS.size();
+                    dayO21_23 += listO.size();
+                    break;
+                case 24:
+                    dayC24_26 += listC.size();
+                    dayS24_26 += listS.size();
+                    dayO24_26 += listO.size();
+                    break;
+                case 25:
+                    dayC24_26 += listC.size();
+                    dayS24_26 += listS.size();
+                    dayO24_26 += listO.size();
+                    break;
+                case 26:
+                    dayC24_26 += listC.size();
+                    dayS24_26 += listS.size();
+                    dayO24_26 += listO.size();
+                    break;
+                case 27:
+                    dayC_27_31 += listC.size();
+                    dayS_27_31 += listS.size();
+                    dayO_27_31 += listO.size();
+                    break;
+                case 28:
+                    dayC_27_31 += listC.size();
+                    dayS_27_31 += listS.size();
+                    dayO_27_31 += listO.size();
+                    break;
+                case 29:
+                    dayC_27_31 += listC.size();
+                    dayS_27_31 += listS.size();
+                    dayO_27_31 += listO.size();
+                    break;
+                case 30:
+                    dayC_27_31 += listC.size();
+                    dayS_27_31 += listS.size();
+                    dayO_27_31 += listO.size();
+                    break;
+                case 31:
+                    dayC_27_31 += listC.size();
+                    dayS_27_31 += listS.size();
+                    dayO_27_31 += listO.size();
+                    break;
+            }
+        }
 
         BarChart barChart = (BarChart) findViewById(R.id.summary_bar_chart_graph);
 
         ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(1, new float[]{5, 2, 1}));
-        entries.add(new BarEntry(2, new float[]{4.5f, 2, 1}));
-        entries.add(new BarEntry(3, new float[]{5.5f, 2, 1}));
-        entries.add(new BarEntry(4, new float[]{6.5f, 2, 2}));
-        entries.add(new BarEntry(5, new float[]{4, 2, 1}));
-        entries.add(new BarEntry(6, new float[]{3, 2, 1}));
-        entries.add(new BarEntry(7, new float[]{3, 3, 1}));
-        entries.add(new BarEntry(8, new float[]{5, 1, 1}));
-        entries.add(new BarEntry(9, new float[]{6, 3, 1}));
-        entries.add(new BarEntry(10, new float[]{5, 3, 1}));
+        entries.add(new BarEntry(1, new float[]{dayC1_2, dayS1_2, dayO1_2}));
+        entries.add(new BarEntry(2, new float[]{dayC3_5, dayS3_5, dayO3_5}));
+        entries.add(new BarEntry(3, new float[]{dayC6_8, dayS6_8, dayO6_8}));
+        entries.add(new BarEntry(4, new float[]{dayC9_11, dayS9_11, dayO9_11}));
+        entries.add(new BarEntry(5, new float[]{dayC12_14, dayS12_14, dayO12_14}));
+        entries.add(new BarEntry(6, new float[]{dayC15_17, dayS15_17, dayO15_17}));
+        entries.add(new BarEntry(7, new float[]{dayC18_20, dayS18_20, dayO18_20}));
+        entries.add(new BarEntry(8, new float[]{dayC21_23, dayS21_23, dayO21_23}));
+        entries.add(new BarEntry(9, new float[]{dayC24_26, dayS24_26, dayO24_26}));
+        entries.add(new BarEntry(10, new float[]{dayC_27_31, dayS_27_31, dayO_27_31}));
 
         ArrayList<String> labels = new ArrayList<>();
         labels.add("1");
@@ -189,19 +398,48 @@ public class SummaryChartActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<BarEntry> completed() {
-        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
-        entries.add(new BarEntry(1, 5));
-        entries.add(new BarEntry(2, 4));
-        entries.add(new BarEntry(3, 5));
-        entries.add(new BarEntry(4, 6));
-        entries.add(new BarEntry(5, 4));
-        entries.add(new BarEntry(6, 3));
-        entries.add(new BarEntry(7, 3));
-        entries.add(new BarEntry(8, 5));
-        entries.add(new BarEntry(9, 7));
-        entries.add(new BarEntry(10, 5));
-        return entries;
+    private String getMonthName(int month) {
 
+        String monthName = "";
+
+        if (month == 1) {
+            monthName = "January";
+        }
+        if (month == 2) {
+            monthName = "February";
+        }
+        if (month == 3) {
+            monthName = "March";
+        }
+        if (month == 4) {
+            monthName = "April";
+        }
+        if (month == 5) {
+            monthName = "May";
+        }
+        if (month == 6) {
+            monthName = "June";
+        }
+        if (month == 7) {
+            monthName = "July";
+        }
+        if (month == 8) {
+            monthName = "August";
+        }
+        if (month == 9) {
+            monthName = "September";
+        }
+        if (month == 10) {
+            monthName = "October";
+        }
+        if (month == 11) {
+            monthName = "November";
+        }
+        if (month == 12) {
+            monthName = "December";
+        }
+
+        return monthName;
     }
+
 }
