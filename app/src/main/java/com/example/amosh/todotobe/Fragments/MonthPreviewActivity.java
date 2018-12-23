@@ -1,5 +1,8 @@
 package com.example.amosh.todotobe.Fragments;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -8,13 +11,24 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.amosh.todotobe.Adapters.EventAdapter;
 import com.example.amosh.todotobe.Adapters.MonthPreviewPagerAdapter;
+import com.example.amosh.todotobe.Data.Events;
+import com.example.amosh.todotobe.Data.MyUsersDbHelper;
 import com.example.amosh.todotobe.ListsActivity;
 import com.example.amosh.todotobe.MainScreenActivity;
 import com.example.amosh.todotobe.MyGroupsActivity;
@@ -27,6 +41,9 @@ import com.example.amosh.todotobe.SignInActivity;
 import com.example.amosh.todotobe.TimelineActivity;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MonthPreviewActivity extends AppCompatActivity {
 
     String username;
@@ -36,6 +53,9 @@ public class MonthPreviewActivity extends AppCompatActivity {
     int monthNumber;
     String dayString;
     int dayNumber;
+
+    Dialog dialog;
+    MyUsersDbHelper usersDbHelper;
 
     MaterialCalendarView weekCalendarView;
     MaterialCalendarView monthCalendarView;
@@ -49,6 +69,7 @@ public class MonthPreviewActivity extends AppCompatActivity {
     TextView monthTextView;
     TextView yearTextView;
     ImageView menu_icon;
+    ImageView search;
     DrawerLayout mDrawerLayout;
     NavigationView navigationView;
 
@@ -60,6 +81,7 @@ public class MonthPreviewActivity extends AppCompatActivity {
         setContentView(R.layout.month_preview);
 
         username = getIntent().getStringExtra("name");
+        usersDbHelper = new MyUsersDbHelper(this);
 
         weekCalendarView = (MaterialCalendarView) findViewById(R.id.month_periview_week_calender);
         monthCalendarView = (MaterialCalendarView) findViewById(R.id.month_preview_month_calender);
@@ -115,6 +137,14 @@ public class MonthPreviewActivity extends AppCompatActivity {
         yearTextView = (TextView) findViewById(R.id.month_preview_year);
         yearTextView.setText(yearString);
 
+
+        search = (ImageView) findViewById(R.id.month_preview_search_icon);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCustomSearchDialog(MonthPreviewActivity.this);
+            }
+        });
 
         menu_icon = (ImageView) findViewById(R.id.month_preview_menu_icon);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.month_preview_drawer_layout);
@@ -214,5 +244,71 @@ public class MonthPreviewActivity extends AppCompatActivity {
     public String getMonthNumberString() {
         return String.valueOf(monthNumber);
     }
+
+    private void showCustomSearchDialog(Context context) {
+        dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_search_dialoge, null, false);
+
+        final List<Events> list = usersDbHelper.readEventList(username);
+
+        /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
+        final EditText searchTextB = view.findViewById(R.id.item_search_text);
+        searchTextB.setHint("Title of Event");
+
+        Button searchButton = view.findViewById(R.id.item_search);
+        Button closeB = view.findViewById(R.id.item_search_close);
+
+        final TextView emptyResults = (TextView) view.findViewById(R.id.search_empty);
+        final RecyclerView result = (RecyclerView) view.findViewById(R.id.search_result);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String text = searchTextB.getText().toString().trim();
+                if (text.equals("")) {
+                    result.setVisibility(View.GONE);
+                    emptyResults.setVisibility(View.GONE);
+                }
+                List<Events> searchList = new ArrayList<>();
+                for (Events events : list) {
+                    if (events.getTitle().equals(text)) {
+                        searchList.add(events);
+                    }
+                }
+                if (searchList.size() == 0) {
+                    emptyResults.setVisibility(View.VISIBLE);
+                    result.setVisibility(View.GONE);
+                } else {
+                    EventAdapter searchAdapter = new EventAdapter(MonthPreviewActivity.this, searchList);
+                    result.setAdapter(searchAdapter);
+                    result.addItemDecoration(new DividerItemDecoration(result.getContext(), DividerItemDecoration.VERTICAL));
+                    result.setLayoutManager(new LinearLayoutManager(MonthPreviewActivity.this));
+                    result.setVisibility(View.VISIBLE);
+                    emptyResults.setVisibility(View.GONE);
+
+                }
+
+            }
+        });
+        closeB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setContentView(view);
+        final Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawableResource(R.color.dialoge_box);
+        window.setGravity(Gravity.CENTER);
+        dialog.show();
+    }
+
 
 }

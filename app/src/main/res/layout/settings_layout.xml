@@ -73,6 +73,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/settings_general_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -99,7 +100,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="8dp"
                 android:background="#9E9E9E" />
 
             <android.support.v7.widget.SwitchCompat
@@ -116,7 +116,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="8dp"
                 android:background="#9E9E9E" />
 
             <android.support.v7.widget.SwitchCompat
@@ -133,10 +132,10 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="8dp"
                 android:background="#9E9E9E" />
 
             <RelativeLayout
+                android:id="@+id/settings_theme_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -176,10 +175,10 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="8dp"
                 android:background="#9E9E9E" />
 
             <RelativeLayout
+                android:id="@+id/settings_support_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -206,10 +205,10 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="8dp"
                 android:background="#9E9E9E" />
 
             <RelativeLayout
+                android:id="@+id/settings_privacy_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -236,10 +235,10 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="8dp"
                 android:background="#9E9E9E" />
 
             <RelativeLayout
+                android:id="@+id/settings_logout_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"

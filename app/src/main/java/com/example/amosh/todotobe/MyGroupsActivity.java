@@ -1,5 +1,8 @@
 package com.example.amosh.todotobe;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -7,18 +10,32 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.amosh.todotobe.Adapters.ItemAdapter;
+import com.example.amosh.todotobe.Data.Items;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MyGroupsActivity extends AppCompatActivity {
     String username;
     MyUsersDbHelper usersDbHelper;
+    ImageView search;
+    Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +43,15 @@ public class MyGroupsActivity extends AppCompatActivity {
 
         username = getIntent().getStringExtra("name");
         usersDbHelper = new MyUsersDbHelper(this);
+
+        search = (ImageView) findViewById(R.id.my_groups_search_icon);
+        final List<Items> itemsList = usersDbHelper.readItemsList(username);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCustomSearchDialog(MyGroupsActivity.this, itemsList);
+            }
+        });
 
         ImageView menu_icon = (ImageView) findViewById(R.id.my_groups_menu_icon);
         final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.my_groups_drawer_layout);
@@ -183,4 +209,65 @@ public class MyGroupsActivity extends AppCompatActivity {
         });
 
     }
+
+    private void showCustomSearchDialog(Context context, final List<Items> list) {
+        dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_search_dialoge, null, false);
+
+        /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
+        final TextView searchText = view.findViewById(R.id.item_search_text);
+
+        Button searchButton = view.findViewById(R.id.item_search);
+        Button close = view.findViewById(R.id.item_search_close);
+
+        final TextView emptyResults = (TextView) view.findViewById(R.id.search_empty);
+        final RecyclerView result = (RecyclerView) view.findViewById(R.id.search_result);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String text = searchText.getText().toString().trim();
+                if (text.equals("")) {
+                    result.setVisibility(View.GONE);
+                    emptyResults.setVisibility(View.GONE);
+                }
+                List<Items> searchList = new ArrayList<>();
+                for (Items items : list) {
+                    if (items.getName().equals(text)) {
+                        searchList.add(items);
+                    }
+                }
+                if (searchList.size() == 0) {
+                    emptyResults.setVisibility(View.VISIBLE);
+                    result.setVisibility(View.GONE);
+                } else {
+                    ItemAdapter searchAdapter = new ItemAdapter(MyGroupsActivity.this, searchList);
+                    result.setAdapter(searchAdapter);
+                    result.addItemDecoration(new DividerItemDecoration(result.getContext(), DividerItemDecoration.VERTICAL));
+                    result.setLayoutManager(new LinearLayoutManager(MyGroupsActivity.this));
+                    result.setVisibility(View.VISIBLE);
+                    emptyResults.setVisibility(View.GONE);
+
+                }
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setContentView(view);
+        final Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawableResource(R.color.dialoge_box);
+        window.setGravity(Gravity.CENTER);
+        dialog.show();
+    }
+
 }

@@ -47,11 +47,12 @@ public class month_preview_day_tab_fragment extends Fragment implements EventAda
 
     Dialog dialog;
 
-    FrameLayout completeAction, snoozeAction, overdueAction, editAcion, deleteAction, closeAction;
+    FrameLayout completeAction, snoozeAction, overdueAction, deleteAction, closeAction;
     ImageView actionImage;
 
     List<Events> eventsList;
     View view;
+    ImageView search;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

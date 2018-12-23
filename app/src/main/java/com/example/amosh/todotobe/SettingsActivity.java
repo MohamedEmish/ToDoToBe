@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -22,6 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
     DrawerLayout mDrawerLayout;
     SwitchCompat notification;
     TextView usernameView;
+    RelativeLayout logout;
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -29,8 +31,18 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.settings_layout);
 
         username = getIntent().getStringExtra("name");
+        usernameView = (TextView) findViewById(R.id.settings_username);
         usernameView.setText(username);
 
+        logout = (RelativeLayout) findViewById(R.id.settings_logout_layout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signInActivity = new Intent(SettingsActivity.this, SignInActivity.class);
+                SaveSharedPreference.clearUserName(SettingsActivity.this);
+                startActivity(signInActivity);
+            }
+        });
         menu_icon = (ImageView) findViewById(R.id.settings_menu_icon);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.settings_drawer_layout);
         menu_icon.setOnClickListener(new View.OnClickListener() {

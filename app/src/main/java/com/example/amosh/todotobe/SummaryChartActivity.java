@@ -23,7 +23,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class SummaryChartActivity extends AppCompatActivity {
@@ -33,6 +32,9 @@ public class SummaryChartActivity extends AppCompatActivity {
     List<Events> complete;
     List<Events> overdue;
     List<Events> snooze;
+
+    String month;
+    String year;
 
     int dayC1_2 = 0, dayC3_5 = 0, dayC6_8 = 0, dayC9_11 = 0, dayC12_14 = 0, dayC15_17 = 0, dayC18_20 = 0, dayC21_23 = 0, dayC24_26 = 0, dayC_27_31 = 0;
     int dayS1_2 = 0, dayS3_5 = 0, dayS6_8 = 0, dayS9_11 = 0, dayS12_14 = 0, dayS15_17 = 0, dayS18_20 = 0, dayS21_23 = 0, dayS24_26 = 0, dayS_27_31 = 0;
@@ -47,30 +49,30 @@ public class SummaryChartActivity extends AppCompatActivity {
         usersDbHelper = new MyUsersDbHelper(this);
 
         username = getIntent().getStringExtra("name");
+        month = getIntent().getStringExtra("month");
+        year = getIntent().getStringExtra("year");
 
         usernameTxt = (TextView) findViewById(R.id.summary_username);
         usernameTxt.setText(username);
 
-        Calendar calendar = Calendar.getInstance();
 
         yearTxt = (TextView) findViewById(R.id.summary_year_text);
         monthTxt = (TextView) findViewById(R.id.summary_month_text);
-        yearTxt.setText(String.valueOf(calendar.get(Calendar.YEAR)));
-        monthTxt.setText(String.valueOf(getMonthName(calendar.get(Calendar.MONTH) + 1)));
+
+        yearTxt.setText(year);
+        monthTxt.setText(getMonthName(Integer.parseInt(month)));
         monthTxt.setAllCaps(true);
 
-        String monthS = String.valueOf(calendar.get(Calendar.MONTH) + 1);
-        String yearS = String.valueOf(calendar.get(Calendar.YEAR));
 
-        overdue = usersDbHelper.readEventListStateNoDay(username, monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_OVERDUE));
+        overdue = usersDbHelper.readEventListStateNoDay(username, month, year, String.valueOf(EventsContract.EventsEntry.STATE_OVERDUE));
         overduedTxt = (TextView) findViewById(R.id.summary_overdue_text);
         overduedTxt.setText(String.valueOf(overdue.size()));
 
-        complete = usersDbHelper.readEventListStateNoDay(username, monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_COMPLETED));
+        complete = usersDbHelper.readEventListStateNoDay(username, month, year, String.valueOf(EventsContract.EventsEntry.STATE_COMPLETED));
         completedTxt = (TextView) findViewById(R.id.summary_completed_text);
         completedTxt.setText(String.valueOf(complete.size()));
 
-        snooze = usersDbHelper.readEventListStateNoDay(username, monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_SNOOZED));
+        snooze = usersDbHelper.readEventListStateNoDay(username, month, year, String.valueOf(EventsContract.EventsEntry.STATE_SNOOZED));
         snoozedTxt = (TextView) findViewById(R.id.summary_snoozed_text);
         snoozedTxt.setText(String.valueOf(snooze.size()));
 
@@ -79,6 +81,7 @@ public class SummaryChartActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent overview = new Intent(SummaryChartActivity.this, OverviewActivity.class);
+                overview.putExtra("name", username);
                 startActivity(overview);
             }
         });
@@ -166,9 +169,9 @@ public class SummaryChartActivity extends AppCompatActivity {
         });
         for (int i = 0; i <= 31; i++) {
             List<Events> listC, listS, listO;
-            listO = usersDbHelper.readEventList(username, String.valueOf(i), monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_OVERDUE));
-            listS = usersDbHelper.readEventList(username, String.valueOf(i), monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_SNOOZED));
-            listC = usersDbHelper.readEventList(username, String.valueOf(i), monthS, yearS, String.valueOf(EventsContract.EventsEntry.STATE_COMPLETED));
+            listO = usersDbHelper.readEventList(username, String.valueOf(i), month, year, String.valueOf(EventsContract.EventsEntry.STATE_OVERDUE));
+            listS = usersDbHelper.readEventList(username, String.valueOf(i), month, year, String.valueOf(EventsContract.EventsEntry.STATE_SNOOZED));
+            listC = usersDbHelper.readEventList(username, String.valueOf(i), month, year, String.valueOf(EventsContract.EventsEntry.STATE_COMPLETED));
             switch (i) {
                 case 1:
                     dayC1_2 += listC.size();

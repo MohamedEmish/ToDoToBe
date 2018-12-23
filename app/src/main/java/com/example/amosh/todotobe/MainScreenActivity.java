@@ -239,8 +239,7 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
         searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Events> eventsListAll = usersDbHelper.readEventList(userName);
-                showCustomSearchDialog(MainScreenActivity.this, eventsListAll);
+                showCustomSearchDialog(MainScreenActivity.this);
 
             }
         });
@@ -724,11 +723,13 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
         dialog.show();
     }
 
-    private void showCustomSearchDialog(Context context, final List<Events> list) {
+    private void showCustomSearchDialog(Context context) {
         dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.custom_search_dialoge, null, false);
+
+        final List<Events> list = usersDbHelper.readEventList(userName);
 
         /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
         final EditText searchTextB = view.findViewById(R.id.item_search_text);
@@ -737,14 +738,40 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
         Button searchButton = view.findViewById(R.id.item_search);
         Button closeB = view.findViewById(R.id.item_search_close);
 
+        final TextView emptyResults = (TextView) view.findViewById(R.id.search_empty);
+        final RecyclerView result = (RecyclerView) view.findViewById(R.id.search_result);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchFor(searchTextB.getText().toString().trim(), list);
-                dialog.dismiss();
+
+                String text = searchTextB.getText().toString().trim();
+                if (text.equals("")) {
+                    result.setVisibility(View.GONE);
+                    emptyResults.setVisibility(View.GONE);
+                }
+                List<Events> searchList = new ArrayList<>();
+                for (Events events : list) {
+                    if (events.getTitle().equals(text)) {
+                        searchList.add(events);
+                    }
+                }
+                if (searchList.size() == 0) {
+                    emptyResults.setVisibility(View.VISIBLE);
+                    result.setVisibility(View.GONE);
+                } else {
+                    EventAdapter searchAdapter = new EventAdapter(MainScreenActivity.this, searchList);
+                    result.setAdapter(searchAdapter);
+                    result.addItemDecoration(new DividerItemDecoration(result.getContext(), DividerItemDecoration.VERTICAL));
+                    result.setLayoutManager(new LinearLayoutManager(MainScreenActivity.this));
+                    result.setVisibility(View.VISIBLE);
+                    emptyResults.setVisibility(View.GONE);
+
+                }
+
             }
         });
-        close.setOnClickListener(new View.OnClickListener() {
+        closeB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -759,21 +786,6 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
         window.setBackgroundDrawableResource(R.color.dialoge_box);
         window.setGravity(Gravity.CENTER);
         dialog.show();
-    }
-
-    private void searchFor(String text, List<Events> list) {
-        List<Events> searchList = new ArrayList<>();
-        for (Events events : list) {
-            if (events.getTitle().equals(text)) {
-                searchList.add(events);
-            }
-        }
-        if (searchList.size() == 0) {
-            Toast.makeText(MainScreenActivity.this, "No item " + text + " in this list", Toast.LENGTH_LONG).show();
-        } else {
-            EventAdapter searchAdapter = new EventAdapter(this, searchList);
-            eventListView.setAdapter(searchAdapter);
-        }
     }
 
 }

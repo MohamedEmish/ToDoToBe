@@ -59,7 +59,7 @@ public class month_preview_week_tab_fragment extends Fragment implements EventAd
 
     Dialog dialog;
 
-    FrameLayout completeAction, snoozeAction, overdueAction, editAcion, deleteAction, closeAction;
+    FrameLayout completeAction, snoozeAction, overdueAction, deleteAction, closeAction;
 
     List<Events> eventsList;
 
@@ -98,15 +98,15 @@ public class month_preview_week_tab_fragment extends Fragment implements EventAd
         eventListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // setting data to list
-        List<Events> list = usersDbHelper.readEventList(username, day, month, year);
-        if (list.size() == 0) {
+        eventsList = usersDbHelper.readEventList(username, day, month, year);
+        if (eventsList.size() == 0) {
             eventListView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         } else {
             eventListView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
         }
-        eEventAdapter = new EventAdapter(getContext(), list);
+        eEventAdapter = new EventAdapter(getContext(), eventsList);
         eEventAdapter.setClickListener(new EventAdapter.EventClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -125,9 +125,16 @@ public class month_preview_week_tab_fragment extends Fragment implements EventAd
                 int newDay = materialCalendarView.getSelectedDate().getDay();
                 int newMonth = materialCalendarView.getSelectedDate().getMonth();
                 int newYear = materialCalendarView.getSelectedDate().getYear();
-
+                eventsList.clear();
                 eventsList = usersDbHelper.readEventList(username, String.valueOf(newDay), String.valueOf(newMonth), String.valueOf(newYear));
                 eEventAdapter = new EventAdapter(getContext(), eventsList);
+                eEventAdapter.setClickListener(new EventAdapter.EventClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        showCustomActionsDialog(getContext(), position);
+
+                    }
+                });
                 eventListView.setAdapter(eEventAdapter);
                 if (eventsList.size() == 0) {
                     eventListView.setVisibility(View.GONE);

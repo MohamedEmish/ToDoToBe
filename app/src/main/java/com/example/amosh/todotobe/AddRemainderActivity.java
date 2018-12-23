@@ -1025,5 +1025,8 @@ public class AddRemainderActivity extends AppCompatActivity {
 
     }
 
+    //TODO: set Time Pickers Date FROM according to select day
+    //TODO: set Time Pickers Date TO according to From and TIME also
+
 
 }

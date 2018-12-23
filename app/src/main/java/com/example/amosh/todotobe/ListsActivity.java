@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.amosh.todotobe.Adapters.ItemAdapter;
 import com.example.amosh.todotobe.Data.Items;
@@ -255,7 +254,7 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
     private void showCustomSearchDialog(Context context, final List<Items> list) {
         dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.custom_search_dialoge, null, false);
 
         /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
@@ -264,11 +263,35 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
         searchButton = view.findViewById(R.id.item_search);
         close = view.findViewById(R.id.item_search_close);
 
+        final TextView emptyResults = (TextView) view.findViewById(R.id.search_empty);
+        final RecyclerView result = (RecyclerView) view.findViewById(R.id.search_result);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchFor(searchText.getText().toString().trim(), list);
-                dialog.dismiss();
+                String text = searchText.getText().toString().trim();
+                if (text.equals("")) {
+                    result.setVisibility(View.GONE);
+                    emptyResults.setVisibility(View.GONE);
+                }
+                List<Items> searchList = new ArrayList<>();
+                for (Items items : list) {
+                    if (items.getName().equals(text)) {
+                        searchList.add(items);
+                    }
+                }
+                if (searchList.size() == 0) {
+                    emptyResults.setVisibility(View.VISIBLE);
+                    result.setVisibility(View.GONE);
+                } else {
+                    ItemAdapter searchAdapter = new ItemAdapter(ListsActivity.this, searchList);
+                    result.setAdapter(searchAdapter);
+                    result.addItemDecoration(new DividerItemDecoration(result.getContext(), DividerItemDecoration.VERTICAL));
+                    result.setLayoutManager(new LinearLayoutManager(ListsActivity.this));
+                    result.setVisibility(View.VISIBLE);
+                    emptyResults.setVisibility(View.GONE);
+
+                }
             }
         });
         close.setOnClickListener(new View.OnClickListener() {
@@ -288,22 +311,6 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
         dialog.show();
     }
 
-    private void searchFor(String text, List<Items> list) {
-        List<Items> searchList = new ArrayList<>();
-        for (Items item : list) {
-            if (item.getName().equals(text)) {
-                searchList.add(item);
-            }
-        }
-        if (searchList.size() == 0) {
-            Toast.makeText(ListsActivity.this, "No item " + text + " in this list", Toast.LENGTH_LONG).show();
-        } else {
-
-
-            ItemAdapter searchAdapter = new ItemAdapter(this, searchList);
-            itemsListView.setAdapter(searchAdapter);
-        }
-    }
 
     private void goNext(final String category) {
 
@@ -404,11 +411,6 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
             listNumber.setText(String.valueOf(itemsList.size()));
         }
 
-    }
-
-    public void updateData() {
-        eItemAdapter = new ItemAdapter(this, itemsList);
-        itemsListView.setAdapter(eItemAdapter);
     }
 
     @Override

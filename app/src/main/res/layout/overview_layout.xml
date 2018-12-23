@@ -34,9 +34,12 @@
                 android:src="@drawable/ic_menu_black_24dp" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/overview_user_image"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:scaleType="centerCrop"
                 android:paddingEnd="16dp"
                 android:paddingRight="16dp"
                 android:src="@drawable/ic_8c5c19d99c_white" />
@@ -53,6 +56,7 @@
             app:layout_constraintTop_toBottomOf="@+id/relativeLayout2">
 
             <ImageView
+                android:id="@+id/overview_backward_month"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -68,6 +72,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/overview_month_textview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal|top"
@@ -76,6 +81,7 @@
                     android:textSize="32sp" />
 
                 <TextView
+                    android:id="@+id/overview_year_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -86,6 +92,7 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/overview_forward_month"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -109,18 +116,32 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="bottom|center_horizontal">
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/circle"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:background="@drawable/circle"
+                    android:id="@+id/overview_snoozed_ration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center_horizontal|center_vertical"
-                    android:text="28%"
+                    android:paddingLeft="8dp"
+                    android:text="28"
                     android:textColor="#FFFFFF"
                     android:textSize="24sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:gravity="center_horizontal|bottom"
+                    android:paddingTop="27dp"
+                    android:text="%"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -130,18 +151,31 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal|bottom">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:background="@drawable/circle"
+                android:gravity="center_horizontal|bottom"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:background="@drawable/circle"
+                    android:id="@+id/overview_completed_ration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center_horizontal|center_vertical"
-                    android:text="54%"
+                    android:paddingLeft="8dp"
+                    android:text="54"
                     android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textSize="36sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:gravity="center_horizontal|bottom"
+                    android:paddingTop="42dp"
+                    android:text="%"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -151,19 +185,32 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="bottom|center_horizontal">
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/circle"
+                android:gravity="bottom|center_horizontal"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:background="@drawable/circle"
+                    android:id="@+id/overview_overdued_ration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center_horizontal|center_vertical"
-                    android:text="18%"
+                    android:paddingLeft="8dp"
+                    android:text="18"
                     android:textColor="#FFFFFF"
                     android:textSize="24sp" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:gravity="center_horizontal|bottom"
+                    android:paddingTop="27dp"
+                    android:text="%"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
             </LinearLayout>
 
 
@@ -197,6 +244,7 @@
                     android:textColor="#FFFFFF" />
 
                 <TextView
+                    android:id="@+id/overview_overmonth_ratio"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="top"
@@ -215,20 +263,40 @@
                     android:textColor="#FFFFFF" />
             </LinearLayout>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:gravity="center_horizontal|top"
-                android:text="more tasks this week"
-                android:textColor="#FFFFFF" />
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/overview_more_less"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="top"
+                    android:gravity="center_horizontal|top"
+                    android:paddingRight="2dp"
+                    android:text="more"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="top"
+                    android:gravity="center_horizontal|top"
+                    android:text="tasks this month"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="76dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -285,6 +353,7 @@
                     android:textColor="#000000" />
 
                 <TextView
+                    android:id="@+id/overview_completed_number"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
@@ -334,6 +403,7 @@
                     android:textColor="#000000" />
 
                 <TextView
+                    android:id="@+id/overview_snoozed_number"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
@@ -383,6 +453,7 @@
                     android:textColor="#000000" />
 
                 <TextView
+                    android:id="@+id/overview_overdued_number"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"

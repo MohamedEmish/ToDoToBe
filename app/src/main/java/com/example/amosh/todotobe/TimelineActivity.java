@@ -1,5 +1,8 @@
 package com.example.amosh.todotobe;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -12,13 +15,19 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.amosh.todotobe.Adapters.EventAdapter;
 import com.example.amosh.todotobe.Adapters.SectionAdapter;
 import com.example.amosh.todotobe.Data.Events;
 import com.example.amosh.todotobe.Data.MyUsersDbHelper;
@@ -93,16 +102,8 @@ public class TimelineActivity extends AppCompatActivity {
         searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (searchEditText.getVisibility() == View.GONE) {
-                    searchEditText.setVisibility(View.VISIBLE);
-                } else {
-                    searchText = searchEditText.getText().toString().trim();
-                    if (searchText.length() == 0) {
-                        searchEditText.setVisibility(View.GONE);
-                    } else {
-                        searchForEvent(searchText);
-                    }
-                }
+                showCustomSearchDialog(TimelineActivity.this);
+
             }
         });
 
@@ -273,6 +274,72 @@ public class TimelineActivity extends AppCompatActivity {
 
         return monthName;
     }
+
+    private void showCustomSearchDialog(Context context) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.custom_search_dialoge, null, false);
+
+        final List<Events> list = usersDbHelper.readEventList(username);
+
+        /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
+        final EditText searchTextB = view.findViewById(R.id.item_search_text);
+        searchTextB.setHint("Title of Event");
+
+        Button searchButton = view.findViewById(R.id.item_search);
+        Button closeB = view.findViewById(R.id.item_search_close);
+
+        final TextView emptyResults = (TextView) view.findViewById(R.id.search_empty);
+        final RecyclerView result = (RecyclerView) view.findViewById(R.id.search_result);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String text = searchTextB.getText().toString().trim();
+                if (text.equals("")) {
+                    result.setVisibility(View.GONE);
+                    emptyResults.setVisibility(View.GONE);
+                }
+                List<Events> searchList = new ArrayList<>();
+                for (Events events : list) {
+                    if (events.getTitle().equals(text)) {
+                        searchList.add(events);
+                    }
+                }
+                if (searchList.size() == 0) {
+                    emptyResults.setVisibility(View.VISIBLE);
+                    result.setVisibility(View.GONE);
+                } else {
+                    EventAdapter searchAdapter = new EventAdapter(TimelineActivity.this, searchList);
+                    result.setAdapter(searchAdapter);
+                    result.addItemDecoration(new DividerItemDecoration(result.getContext(), DividerItemDecoration.VERTICAL));
+                    result.setLayoutManager(new LinearLayoutManager(TimelineActivity.this));
+                    result.setVisibility(View.VISIBLE);
+                    emptyResults.setVisibility(View.GONE);
+
+                }
+
+            }
+        });
+        closeB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.setContentView(view);
+        final Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawableResource(R.color.dialoge_box);
+        window.setGravity(Gravity.CENTER);
+        dialog.show();
+    }
+
 
 
 }
