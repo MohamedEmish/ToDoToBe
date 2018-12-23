@@ -25,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.amosh.todotobe.Adapters.EventAdapter;
 import com.example.amosh.todotobe.Adapters.SectionAdapter;
@@ -200,7 +199,6 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void moreClick() {
-        // TODO : // more on click
 
         Intent monthPreview = new Intent(TimelineActivity.this, MonthPreviewActivity.class);
         Calendar calendar = Calendar.getInstance();
@@ -225,11 +223,6 @@ public class TimelineActivity extends AppCompatActivity {
 
     }
 
-    // search function
-    private void searchForEvent(String searchText) {
-        // TODO : // search method
-        Toast.makeText(TimelineActivity.this, "SEARCHING FOR " + searchText, Toast.LENGTH_SHORT).show();
-    }
 
     private String getMonthName(int month) {
 

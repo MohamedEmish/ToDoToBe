@@ -621,7 +621,6 @@ public class AddRemainderActivity extends AppCompatActivity {
                     } else if (selection.equals("Weekly")) {
                         eRepeat = "Weekly";
                     } else {
-                        // TODO : set selection
                         eRepeat = "Monthly";
                     }
                 }

@@ -357,12 +357,6 @@ public class MainScreenActivity extends AppCompatActivity implements EventAdapte
     }
 
 
-    // search function
-    private void searchForEvent(String searchText) {
-        // TODO : // search method
-        Toast.makeText(MainScreenActivity.this, "SEARCHING FOR " + searchText, Toast.LENGTH_SHORT).show();
-    }
-
     // Getting profile picture from DB to set
     private void setProfilePic(String userName) {
         profilePic = (ImageView) findViewById(R.id.main_screen_user_pic);
