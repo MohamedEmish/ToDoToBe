@@ -728,10 +728,10 @@ public class AddRemainderActivity extends AppCompatActivity {
 
     private void dateFrom() {
 
-        final TextView dateFrom = (TextView) findViewById(R.id.add_remainder_date_from);
+        dateFrom = (TextView) findViewById(R.id.add_remainder_date_from);
 
         // getting date that written in textView
-        String dataFromCurrentString = dateFrom.getText().toString();
+        final String dataFromCurrentString = dateFrom.getText().toString();
         String[] cutMonthFromRest = dataFromCurrentString.split("\\s+");
         String monthName = cutMonthFromRest[0];
         String dayAndYearString = cutMonthFromRest[1];
@@ -752,6 +752,7 @@ public class AddRemainderActivity extends AppCompatActivity {
                 String monthName = getMonthName(month);
                 String date = monthName + " " + day + "," + year;
                 dateFrom.setText(date);
+                dateTo.setText(date);
             }
         };
 
@@ -814,7 +815,7 @@ public class AddRemainderActivity extends AppCompatActivity {
 
     private void timeFrom() {
 
-        final TextView timeFrom = (TextView) findViewById(R.id.add_remainder_time_from);
+        timeFrom = (TextView) findViewById(R.id.add_remainder_time_from);
 
         // reading current time written in text view
         String timeFromCurrentString = timeFrom.getText().toString();
@@ -849,6 +850,7 @@ public class AddRemainderActivity extends AppCompatActivity {
                         am_pm;
 
                 timeFrom.setText(strHrsToShow);
+                timeTo.setText(strHrsToShow);
             }
         };
 
@@ -1023,9 +1025,5 @@ public class AddRemainderActivity extends AppCompatActivity {
         }
 
     }
-
-    //TODO: set Time Pickers Date FROM according to select day
-    //TODO: set Time Pickers Date TO according to From and TIME also
-
 
 }
