@@ -57,6 +57,7 @@ public class AddRemainderActivity extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener mDateSetListenerTo;
     TimePickerDialog.OnTimeSetListener mTimeSetListenerTo;
 
+
     Dialog dialog;
     EditText nameOfPeople;
     ImageView imageOfPeople;
