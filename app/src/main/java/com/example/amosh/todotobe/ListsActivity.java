@@ -52,6 +52,7 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
     Button delete;
     Button searchButton;
     EditText searchText;
+    ImageView headerBG;
 
     Button close;
     Dialog dialog;
@@ -81,6 +82,7 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
 
         usersDbHelper = new MyUsersDbHelper(this);
 
+        headerBG = (ImageView) findViewById(R.id.lists_header_bg);
         title = (TextView) findViewById(R.id.lists_layout_title);
 
         fab = (FloatingActionButton) findViewById(R.id.lists_fab);
@@ -372,6 +374,8 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
 
             listNumber = (TextView) findViewById(R.id.lists_item_num);
             listNumber.setText(String.valueOf(itemsList.size()));
+
+
         } else {
             title.setText(guide);
             // Find and set empty view on the recycler View, so that it only shows when the list has 0 items.
@@ -409,6 +413,7 @@ public class ListsActivity extends AppCompatActivity implements ItemAdapter.Item
 
             listNumber = (TextView) findViewById(R.id.lists_item_num);
             listNumber.setText(String.valueOf(itemsList.size()));
+
         }
 
     }

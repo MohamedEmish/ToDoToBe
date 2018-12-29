@@ -8,19 +8,33 @@
     android:fitsSystemWindows="true"
     tools:context=".MyGroupsActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/dopart06"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
-            android:background="#9E9E9E"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -48,16 +62,16 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3">
+                android:layout_height="100dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center_vertical"
-                    android:textSize="30sp"
                     android:paddingLeft="32dp"
-                    android:text="My Groups" />
+                    android:text="My Groups"
+                    android:textColor="#FFFFFF"
+                    android:textSize="30sp" />
 
             </LinearLayout>
 
@@ -66,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_weight="12"
+                android:layout_weight="1"
                 android:alignmentMode="alignMargins"
                 android:background="#F5F5F5"
                 android:columnCount="2"
@@ -145,8 +159,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Work"
                             android:layout_gravity="center_vertical|center_horizontal"
+                            android:text="Work"
                             android:textColor="#000000"
                             android:textSize="20sp" />
 
@@ -167,8 +181,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="ITEMS"
                                 android:paddingLeft="4dp"
+                                android:text="ITEMS"
                                 android:textColor="#9E9E9E"
                                 android:textSize="10dp" />
 
@@ -202,8 +216,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Health"
                             android:layout_gravity="center_horizontal|center_vertical"
+                            android:text="Health"
                             android:textColor="#000000"
                             android:textSize="16sp" />
 
@@ -224,8 +238,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="ITEMS"
                                 android:paddingLeft="4dp"
+                                android:text="ITEMS"
                                 android:textColor="#9E9E9E"
                                 android:textSize="10dp" />
 
@@ -312,8 +326,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Bills"
                             android:layout_gravity="center_vertical|center_horizontal"
+                            android:text="Bills"
                             android:textColor="#000000"
                             android:textSize="20sp" />
 
@@ -334,8 +348,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="ITEMS"
                                 android:paddingLeft="4dp"
+                                android:text="ITEMS"
                                 android:textColor="#9E9E9E"
                                 android:textSize="10dp" />
 
@@ -387,8 +401,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="ITEMS"
                                 android:paddingLeft="4dp"
+                                android:text="ITEMS"
                                 android:textColor="#9E9E9E"
                                 android:textSize="10dp" />
 
@@ -405,7 +419,7 @@
 
             </GridLayout>
         </LinearLayout>
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/my_groups_navigation_view"

@@ -15,15 +15,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:background="#9E9E9E"
+            android:scaleType="centerCrop"
+            android:background="@drawable/dopart10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-        </LinearLayout>
+        </ImageView>
 
         <RelativeLayout
             android:id="@+id/xx"
@@ -88,6 +89,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="32dp"
                 android:text="Timeline"
+                android:textColor="#FFFFFF"
                 android:textSize="30sp" />
 
         </LinearLayout>

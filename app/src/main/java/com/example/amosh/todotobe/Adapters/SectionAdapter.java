@@ -24,15 +24,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionViewHolder> implements EventAdapter.EventClickListener {
-
+public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionViewHolder> {
     private Context mContext;
     List<Events> eventsList;
     private MyUsersDbHelper usersDbHelper;
     private String myUsername;
     private EventAdapter eEventAdapter;
-    Dialog dialog;
-    FrameLayout completeAction, snoozeAction, overdueAction, editAction, deleteAction, closeAction;
     private List<Events> mEventsSectionList;
 
 
@@ -69,12 +66,6 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
         holder.recyclerView.setLayoutManager(layoutManager);
 
         eEventAdapter = new EventAdapter(mContext, eventsList);
-        eEventAdapter.setClickListener(new EventAdapter.EventClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                showCustomActionsDialog(mContext, position);
-            }
-        });
         holder.recyclerView.addItemDecoration(new DividerItemDecoration(holder.recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         holder.recyclerView.setAdapter(eEventAdapter);
 
@@ -114,101 +105,5 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             recyclerView = (RecyclerView) view.findViewById(R.id.section_item_list_view);
         }
     }
-
-
-    @Override
-    public void onItemClick(View view, int position) {
-
-        showCustomActionsDialog(mContext, position);
-
-    }
-
-
-    public void showCustomActionsDialog(final Context context, final int iPosition) {
-        dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.custom_event_action_dialog, null, false);
-
-        /*HERE YOU CAN FIND YOU IDS AND SET TEXTS OR BUTTONS*/
-        closeAction = (FrameLayout) view.findViewById(R.id.event_frame_close);
-        closeAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-        completeAction = (FrameLayout) view.findViewById(R.id.event_frame_completed);
-        completeAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                usersDbHelper.updateEventState(eventsList.get(iPosition).getUserName(),
-                        eventsList.get(iPosition).getTitle(), EventsContract.EventsEntry.STATE_COMPLETED,
-                        eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
-                eventsList.get(iPosition).setState(EventsContract.EventsEntry.STATE_COMPLETED);
-                eEventAdapter.notifyDataSetChanged();
-
-                dialog.dismiss();
-            }
-        });
-
-        snoozeAction = (FrameLayout) view.findViewById(R.id.event_frame_snoozed);
-        snoozeAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                usersDbHelper.updateEventState(eventsList.get(iPosition).getUserName(),
-                        eventsList.get(iPosition).getTitle(), EventsContract.EventsEntry.STATE_SNOOZED,
-                        eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
-                eventsList.get(iPosition).setState(EventsContract.EventsEntry.STATE_SNOOZED);
-                eEventAdapter.notifyDataSetChanged();
-
-                dialog.dismiss();
-            }
-        });
-
-        overdueAction = (FrameLayout) view.findViewById(R.id.event_frame_overdued);
-        overdueAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                usersDbHelper.updateEventState(eventsList.get(iPosition).getUserName(),
-                        eventsList.get(iPosition).getTitle(), EventsContract.EventsEntry.STATE_OVERDUE,
-                        eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
-                eventsList.get(iPosition).setState(EventsContract.EventsEntry.STATE_OVERDUE);
-                eEventAdapter.notifyDataSetChanged();
-
-                dialog.dismiss();
-            }
-        });
-
-        deleteAction = (FrameLayout) view.findViewById(R.id.event_frame_delete);
-        deleteAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                usersDbHelper.deleteEvent(eventsList.get(iPosition).getTitle(), eventsList.get(iPosition).getUserName(),
-                        eventsList.get(iPosition).getDateFromDay(), eventsList.get(iPosition).getDateToDay());
-                eventsList.remove(iPosition);
-                eEventAdapter.notifyItemRemoved(iPosition);
-
-                if (eventsList.size() == 0) {
-                    mEventsSectionList.clear();
-                    mEventsSectionList = usersDbHelper.readEventSectionList(myUsername);
-                    notifyDataSetChanged();
-                }
-                dialog.dismiss();
-            }
-        });
-
-
-        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        dialog.setContentView(view);
-        final Window window = dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        window.setBackgroundDrawableResource(R.color.trans);
-        window.setGravity(Gravity.BOTTOM);
-        window.setGravity(Gravity.CENTER);
-        dialog.show();
-    }
-
 }
 
